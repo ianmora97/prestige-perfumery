@@ -1,0 +1,32 @@
+<!-- <div class="progress rounded-0 position-absolute" style="height:7px; top: 0;left: 0; z-index:1500;">
+	<div class="progress-bar rounded-0 bg-secondary" role="progressbar" id="progress_bar" 
+	style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+<script>
+	$('#progress_bar').css('width','100%').fadeIn(2500);
+</script> -->
+<header class="navbar navbar-light sticky-top bg-white p-0" 
+	style="background-color: rgba(255, 255, 255, 0); max-height: 60px; height:60px;">
+    <div style="width: 17%;" class="bg-primary m-0 py-2 h-100">
+		<a class="navbar-brand text-white col-md-3 col-lg-2 me-0 px-3" href="/admin" >
+			<i class="fas fa-pepper-hot"></i> &nbsp; Flask
+		</a>
+    </div>
+	<div class="shadow-primary ms-0 d-flex justify-content-start me-auto h-100 pt-3" style="width:83%;">
+		<div class="ms-0 me-auto ps-5 d-flex justify-content-start" aria-label="breadcrumb">
+			<a class="d-inline align-bottom text-decoration-none link-dark" href="/admin"><h5>Dashboard</h5></a>
+			<span class="fw-bold">&nbsp;>&nbsp;</span>
+			<h5 class="d-inline align-bottom">{{data.page}}</h5>
+			</ol>
+		</div>
+		<div style="margin-right:100px;" role="button">
+			<i class="far fa-bell fa-2x text-muted"></i>
+		</div>
+		<button class="navbar-toggler position-absolute d-md-none collapsed" 
+		type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" 
+		aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+		</button>
+
+	</div>
+</header>

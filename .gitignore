@@ -6,6 +6,17 @@ bin-release/
 
 # Other files and folders
 .settings/
+webpack/node_modules/
+
+#package-lock
+webpack/package-lock.json
+
+# Enviorment files
+*.env
+*.DS_Store
+
+#VS code
+.vscode/
 
 # Executables
 *.swf
