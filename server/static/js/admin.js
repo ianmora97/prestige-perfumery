@@ -1,17 +1,16 @@
+
 function generalAdminEvent(event){
-    
+    notificationsDropDown();
 }
 function searchonfind() {
     let table = $('#table').DataTable();
     let val = $('#barSearch').val();
     let result = table.search(val).draw();
 }
-
-function addtoMap(map,id,e) {
-    map.set(id,e)
-}
-function clearMap(map) {
-    map.clear()
+function notificationsDropDown() {
+    $('#dropdownNotifications').on('click',function(){
+        $('#notificationsPanel').toggle();
+    })
 }
 
 function buildtable() {
@@ -30,13 +29,12 @@ function buildtable() {
         resolve('table_created');
     })
 }
-
 function buildHeaders(data) {
     return new Promise((resolve, reject) => {
         $('#tableHeader').append(`<th scope="col">#</th>`);
         data.forEach(e => {
             $('#tableHeader').append(`
-                <th scope="col">${e.name}</th>
+                <th scope="col">${showHeader(e.name)}</th>
             `);
         })
         $('#tableHeader').append(`<th scope="col">Edit</th>`);
@@ -56,7 +54,7 @@ function printRow(data) {
         let size = (Object.keys(data).length) - 1;
         let id = data.id;
         let push = '';
-        push += `<tr>`;
+        push += `<tr class="align-middle">`;
         Object.entries(data).forEach(([key, value],index) => {
             if(index == 0){
                 push += `
@@ -76,13 +74,16 @@ function printRow(data) {
                     <img src="/static/images/profile/${value}" alt="" width="45" height="45" class="rounded-circle me-2">
                 </td>
                 `;
+            }
+            else if(isDate(value)){
+                push +=`<td>${toDate(value)}</td>`;
             }else{
                 push +=`<td>${value}</td>`;
             }
             if(index == size){
                 push +=`
                 <td class="d-flex justify-content-center">
-                    <div role="button" class="w-100 h-100" data-id="${id}" data-bs-toggle="modal" data-bs-target="#updateClient">
+                    <div role="button" class="w-100 h-100" data-id="${id}" data-bs-toggle="modal" data-bs-target="#updateRow">
                         <i class="far fa-edit text-muted fa-2x"></i>
                     </div>
                 </td>
@@ -94,14 +95,52 @@ function printRow(data) {
         resolve('row_created');
     })
 }
+function isDate(data){
+    if(typeof data === 'string'){
+        let d = data.split('-')
+        console.log(d)
+        return d.length == 5
+    }
+    return false
+}
 function isImage(data) {
-    return data.match('avatar')
+    if(typeof data === 'string'){
+        return data.match('avatar')
+    }
+    return false
+}
+function showHeader(header) {
+    switch (header) {
+        case 'created_at':
+            return 'Registered'
+        case 'id':
+            return 'ID'
+        default:
+            return header.charAt(0).toUpperCase() + header.slice(1);
+    }
+}
+function toDate(date) {
+    let d = date.split('-');
+    let all = new Date();
+    all.setDate(d[0])
+    all.setMonth(d[1])
+    all.setFullYear(d[2])
+    all.setHours(d[3])
+    all.setMinutes(d[4])
+    console.log(all)
+    return all.toLocaleDateString();
+}
+function addtoMap(map,id,e) {
+    map.set(id,e)
+}
+function clearMap(map) {
+    map.clear()
 }
 function resetTable() {
     let table = $("#table").DataTable();
     table.destroy();
 }
-function buildDataTable() {
+function buildDataTable(columnsDefs) {
     $('#table').DataTable({
         "language": {
             "decimal":        "",
@@ -131,10 +170,7 @@ function buildDataTable() {
                 }
             }
         },
-        columnDefs: [
-            { targets: [0, 5], orderable: false,},
-            { targets: '_all', orderable: true }
-        ]
+        columnDefs: columnsDefs
     });
     $('#info').html('');
     $('#pagination').html('');

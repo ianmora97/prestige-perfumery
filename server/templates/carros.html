@@ -47,7 +47,8 @@
                         </div>
                     </div>
 
-                    <div class="bg-white shadow-primary py-3 rounded-lg mt-4 animate__animated animate__zoomIn" style="min-height: 570px; overflow-y: auto;">
+                    <div class="bg-white shadow-primary py-3 rounded-lg mt-4 animate__animated animate__zoomIn" 
+                    style="min-height: 570px; overflow-y: auto;">
                         <div class="row m-0 p-1">
                             <div class="col-lg-4 flex-fill d-flex align-items-baseline">
                                 <h4 class="">Summary</h4>
@@ -81,24 +82,9 @@
                             </div>
                         </div>
                         <div class="row w-100 mx-0" id="divTable">
-                            <table class="table table-borderless text-center" id="table" data-order="[[ 1, &quot;asc&quot; ]]">
-                                <thead class="table-light-header">
-                                    <tr style="max-height: 40px;">
-                                        <th scope="col" style="max-height: 40px;">#</th>
-                                        <th scope="col" style="max-height: 40px;" data-class-name="priority">Id</th>
-                                        <th scope="col" style="max-height: 40px;">Foto</th>
-                                        <th scope="col" style="max-height: 40px;">Name</th>
-                                        <th scope="col" style="max-height: 40px;">Email</th>
-                                        <th scope="col" style="max-height: 40px;">Edit</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tableBody">
-                                    
-                                </tbody>
-                            </table>
-                            <div class="d-flex align-items-center align-self-end border-info w-100">
-                                <small id="info" class="d-flex align-items-end"></small>
-                            </div>
+                        </div>
+                        <div class="d-flex align-items-center align-self-end border-info w-100">
+                            <small id="info" class="d-flex align-items-end ms-4"></small>
                         </div>
                     </div>
                 </div>
@@ -106,72 +92,61 @@
             </main>
         </div>
     </div>
-
     <div class="modal fade" id="addNew" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addNewLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal">
             <div class="modal-content">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title" id="addNewLabel">Add new Client</h5>
+                    <h5 class="modal-title" id="addNewLabel">Add new Car</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="/admin/clientes/add" method="post" id="formAdd">
+                    <form action="/admin/cars/add" method="post" id="formAdd">
                         <div class="mb-3">
-                            <h5 class="text-dark">Client Name</h5>
-                            <input type="text" class="form-control form-control-lg border rounded-4" name="name" id="add_name">
+                            <h5 class="text-dark">Brand</h5>
+                            <input type="text" class="form-control form-control-lg border rounded-4" name="brand" id="add_brand">
                         </div>
                         <hr>
                         <div class="mb-3">
-                            <h5 class="text-dark">Client Email</h5>
-                            <input type="email" class="form-control form-control-lg border rounded-4" name="email" id="add_email">
+                            <h5 class="text-dark">Model</h5>
+                            <input type="text" class="form-control form-control-lg border rounded-4" name="model" id="add_model">
                         </div>
                         <hr>
-                        <div class="row text-center">
-                            <div class="col-lg">
-                                <img src="/static/images/profile/avatar.png" width="150px" role="button" 
-                                 onclick="selectImage('avatar.png')">
-                                 <div id="selectedL">
-                                    <span class="badge bg-secondary">Selected</span>
-                                </div>
-                            </div>
-                            <div class="col-lg">
-                                <img src="/static/images/profile/avatar1.png" width="150px" role="button" 
-                                 onclick="selectImage('avatar1.png')">
-                                 <div id="selectedR">
-                                    
-                                </div>
-                            </div>
-                            <input type="text" id="fotoSelect" name="foto" value="avatar.png">
+                        <div class="mb-3">
+                            <h5 class="text-dark">Year</h5>
+                            <input type="text" class="form-control form-control-lg border rounded-4" name="year" id="add_year">
                         </div>
-                        <!-- <div class="mb-3">
-                            <h5 class="text-dark">Client Photo</h5>
-                            <input class="form-control border rounded-4" type="file" name="file" id="formFile">
-                        </div> -->
                     </form>
                 </div>
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-light rounded-4" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" form="formAdd" class="btn btn-primary rounded-4">Add Client</button>
+                    <button type="submit" form="formAdd" class="btn btn-primary rounded-4">Add Car</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="updateClient" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="updateClientLabel" aria-hidden="true">
+    <div class="modal fade" id="updateRow" data-bs-backdrop="static" data-bs-keyboard="false" 
+    tabindex="-1" aria-labelledby="updateRowLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal">
             <div class="modal-content">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title text-primary" id="updateClientLabel">Update Client</h5>
+                    <h5 class="modal-title text-primary" id="updateRowLabel">Update Car</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <span class="sr-only" id="idClient"></span>
+                    <span class="sr-only" id="idCar"></span>
                     <div class="mb-3">
-                        <h5 class="text-dark">Name</h5>
-                        <input type="text" class="form-control form-control-lg border rounded-4" name="name" id="update_name">
+                        <h5 class="text-dark">Brand</h5>
+                        <input type="text" class="form-control form-control-lg border rounded-4" name="brand" id="up_brand">
                     </div>
+                    <hr>
                     <div class="mb-3">
-                        <h5 class="text-dark">Email</h5>
-                        <input type="email" class="form-control form-control-lg border rounded-4" name="email" id="update_email">
+                        <h5 class="text-dark">Model</h5>
+                        <input type="text" class="form-control form-control-lg border rounded-4" name="model" id="up_model">
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <h5 class="text-dark">Year</h5>
+                        <input type="text" class="form-control form-control-lg border rounded-4" name="year" id="up_year">
                     </div>
                 </div>
                 <div class="modal-footer border-0">

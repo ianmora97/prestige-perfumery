@@ -46,7 +46,7 @@ def admin_clientes_api_node():
 def admin_clientes_add():
    if request.method == "POST":
       details = request.form
-      if db.addClient(mysql,details['foto'], details['name'], details['email']):
+      if db.addClient(mysql,details['foto'], details['name'], details['email'], details['phone']):
          data = {'page':'Clients','user':session['user']}
          return render_template('clientes.html',data=data)
       else:
@@ -68,11 +68,10 @@ def admin_clientes_delete():
 def admin_clientes_update():
    if request.method == "POST":
       data = request.get_json()
-      return redirect('http://localhost:1003/api/clients/update')
-      # if db.updateClient(mysql,data['name'],data['email'],data['id']):
-      #    return "updated"
-      # else:
-      #    return "not_updated"
+      if db.updateClient(mysql,data['name'],data['email'],data['id']):
+         return "updated"
+      else:
+         return "not_updated"
 
 # ? -------------------------------- Employees --------------------------------
 @app.route('/admin/empleados')
@@ -86,6 +85,29 @@ def admin_carros():
    data = {'page':'Cars','user':session['user']}
    return render_template('carros.html',data=data)
 
+@app.route('/api/admin/carros')
+def admin_cars_api_node():
+   return redirect('http://localhost:1003/api/carros/get')
+
+@app.route('/admin/cars/add',methods=['GET', 'POST'])
+def admin_cars_add():
+   if request.method == "POST":
+      details = request.form
+      if db.addCar(mysql,details['brand'], details['model'], details['year']):
+         data = {'page':'Cars','user':session['user']}
+         return redirect(url_for('admin_carros'))
+      else:
+         data = {'page':'Cars','user':session['user'],'err':'Database error'}
+         return redirect(url_for('admin_carros'))
+      
+@app.route('/admin/car/update',methods=['GET', 'POST'])
+def admin_car_update():
+   if request.method == "POST":
+      data = request.get_json()
+      if db.updateCar(mysql,data['id'],data['brand'],data['model'],data['year']):
+         return "updated"
+      else:
+         return "not_updated"
 
 # ? -------------------------------- Oil Change --------------------------------
 @app.route('/admin/cambiosAceite')

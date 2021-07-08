@@ -1,5 +1,5 @@
 // ?atributes
-var g_clientsMap = new Map();
+var g_carsMap = new Map();
 
 // !functions
 function loaded(event){
@@ -8,34 +8,26 @@ function loaded(event){
     update();
     openModal();
 }
-function selectImage(photo) {
-    $('#fotoSelect').val(photo);
-    if(photo == "avatar1.png"){
-        $('#selectedR').html('<span class="badge bg-secondary">Selected</span>')
-        $('#selectedL').html('')
-    }else{
-        $('#selectedL').html('<span class="badge bg-secondary">Selected</span>')
-        $('#selectedR').html('')
-    }
-}
+
 function openModal() {
     var update = document.getElementById('updateRow')
     update.addEventListener('show.bs.modal', function (event) {
         let button = event.relatedTarget
         let id = button.getAttribute('data-id')
-        let client = g_clientsMap.get(parseInt(id));
+        let car = g_carsMap.get(parseInt(id));
         let modalTitle = update.querySelector('.modal-title')
-        modalTitle.textContent = 'Update Client ' + client.nombre;
-        $('#idClient').val(client.id);
-        $('#update_name').val(client.nombre);
-        $('#update_email').val(client.correo);
+        modalTitle.textContent = 'Update car ' + car.marca;
+        $('#idCar').val(car.id);
+        $('#up_brand').val(car.marca);
+        $('#up_model').val(car.modelo);
+        $('#up_year').val(car.anio);
     })
 }
 
 function bringDB() {
     $.ajax({
         type: "GET",
-        url: "/api/admin/clientes",
+        url: "/api/admin/carros",
         contentType: "application/json"
     }).then((data) => {
         showInfo(data)
@@ -46,13 +38,13 @@ function bringDB() {
 function showInfo(data) {
     buildtable().then(res=>{
         buildHeaders(data.campos).then(res1 =>{
-            clearMap(g_clientsMap);
+            clearMap(g_carsMap);
             data.filas.forEach(e =>{
-                addtoMap(g_clientsMap,e.id,e)
+                addtoMap(g_carsMap,e.id,e)
             })
             buildRows(data.filas).then(res2 =>{
                 let columnsDefs = [
-                    { targets: [0, 7], orderable: false,},
+                    { targets: [0, 6], orderable: false,},
                     { targets: '_all', orderable: true }
                 ]
                 buildDataTable(columnsDefs);
@@ -63,13 +55,14 @@ function showInfo(data) {
 function update() {
     $("#updateConfirm").click(function () {
         let data = {
-            id:$('#idClient').val(),
-            name:$('#update_name').val(),
-            email:$('#update_email').val()
+            id:$('#idCar').val(),
+            brand:$('#up_brand').val(),
+            model:$('#up_model').val(),
+            year:$('#up_year').val()
         }
         $.ajax({
             type: "POST",
-            url: "/admin/clientes/update",
+            url: "/admin/car/update",
             data: JSON.stringify(data),
             contentType: "application/json",
             dataType: "json"

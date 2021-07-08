@@ -23,22 +23,6 @@ class Usuario:
             'rol':self.rol,
             }
 
-class Cliente:
-    def __init__(self, id, foto, nombre, correo): 
-        self.id = id 
-        self.foto = foto 
-        self.nombre = nombre 
-        self.correo = correo
-
-    def get(self):
-        return {
-            'id':self.id,
-            'nombre':self.nombre,
-            'foto':self.foto,
-            'nombre':self.nombre,
-            'correo':self.correo
-        }
-
 # ! <-------------- SQL Scripts -------------->
 
 def login(mysql,usuario,clave):
@@ -50,21 +34,11 @@ def login(mysql,usuario,clave):
     data = Usuario(data[0],data[1],data[2],data[3],data[4],data[5],data[6])
     return data
 
-def getClientes(mysql):
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM cliente")
-    data = cur.fetchall()
-    cur.close()
-    cliente = []
-    for i in data:
-        a = Cliente(i[0],i[1],i[2],i[3])
-        cliente.append(a.get())
-    return cliente
-
-def addClient(mysql,foto,name,email):
+def addClient(mysql,foto,name,email,phone):
     try:
+        sql = "INSERT INTO cliente (foto,nombre,correo,telefono) VALUES('{}', '{}', '{}', {})".format(foto,name,email,phone)
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO cliente (foto,nombre,correo) VALUES(%s, %s, %s)", (foto,name,email))
+        cur.execute(sql)
         mysql.connection.commit()
         cur.close()
         return True
@@ -98,4 +72,28 @@ def deleteClient(mysql,id):
         return False
     return False
     
+def addCar(mysql,marca,modelo,year):
+    try:
+        sql = "INSERT INTO cars (marca,modelo,anio) VALUES('{}', '{}', '{}')".format(marca,modelo,year)
+        cur = mysql.connection.cursor()
+        cur.execute(sql)
+        mysql.connection.commit()
+        cur.close()
+        return True
+    except Exception as e:
+        print("Problem inserting into db: " + str(e))
+        return False
+    return False
         
+def updateCar(mysql,id,brand,model,year):
+    try:
+        sql = "UPDATE cars SET marca = '{}', modelo = '{}', anio = '{}' WHERE id = {}".format(brand, model, year, id)
+        cur = mysql.connection.cursor()
+        cur.execute(sql)
+        mysql.connection.commit()
+        cur.close()
+        return True
+    except Exception as e:
+        print("Problem inserting into db: " + str(e))
+        return False
+    return False

@@ -52,6 +52,50 @@ input, select {
   opacity: 0.18 !important;
   transition: all .3s ease-in-out; }
 
+.notification {
+  background-color: #fff !important;
+  border-radius: 10px !important;
+  box-shadow: 0 5px 12px 0 rgba(70, 88, 228, 0.5) !important;
+  width: 400px;
+  min-height: 200px;
+  position: absolute;
+  top: 40px;
+  right: 10px;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  display: flex;
+  align-items: flex-end !important;
+  flex-direction: column !important; }
+  .notification a {
+    text-decoration: none !important; }
+    .notification a .notification-item {
+      margin-bottom: 10px; }
+      .notification a .notification-item:hover {
+        color: #1e2125;
+        background-color: #e9ecef; }
+      .notification a .notification-item:focus {
+        background-color: #0d6efd !important; }
+      .notification a .notification-item .notification-item-header {
+        padding: 8px 15px;
+        background: #F9FAFE;
+        display: flex;
+        justify-content: space-between;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        line-height: 1.5;
+        color: #4659E4; }
+        .notification a .notification-item .notification-item-header span.text-muted {
+          font-size: 12px;
+          display: inline-block;
+          margin-right: 10px; }
+        .notification a .notification-item .notification-item-header h5 i, .notification a .notification-item .notification-item-header .h5 i {
+          color: #f0bc4d !important; }
+      .notification a .notification-item .notification-item-body {
+        border-bottom: 1px solid #dbdbdb;
+        padding: 8px 15px;
+        color: #212529; }
+
 /*!
  * Bootstrap v5.0.1 (https://getbootstrap.com/)
  * Copyright 2011-2021 The Bootstrap Authors

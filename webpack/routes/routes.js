@@ -3,6 +3,13 @@ const router = express.Router();
 
 const db = require('../database');
 
+// const mongoose = require('mongoose');
+
+// mongoose.connect('mongodb://localhost/flask',{
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+// })
+
 router.get('/', (req, res) => {
     res.send(`
     <center>
@@ -14,11 +21,18 @@ router.get('/', (req, res) => {
     `);
 });
 
+// ! ------------------------------ SERVE FROM MOONGODB ------------------------------------
+// ? ------------------------------ NOTIFICATIONS ---------------------------------
+// * SELECT NOTIFICATIONS
+
+
+
+
 // ! ------------------------------ SERVE FROM DB ------------------------------------
-// ? ------------------------------ Clients ---------------------------------
+// ? ------------------------------ CARS ---------------------------------
 // * SELECT CLIENTS
 router.get('/api/clients/get',(req,res)=>{
-    db.query('SELECT * FROM cliente',(err,rows,fields)=>{
+    db.query('SELECT * FROM vt_client',(err,rows,fields)=>{
         if(!err){
             let [filas,campos,response] = [rows,fields,'good'];
             res.json({filas,campos,response});
@@ -28,18 +42,17 @@ router.get('/api/clients/get',(req,res)=>{
     });
 });
 
-// * UPDATE CLIENT
-router.get('/api/clients/update',(req,res)=>{
-    console.log(req)
-    // db.query('UPDATE cliente SET nombre = ?, correo = ? WHERE id = ?"',
-    // [req.body.name,req.body.email,req.body.id],
-    // (err,rows,fields)=>{
-    //     if(!err){
-    //         res.json({response:'updated'});
-    //     }else{
-    //         res.json({text:err,response:'error'});
-    //     }
-    // });
+// ? ------------------------------ CARS ---------------------------------
+// * SELECT CARS
+router.get('/api/carros/get',(req,res)=>{
+    db.query('SELECT * FROM vt_cars',(err,rows,fields)=>{
+        if(!err){
+            let [filas,campos,response] = [rows,fields,'good'];
+            res.json({filas,campos,response});
+        }else{
+            res.json({text:err,response:'error'});
+        }
+    });
 });
 
 

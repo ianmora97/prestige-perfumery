@@ -8,6 +8,8 @@ $theme-colors: (
     "dark":#212529,
     "info":#97a3ff
 );
+$breadcrumb-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E");
+
 .shadow-primary{
     box-shadow: 0 5px 12px 0 rgba(106, 119, 221, 0.418) !important;
 }
@@ -63,5 +65,58 @@ input,select{
     opacity: 0.18 !important;
     transition: all .3s ease-in-out;
 }
+.notification{
+    background-color: #fff !important;
+    border-radius: 10px !important;
+    box-shadow: 0 5px 12px 0 rgba(70, 88, 228, 0.5) !important;
+    width: 400px;
+    min-height: 200px;
+    position: absolute; 
+    top: 40px; 
+    right: 10px;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    display: flex;
+    align-items: flex-end !important;
+    flex-direction: column !important;
 
-$breadcrumb-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E");
+    a{
+        text-decoration: none !important;
+        .notification-item{
+            margin-bottom: 10px;
+            &:hover{
+                color: #1e2125;
+                background-color: #e9ecef;
+            }
+            &:focus{
+                background-color: #0d6efd !important;
+            }
+            .notification-item-header{
+                padding:8px 15px;
+                background:#F9FAFE;
+                display:flex;
+                justify-content: space-between;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+                line-height:1.5;
+                color:#4659E4;
+                span.text-muted{
+                    font-size: 12px;
+                    display: inline-block;
+                    margin-right: 10px;
+                }
+                h5{
+                    i{
+                        color:#f0bc4d !important;
+                    }
+                }
+            }
+            .notification-item-body{
+                border-bottom: 1px solid rgb(219, 219, 219);
+                padding:8px 15px;
+                color:#212529;
+            }
+        }
+    }
+}

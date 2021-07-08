@@ -9,7 +9,8 @@
 	style="background-color: rgba(255, 255, 255, 0); max-height: 60px; height:60px;">
     <div style="width: 17%;" class="bg-primary m-0 py-2 h-100">
 		<a class="navbar-brand text-white col-md-3 col-lg-2 me-0 px-3" href="/admin" >
-			<i class="fas fa-pepper-hot"></i> &nbsp; Flask
+			<img src="/static/images/dashboard.png" width="50" srcset="">
+			&nbsp; Admin panel
 		</a>
     </div>
 	<div class="shadow-primary ms-0 d-flex justify-content-start me-auto h-100 pt-3" style="width:83%;">
@@ -19,8 +20,29 @@
 			<h5 class="d-inline align-bottom">{{data.page}}</h5>
 			</ol>
 		</div>
-		<div style="margin-right:100px;" role="button">
+		<div style="margin-right:100px; position:relative;" role="button" id="dropdownNotifications">
 			<i class="far fa-bell fa-2x text-muted"></i>
+			<div class="notification" id="notificationsPanel" style="display: none;">
+				<div class="bg-light p-2 w-100">
+					<h6>Notifications</h6>
+				</div>
+				<!-- <a class="" href="/admin/clientes">
+					<div class="notification-item">
+						<div class="notification-item-header">
+							<h5 class="mb-0">
+								<i class="fas fa-exclamation-circle"></i> Featured
+							</h5>
+							<div>
+								<span class="text-muted">11 min ago</span>
+							</div>
+						</div>
+						<div class="notification-item-body">
+							With supporting text below as a natural lead-in to additional content.
+						</div>
+					</div>
+				</a> -->
+				<a href="/notifications" class="mt-auto w-100"><i class="fas fa-ellipsis-h"></i></a>
+			</div>
 		</div>
 		<button class="navbar-toggler position-absolute d-md-none collapsed" 
 		type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" 
