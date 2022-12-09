@@ -1,0 +1,18 @@
+<div class="bg-dark-100" id="header">
+    <div class="d-flex justify-content-end align-items-center py-2 me-3">
+        <div style="width: 28px; color:#c0c0c0;" class="me-2" role="button" id="notifications-button">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+            </svg>
+        </div>
+        <div class="d-flex justify-content-end align-items-center">
+            <img src="/upload/profile/deult.png" id="thumbnail-pic" width="35px" height="35px" alt="Thumnail" style="filter: invert(1) brightness(2);">
+        </div>
+    </div>
+</div>
+<script>
+    //get cookie
+    var thumbnail = document.cookie.split('; ').find(row => row.startsWith('photo')).split('=')[1];
+    console.log(thumbnail);
+    $('#thumbnail-pic').attr('src', `/upload/profile/${thumbnail}`);
+</script>

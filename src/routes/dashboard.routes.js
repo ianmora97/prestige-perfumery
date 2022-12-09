@@ -5,7 +5,6 @@ require("dotenv").config();
 
 
 router.get('/admin/main', isAuthenticated, (req, res) => {
-    // send parameters to the view
     res.render('dashboard/index', {layout: 'dashboard', title: 'Panel', menuItem: 'panel'});
 });
 
@@ -14,11 +13,13 @@ router.get('/admin/productos', isAuthenticated, (req, res) => {
 });
 
 function isAuthenticated(req, res, next) {
-    let token = req.headers['cookie'] || req.headers['authorization'];
-    if ( token === undefined ) {
+    let headers = req.headers['cookie'] || req.headers['authorization'];
+    if(headers === undefined){
         res.redirect('/');
-    } else {
-        const tokenName = token.split("=")[1];
+    }else{
+        let tokenName = headers.split(";").filter((item) => item.includes("token="))[0];
+        if(tokenName === undefined) res.redirect('/');
+        else tokenName = tokenName.split("=")[1];
         jwt.verify(tokenName, process.env.SECRET_KEY, (err, decoded) => {
             if (err) {
                 console.log(err);

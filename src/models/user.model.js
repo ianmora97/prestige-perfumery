@@ -1,5 +1,5 @@
 const mysqlcon = require('../database/mysqlcon');
-const { DataTypes } = require('sequelize');
+const { DataTypes, Sequelize, QueryTypes } = require('sequelize');
 
 
 const User = mysqlcon.define('t_user',{
@@ -62,16 +62,45 @@ exports.getAll = async (resolve) => {
  * @param {Callback} resolve function to return the result
  */
 exports.create = async (user, resolve) => {
-    User.create(user).then((user) => {
+    mysqlcon.query(
+        'CALL addAdmin(:code, :uuid, :name, :rol, :rol_name, :username, :password)',
+        {
+            replacements: {
+                code: user.code,
+                uuid: user.uuid,
+                name: user.name,
+                rol: user.rol,
+                rol_name: user.rol_name,
+                username: user.username,
+                password: user.password
+            },
+            type: QueryTypes.SELECT
+        }
+    ).then((result) =>{
         resolve({
             status: 200,
-            data: user
+            data: "INSERTED"
         });
-    }).catch((error) => {
-        resolve({
-            status: 500,
-            data: error
-        });
-    });
+    })
 }
-
+/**
+ * todo: authenticate the user based on the username and password
+ * @param {Callback} resolve function to return the result
+ */
+exports.authenticate = async (username, password, resolve) => {
+    mysqlcon.query(
+        'CALL authAdmin(:username, :password)',
+        {
+            replacements: {
+                username: username,
+                password: password
+            },
+            type: QueryTypes.SELECT
+        }
+    ).then((result) =>{
+        resolve({
+            status: 200,
+            data: result[0]['0']
+        });
+    })
+}

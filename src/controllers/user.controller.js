@@ -14,12 +14,13 @@ module.exports = {
             code: code.split('-')[0],
             uuid: uuidv4(),
             name: req.body.name,
-            rol: req.body.rol,
+            rol: parseInt(req.body.rol),
             rol_name: req.body.rol_name,
-            phone: req.body.phone || null
+            username: req.body.username,
+            password: req.body.password
         };
         User.create(user, (result) => {
-            res.status(result.status).json(result.data);
+            res.status(result.status).json(result.data)
         });
     }
 }

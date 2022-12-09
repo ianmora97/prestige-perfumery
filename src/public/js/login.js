@@ -40,9 +40,10 @@ function sendForm(){
         }),
         contentType: "application/json",
     }).then((res) =>{
-        buttonLoader(2);
-        authenticate(res.token).then((e)=>{
+        console.log(res);
+        authenticate(res.token, res.username, res.photo).then((e)=>{
             setTimeout(() => {
+                buttonLoader(2);
                 window.location.href = "/admin/main";
             }, 1000);
         });
@@ -88,15 +89,20 @@ function validateForm(u, p){
     return true;
 }
 
-function authenticate(token){
+function authenticate(token, username, photo){
     return new Promise((resolve, reject) => {
+        localStorage.setItem('username',username);
         localStorage.setItem('token',token);
+        localStorage.setItem('photo',photo);
         const d = new Date();
-        d.setTime(d.getTime() + (15*24*60*60*1000));
+        d.setTime(d.getTime() + (30*24*60*60*1000));
         let expires = "expires="+ d.toUTCString();
         var cookie = ['token=', token,';',expires ,'; path=/;'].join('');
-        console.log(cookie, typeof cookie);
+        var usernamecookie = ['username=', username,';',expires ,'; path=/;'].join('');
+        var photocookie = ['photo=', photo,';',expires ,'; path=/;'].join('');
         document.cookie = cookie;
+        document.cookie = usernamecookie;
+        document.cookie = photocookie;
         resolve();
     });
 }

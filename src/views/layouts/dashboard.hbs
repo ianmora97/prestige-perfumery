@@ -12,8 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/jszip-2.5.0/dt-1.13.1/af-2.5.1/b-2.3.3/b-html5-2.3.3/b-print-2.3.3/fh-3.3.1/r-2.4.0/sb-1.4.0/datatables.min.css"/>
-  
-
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
  
     {{!-- Jquery + Bootstrap --}}
     <script src="/js/bootstrap.js"></script>
@@ -23,6 +22,16 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/jszip-2.5.0/dt-1.13.1/af-2.5.1/b-2.3.3/b-html5-2.3.3/b-print-2.3.3/fh-3.3.1/r-2.4.0/sb-1.4.0/datatables.min.js"></script>
+
+    {{!-- Dropzone --}}
+    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+
+    {{!-- Tippy --}}
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
+
+    {{!-- moment --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
     <title>{{title}}</title>
     <script>
@@ -41,11 +50,13 @@
     </script>
 </head>
 <body>
-    <div class="d-flex">
-    {{> sidebar}}
-    <div class="bg-gray w-100 p-3">
-        {{{ body }}}
+    <div class="d-flex" id="wrapper">
+        {{> sidebar}}
+        <div class="bg-gray pb-3" id="page-content-wrapper">
+            {{> head }}
+            {{{ body }}}
+            {{> footer }}
+        </div>
     </div>
-</div>
 </body>
 </html>
