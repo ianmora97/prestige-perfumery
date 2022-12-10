@@ -3,7 +3,7 @@ $primary-light: lighten($primary, 10%);
 
 $secondary: #0ea5e9;
 $success: #38c172;
-$danger: #dc2626;
+$danger: #fc5656;
 $warning: #f6993f;
 $dark: #1f2937;
 $dark-900: #111827;
@@ -51,6 +51,10 @@ body{
 }
 img{
     user-select: none !important;
+}
+::selection {
+    background-color: $primary !important;
+    color: $light !important;
 }
 /**
  * Fonts
@@ -149,8 +153,10 @@ button{
     border: 1.3px solid $gray-100 !important;
     border-radius: 5px;
     padding: 0.3rem 0.5rem !important;
+    transition: all .3s ease-in-out;
     &:hover{
-        background-color: $gray-100 !important;
+        background-color: #eeeeee !important;
+        border: 1.3px solid #eeeeee !important;
         color: $dark-900 !important;
     }
     &.active{
@@ -163,7 +169,6 @@ button{
     }
     span.badge{
         margin-left: 0.38rem;
-        background-color: $primary-light !important;
         color: $light !important;
         font-size: 9px !important;
         font-weight: 500 !important;
@@ -171,7 +176,22 @@ button{
         height: 1.4rem;
         width: 1.5rem;
         border-radius: 50%;
+        &.badge-primary{
+            background-color: $primary-light !important;
+        }
+        &.badge-pink{
+            background-color: #ffb8ec  !important;
+        }
+        &.badge-green{
+            background-color: #77cdb0 !important;
+        }
     }
+}
+.badge-pink{
+    background-color: #ffb8ec !important;
+}
+.badge-green{
+    background-color: #77cdb0 !important;
 }
 .btn-dark{
     border: none !important;
@@ -220,11 +240,22 @@ button{
         }
     }
 }
+.btn-danger{
+    color: white !important;
+}
+
+
+[data-type="ratio-filter"]{
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
 /**
  * Sidebar
 */
 #sidebar{
-    min-width: 110px;
+    min-width: 100px;
     position: sticky;
     top: 0;
     left: 0;
@@ -239,15 +270,16 @@ button{
 #page-content-wrapper{
     display: flex;
     flex-direction: column;
-    min-width: calc(100vw - 110px);
+    min-width: calc(100vw - 100px);
     position: relative;
+    height: calc(100vh - 162px);
 }
 #footer{
-    height: 60px;
+    height: 40px;
     position: fixed;
     bottom: 0;
     right: 0;
-    width: calc(100% - 110px);
+    width: calc(100% - 100px);
 }
 #logo{
     height: 55px;
@@ -285,37 +317,51 @@ ul.pagination{
     box-shadow: 0px 5px 10px -3px rgba(0, 0, 0, 0.15) !important;
 }
 
+/**
+* Slides
+*/
+.pagination-tables{
+    margin-top: 0.5rem;
+}
+#table-container{
+    overflow-x: hidden;
+    min-height: 416px;
+}
+#slides-container{
+    overflow-x: hidden;
+    width: calc(200vw - 200px);
+    display: flex;
+    justify-content: space-between;
+    min-height: 840px;
+}
+
 .slides-custom{
     display: flex;
     overflow-x: auto;
     scroll-behavior: smooth;
 }
 .slide-w-100{
-    width: calc(100vw - 110px - 2rem);
+    width: calc(100vw - 100px - 2rem);
 }
-.slide-product{
-    position: absolute;
-    left: 0;
-    top: 0;
-    transition: left 0.9s ease-in-out;
+.slide-list{
+    height: 820px;
+    transition: all 0.9s ease-in-out;
     &.active{
-        left: calc(-100vw - 110px);
+        transform: translateX(calc(-100vw - 100px));
     }
 }
 .slide-add{
-    position: absolute;
-    left: calc(100vw - 110px);
-    top: 0;
-    transition: left 0.9s ease-in-out;
+    height: 575px;
+    transition: all 0.9s ease-in-out;
     &.active{
-        left: 0rem;
+        transform: translateX(calc(-100vw + 100px));
     }
 }
 .fadeOutOpacity{
-    animation: fadeOutOpacity 0.7s ease-out;
+    animation: fadeOutOpacity 0.9s ease-out;
 }
 .fadeInOpacity{
-    animation: fadeInOpacity 0.7s ease-out;
+    animation: fadeInOpacity 0.9s ease-out;
 }
 .imageDrop{
     width: 200px;
@@ -331,6 +377,9 @@ ul.pagination{
     0% {
         opacity: 1;
     }
+    50%{
+        opacity: 0.3;
+    }
     100% {
         opacity: 0;
     }
@@ -338,6 +387,9 @@ ul.pagination{
 @keyframes fadeInOpacity {
     0% {
         opacity: 0;
+    }
+    50%{
+        opacity: 0.3;
     }
     100% {
         opacity: 1;
@@ -382,4 +434,35 @@ table.dataTable thead>tr>td.sorting_desc_disabled:after  {
             margin-left: 0.85rem;
         }
     }
+}
+
+.table-custom{
+    thead{
+        background-color: $dark !important;
+        color: $light !important;
+        tr{
+            th{
+                height: 25px;
+                border-bottom: none !important;
+            }
+        }
+    }
+    tbody{
+        tr{
+            td{
+                color: #4b4b4b !important;
+            }
+        }
+    }
+}
+
+table.dataTable.table-striped>tbody>tr.odd>*{
+    background-color: #f5f5f5 !important;
+    box-shadow: none !important;
+}
+.dataTables_wrapper.no-footer .dataTables_scrollBody{
+    border-bottom: 1px solid #e9ecef !important;
+}
+table.dataTable tbody th.focus, table.dataTable tbody td.focus{
+    outline: 2px solid $primary !important;
 }

@@ -6,13 +6,12 @@
             </svg>
         </div>
         <div class="d-flex justify-content-end align-items-center">
-            <img src="/upload/profile/deult.png" id="thumbnail-pic" width="35px" height="35px" alt="Thumnail" style="filter: invert(1) brightness(2);">
+            <img src="/upload/profile/default.png" id="thumbnail-pic" width="35px" height="35px" alt="Thumnail" style="filter: invert(1) brightness(2);">
         </div>
     </div>
 </div>
 <script>
     //get cookie
     var thumbnail = document.cookie.split('; ').find(row => row.startsWith('photo')).split('=')[1];
-    console.log(thumbnail);
     $('#thumbnail-pic').attr('src', `/upload/profile/${thumbnail}`);
 </script>

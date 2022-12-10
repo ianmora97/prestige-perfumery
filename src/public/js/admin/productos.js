@@ -21,6 +21,9 @@ function dropzoneLoad(){
             myDropzone = this;
             this.on("addedfile", function(file) {
                 // this.processFile(file);
+                $('#borrar-imagen-drop').show();
+                $('#borrar-imagen-drop').addClass('d-block');
+
             });
 
         }
@@ -28,6 +31,11 @@ function dropzoneLoad(){
     // $('#uploadfiles').click(function(){
     //     myDropzone.processQueue();
     // });
+    $('#borrar-imagen-drop').on('click',function(){
+        myDropzone.removeAllFiles();
+        $('#borrar-imagen-drop').hide();
+        $('#borrar-imagen-drop').removeClass('d-block');
+    });
 }
 function animateSlides(){
     animateCSS("#product-list", "fadeIn");
@@ -41,8 +49,13 @@ function changeSlides(){
         $("#agregar-producto").addClass('disabled');
     });
     $("#lista-productos").on('click', function(e){
-        $("#product-add").removeClass('active fadeOutOpacity');
-        $("#product-list").removeClass('active fadeInOpacity');
+        $("#product-add").removeClass('active fadeInOpacity').addClass('fadeOutOpacity');
+        $("#product-list").removeClass('active fadeOutOpacity').addClass('fadeInOpacity');
+
+        setTimeout(() => {
+            $("#product-add").removeClass('fadeOutOpacity');
+            $("#product-list").removeClass('fadeInOpacity');
+        }, 1000);
 
         $("#agregar-producto").attr('disabled', false);
         $("#agregar-producto").removeClass('disabled');
@@ -59,6 +72,25 @@ function checkRatioFilter(){
 }
 function datatables(){
     $("#table").DataTable({
+        responsive: true,
+        select: false,
+        keys: true,
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'pdf',
+                text: '<i class="fa-solid fa-print text-secondary"></i> Exportar PDF',
+                titleAttr: 'Exportar a PDF',
+                className: 'btn btn-white me-3',
+            },{
+                extend: 'excel',
+                text: '<i class="fa-solid fa-file-excel text-secondary"></i> Exportar Excel',
+                titleAttr: 'Exportar a Excel',
+                className: 'btn btn-white',
+            },
+        ],
+        "scrollY": "600px",
+        "scrollCollapse": true,
         "language": {
             "decimal":        "",
             "emptyTable":     "No hay productos",
@@ -87,7 +119,10 @@ function datatables(){
                 }
             }
         },
-	    "lengthMenu": [30, 50, 100, 500],
+        lengthMenu: [
+            [ 10, 50, 100, -1 ],
+            [ '10', '50', '100', 'Todos' ]
+        ],
         // columnDefs: [
         //     { targets: [0, 6], orderable: false,},
         //     { targets: '_all', orderable: true }
@@ -95,10 +130,17 @@ function datatables(){
     });
     $('#table_info').appendTo('#info');
     $('#table_length').appendTo('#length');
+    // $('#table_length').css('display', 'none');
 
     $('#table_filter').css('display', 'none');
 
     $('#table_paginate').appendTo('#pagination');
+
+    $('.buttons-pdf').appendTo('#button-group');
+    $('.buttons-excel').appendTo('#button-group');
+
+
+
 
     $('#barraBuscar').on('keyup', function(){
         let val = $(this).val();
