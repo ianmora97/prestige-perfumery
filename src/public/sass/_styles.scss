@@ -1,7 +1,7 @@
 $primary: #4f46e5;
 $primary-light: lighten($primary, 10%);
 
-$secondary: #0ea5e9;
+$secondary: #96d7f4;
 $success: #38c172;
 $danger: #fc5656;
 $warning: #f6993f;
@@ -10,8 +10,14 @@ $dark-900: #111827;
 $dark-100: #374151;
 $gray-900: #777777;
 $gray-100: #c0c0c0;
+$gray-light: #e4e4e4;
 $gray: #f3f4f6;
 $light: #ffffff;
+
+$pink: #ffb8d6;
+$green: #77cdb0;
+$orange: #f6ad55;
+$blue: #879ce1;
 
 $theme-colors: (
     "primary": $primary,
@@ -25,7 +31,12 @@ $theme-colors: (
     "gray": $gray,
     "gray-900": $gray-900,
     "gray-100": $gray-100,
-    "light": $light
+    "gray-light": $gray-light,
+    "light": $light,
+    "pink": $pink,
+    "green": $green,
+    "orange": $orange,
+    "blue": $blue
 );
 
 /**
@@ -53,7 +64,7 @@ img{
     user-select: none !important;
 }
 ::selection {
-    background-color: $primary !important;
+    background-color: #a7a3f2 !important;
     color: $light !important;
 }
 /**
@@ -180,18 +191,40 @@ button{
             background-color: $primary-light !important;
         }
         &.badge-pink{
-            background-color: #ffb8ec  !important;
+            background-color: $pink  !important;
         }
         &.badge-green{
-            background-color: #77cdb0 !important;
+            background-color: $green !important;
+        }
+        &.badge-orange{
+            background-color: $orange !important;
+        }
+        &.badge-blue{
+            background-color: $blue !important;
         }
     }
 }
+.b-pill{
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 16px !important;
+}
 .badge-pink{
-    background-color: #ffb8ec !important;
+    background-color: lighten($pink, 25%)  !important;
+    color: $pink !important;
 }
 .badge-green{
-    background-color: #77cdb0 !important;
+    background-color: lighten($green, 25%) !important;
+    color: $green !important;
+}
+.badge-orange{
+    background-color: lighten($orange, 25%) !important;
+    color: $orange !important;
+}
+.badge-blue{
+    background-color: lighten($blue, 25%) !important;
+    color: $blue !important;
 }
 .btn-dark{
     border: none !important;
@@ -298,6 +331,41 @@ button{
 .invert-1{
     filter: invert(1);
 }
+.image-zoom{
+    transition: all .3s ease-in-out;
+    &:hover{
+        transform: scale(4);
+    }
+}
+.hover-img{
+    transition: all .3s ease-in-out;
+    &:hover{
+        ::before{
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+        ::after{
+            content: "View";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            font-weight: 500;
+            z-index: 2;
+        }
+    }
+}
+.img-round{
+    border-radius: 15px;
+}
 /**
  * Borders
 */
@@ -318,6 +386,57 @@ ul.pagination{
 }
 
 /**
+* Modals
+*/
+$modal-fade-transform: scale(.8);
+.fade {
+    opacity: 0;
+    transition: all .25s linear;
+}
+.fade.show {
+    opacity: 1;
+    transition: all .25s linear;
+}
+.modal-transparent{
+    background-color: transparent !important;
+    border: none !important;
+}
+.btn-close-modal-bottom{
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    background-color: white !important;
+}
+
+/**
+* Tippy JS
+*/
+.tippy-box[data-theme~='light-custom']{
+    background-color: #f0f0f0;
+    color: #424242;
+    font-weight: 400;
+    font-size: 12px;
+    border: 1px solid #a7a3f2;
+}
+.tippy-box[data-theme~='light-custom'][data-placement^='top'] .tippy-arrow {
+    color: #f0f0f0;
+}
+.tippy-box[data-theme~='light-custom'][data-placement^='bottom'] .tippy-arrow {
+    color: #f0f0f0;
+}
+.tippy-box[data-theme~='light-custom'][data-placement^='left'] .tippy-arrow {
+    color: #f0f0f0;
+}
+.tippy-box[data-theme~='light-custom'][data-placement^='right'] .tippy-arrow {
+    color: #f0f0f0;
+}
+
+
+/**
 * Slides
 */
 .pagination-tables{
@@ -332,7 +451,7 @@ ul.pagination{
     width: calc(200vw - 200px);
     display: flex;
     justify-content: space-between;
-    min-height: 840px;
+    min-height: 860px;
 }
 
 .slides-custom{

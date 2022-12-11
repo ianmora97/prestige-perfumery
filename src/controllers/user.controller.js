@@ -12,7 +12,7 @@ module.exports = {
         const code = uuidv4();
         const user = {
             code: code.split('-')[0],
-            uuid: uuidv4(),
+            uuid: code,
             name: req.body.name,
             rol: parseInt(req.body.rol),
             rol_name: req.body.rol_name,

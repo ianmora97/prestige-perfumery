@@ -33,3 +33,11 @@ node_modules/
 
 #log files
 *.log
+
+# any image under uploads folder
+src/public/upload/productos/*.jpg
+src/public/upload/productos/*.png
+src/public/upload/productos/*.jpeg
+src/public/upload/profile/*.jpg
+src/public/upload/profile/*.png
+src/public/upload/profile/*.jpeg

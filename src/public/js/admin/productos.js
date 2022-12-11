@@ -1,17 +1,129 @@
 var g_filter = new Map();
+var myDropzone;
+
+//* Modals
+const modalImagePreview = new bootstrap.Modal('#imagepreview')
 
 function init(){
-    datatables();
+    formatInputs();
+    runTooltips();
     checkRatioFilter();
     animateSlides();
     changeSlides();
     dropzoneLoad();
+    
+    brignData();
+}
+function brignData(){
+    $.ajax({
+        url: '/api/product/all',
+        method: 'GET',
+        contentType: 'application/json'
+    }).then((result) => {
+        fillProductos(result);
+    }, (error) => {
+        console.log(error);
+    });
+}
+function fillProductos(data){
+    $("#tbody").html("");
+    data.forEach((item) => {
+        addRow(item);
+    });
+    datatables();
+    zoomImages();
+}
+function addRow(e){
+    $("#tbody").append(`
+        <tr>
+            <td class="align-middle">
+                <div class="d-flex justify-content-center align-items-center" role="button">
+                    <img src="/upload/productos/${e.image}" width="60px" alt="" class="img-fluid hover-img img-round">
+                </div>
+            </td>
+            <td class="align-middle">${e.code}</td>
+            <td class="align-middle">${e.name}</td>
+            <td class="align-middle"><span class="badge b-pill badge-${e.category == "hombre" ? "green":"orange"}">${e.category}</span></td>
+            <td class="align-middle">${e.price}</td>
+            <td class="align-middle">${e.stock}</td>
+        </tr>
+    `);
+}
+function formatInputs(){
+    $("#add-precio").on('keyup', function(evt){
+        let val = $(this).val();
+        let n = val.replace(/\./g, '');
+        n = parseInt(n);
+        n = n.toLocaleString('es-ES');
+        $(this).val(n);
+    });
+}
+function agregarProducto(filename){
+    let name = $("#add-name").val();
+    let stock = parseInt($("#add-stock").val());
+    let price = $("#add-precio").val();
+    let category = $("#add-categoria").val();
+    let notification = parseInt($("#add-aviso").val());
+    let image = filename;
+    if(name === '' || stock === '' || price === '' || category === '' || notification === ''){
+        alert('Todos los campos son obligatorios');
+        return;
+    }else{
+        $.ajax({
+            url: '/api/product/add',
+            method: 'POST',
+            data: JSON.stringify({
+                name: name,
+                stock: stock,
+                price: price,
+                category: category,
+                notification: notification,
+                filename: image
+            }),
+            contentType: 'application/json'
+        }).then((result) => {
+            if(result.status === 200){
+                clearInputs();
+            }
+        }, (error) => {
+            console.log(error);
+        });
+    }
+}
+function clearInputs(){
+    $("#add-name").val('');
+    $("#add-stock").val('');
+    $("#add-precio").val('');
+    $("#add-categoria").val('');
+    $("#add-aviso").val('');
+    myDropzone.removeAllFiles();
+}
+function runTooltips(){
+    // tippy JS
+    // aviso-tooltip
+    tippy('#aviso-tooltip', {
+        content: `Cuando el producto llegue a esta cantidad, se mostrará el mensaje de "Producto agotado" en el listado de productos y en la página del producto.<br>Se notificará al administrador por correo electrónico.`,
+        allowHTML: true,
+        placement: 'top-start',
+        theme: 'light-custom',
+        interactive: true,
+        animation: 'shift-away-extreme',
+        trigger: 'click',
+    });
+}
+function zoomImages(){
+    $('.hover-img').on('click', function(){
+        // open imagepreview modal -> bootstrap 5
+        $('#image-preview-src').attr('src', $(this).attr('src'));
+        modalImagePreview.show();
+        
+    });
 }
 function dropzoneLoad(){
-    var myDropzone = new Dropzone("#dropArea", {
+    myDropzone = new Dropzone("#dropArea", {
         autoProcessQueue: false,
         parallelUploads: 1,
-        url: "/uploadImage",
+        url: "/api/product/addimage",
         method: "post",
         maxFiles: 1,
         maxFilesize: 5,
@@ -25,12 +137,15 @@ function dropzoneLoad(){
                 $('#borrar-imagen-drop').addClass('d-block');
 
             });
-
+            // on success
+            this.on("success", function(file, response) {
+                agregarProducto(response.data.filename);
+            });
         }
     });
-    // $('#uploadfiles').click(function(){
-    //     myDropzone.processQueue();
-    // });
+    $('#btn-agregar').on('click',function(){
+        myDropzone.processQueue();
+    });
     $('#borrar-imagen-drop').on('click',function(){
         myDropzone.removeAllFiles();
         $('#borrar-imagen-drop').hide();

@@ -4,11 +4,20 @@ const jwt = require('jsonwebtoken');
 require("dotenv").config();
 
 /**
- * CRUD from User
+ * CRUD for User
  */
 const USER = require('../controllers/user.controller');
 router.get('/api/user/all', isAuthenticated, USER.getAll);
-router.post('/api/user/add', USER.create);
+router.post('/api/user/add', isAuthenticated, USER.create);
+
+/**
+ * CRUD for Products
+ */
+const PRODUCT = require('../controllers/product.controller');
+router.get('/api/product/all', PRODUCT.getAll); // No authentication required
+router.post('/api/product/add', isAuthenticated, PRODUCT.create);
+router.post('/api/product/addimage', isAuthenticated, PRODUCT.addImage);
+
 
 
 function isAuthenticated(req, res, next) {
