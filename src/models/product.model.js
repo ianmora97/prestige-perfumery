@@ -21,6 +21,10 @@ const Product = mysqlcon.define('t_product',{
         type: DataTypes.STRING,
         allowNull: false
     },
+    brand:{
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     category:{
         type: DataTypes.STRING,
         allowNull: false
@@ -39,6 +43,14 @@ const Product = mysqlcon.define('t_product',{
     },
     notification:{
         type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    promotion:{
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    cantidad:{
+        type: DataTypes.STRING,
         allowNull: false
     }
 }, {
@@ -65,11 +77,14 @@ exports.create = async (body, resolve) => {
         code: body.code,
         uuid: body.uuid,
         name: body.name,
+        brand: body.brand,
         category: body.category,
         price: body.price,
         image: body.filename,
         stock: body.stock,
-        notification: body.notification
+        notification: body.notification,
+        promotion: body.promotion,
+        cantidad: body.cantidad
     }).then((product) => {
         resolve({
             status: 200,

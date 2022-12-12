@@ -21,51 +21,51 @@ img {
 }
 
 /**
- * Fonts
+* For
 */
-/**
- * Widths 
- */
-.w-1 {
+.w-10 {
   width: 10%;
 }
 
-.w-2 {
+.w-20 {
   width: 20%;
 }
 
-.w-3 {
+.w-30 {
   width: 30%;
 }
 
-.w-4 {
+.w-40 {
   width: 40%;
 }
 
-.w-5 {
+.w-50 {
   width: 50%;
 }
 
-.w-6 {
+.w-60 {
   width: 60%;
 }
 
-.w-7 {
+.w-70 {
   width: 70%;
 }
 
-.w-8 {
+.w-80 {
   width: 80%;
 }
 
-.w-9 {
+.w-90 {
   width: 90%;
 }
 
-.w-10 {
+.w-100 {
   width: 100%;
 }
 
+/**
+ * Fonts
+*/
 /**
  * Forms
 */
@@ -359,8 +359,45 @@ button {
   z-index: 2;
 }
 
+.img-change span.image-change-span {
+  transition: all 0.3s ease-in-out;
+  opacity: 0;
+  cursor: pointer;
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+.img-change:hover span {
+  opacity: 1;
+  display: block;
+}
+.img-change:hover span::after {
+  content: "Cambiar Imagen";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 400;
+  z-index: 2;
+  width: 100%;
+  text-align: center;
+}
+
 .img-round {
   border-radius: 15px;
+}
+
+.img-circle {
+  border-radius: 50%;
 }
 
 /**
@@ -440,6 +477,16 @@ ul.pagination {
   color: #f0f0f0;
 }
 
+.editclick {
+  position: absolute;
+  z-index: 999;
+  width: 100px;
+}
+
+.hover-right:hover {
+  background-color: #f3f4f6;
+}
+
 /**
 * Slides
 */
@@ -449,7 +496,7 @@ ul.pagination {
 
 #table-container {
   overflow-x: hidden;
-  min-height: 416px;
+  min-height: 660px;
 }
 
 #slides-container {

@@ -1,8 +1,13 @@
 var g_filter = new Map();
+var g_dataMap = new Map();
+var g_data = [];
+
 var myDropzone;
 
+var g_selected = "";
 //* Modals
 const modalImagePreview = new bootstrap.Modal('#imagepreview')
+const editModal = new bootstrap.Modal('#editModal')
 
 function init(){
     formatInputs();
@@ -14,20 +19,66 @@ function init(){
     
     brignData();
 }
+function reloadData(){
+    var table = $('#table').DataTable();
+    table.destroy();
+    $('#tbody').empty();
+    brignData();
+}
 function brignData(){
+    let ajaxTime = new Date().getTime();
     $.ajax({
         url: '/api/product/all',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
+        let totalTime = new Date().getTime() - ajaxTime;
+        let a = Math.ceil(totalTime / 1000);
+        let t = a == 1 ? a + ' seg' : a + ' segs';
+        $("#lastUpdated").html(t);
+        fillStats(result);
+        
         fillProductos(result);
     }, (error) => {
         console.log(error);
     });
 }
+function fillStats(data){
+    $("#totalitems").html(data.length);
+    $("#totalitems-1").html(data.length);
+
+    let mujer = data.filter((item) => item.category == "mujer");
+    mujer  = mujer.length > 99 ? "99+" : mujer.length;
+    $("#totalitems-m").html(mujer);
+
+    let hombre = data.filter((item) => item.category == "hombre");
+    hombre  = hombre.length > 99 ? "99+" : hombre.length;
+    $("#totalitems-h").html(hombre);
+
+}
+function openEditModal(){
+    let prod = g_dataMap.get(g_selected);
+
+    $("#edit-name").val(prod.name);
+    $("#edit-marca").val(prod.brand);
+    $("#edit-precio").val(prod.price);
+    $("#edit-categoria").val(prod.category);
+    $("#edit-stock").val(prod.stock);
+    $("#edit-aviso").val(prod.notification);
+    let cantidad = prod.cantidad.split(" ");
+    $("#edit-cantidad").val(cantidad[0]);
+    $("#edit-q").val(cantidad[1]);
+    $("#edit-promotion").val(prod.promotion);
+    $("#edit-image").attr("src", "/upload/productos/" + prod.image);
+
+
+    editModal.show();
+}
 function fillProductos(data){
     $("#tbody").html("");
+    g_data = data;
     data.forEach((item) => {
+        g_dataMap.set(item.uuid, item);
         addRow(item);
     });
     datatables();
@@ -36,18 +87,50 @@ function fillProductos(data){
 function addRow(e){
     $("#tbody").append(`
         <tr>
-            <td class="align-middle">
+            <td class="">
                 <div class="d-flex justify-content-center align-items-center" role="button">
                     <img src="/upload/productos/${e.image}" width="60px" alt="" class="img-fluid hover-img img-round">
                 </div>
             </td>
-            <td class="align-middle">${e.code}</td>
-            <td class="align-middle">${e.name}</td>
-            <td class="align-middle"><span class="badge b-pill badge-${e.category == "hombre" ? "green":"orange"}">${e.category}</span></td>
-            <td class="align-middle">${e.price}</td>
-            <td class="align-middle">${e.stock}</td>
+            <td class="">${e.code}</td>
+            <td class="">
+                <div class="d-flex flex-column align-items-start justify-content-start">
+                    <span class="fw-bold">${e.name}</span>
+                    <span class="text-muted">${e.brand}</span>
+                </div>
+            </td>
+            <td class="">${e.cantidad}</td>
+            <td class=""><span class="badge b-pill badge-${e.category == "hombre" ? "green":"orange"}">${_.capitalize(e.category)}</span></td>
+            <td class="">
+                <div class="d-flex flex-column align-items-start justify-content-start">
+                    <span class="">₡ ${e.price}</span>
+                    <span class="text-muted">${e.promotion == 0 ? "Sin Descuento":`${e.promotion}%`}</span>
+            </td>
+            <td class="">${e.stock}</td>
+            <td class="">
+                <button class="btn btn-sm btn-white" onclick="openContextMenu('${e.uuid}', this)">
+                    <i class="fa-solid fa-ellipsis"></i>
+                </button>
+            </td>
         </tr>
     `);
+}
+function openContextMenu(uuid, element){
+    let buttonClick = $(element);
+    let position = buttonClick.offset();
+    let top = position.top + buttonClick.height() - 10;
+    let left = position.left - 150;
+
+    $("#editclick").css({
+        top: top,
+        left: left
+    });
+    g_selected = uuid;
+    $("#editclick").show();
+    // onmouseleave
+    $("#editclick").on("mouseleave",() => {
+        $("#editclick").hide();
+    });
 }
 function formatInputs(){
     $("#add-precio").on('keyup', function(evt){
@@ -64,8 +147,12 @@ function agregarProducto(filename){
     let price = $("#add-precio").val();
     let category = $("#add-categoria").val();
     let notification = parseInt($("#add-aviso").val());
+    let brand = $("#add-marca").val();
+    let q = $("#add-q").val();
+    let c = $("#add-cantidad").val();
+    let cantidad =  c +" "+ q;
     let image = filename;
-    if(name === '' || stock === '' || price === '' || category === '' || notification === ''){
+    if(name === '' || stock === '' || price === '' || category === '' || notification === '', brand === '', c === ''){
         alert('Todos los campos son obligatorios');
         return;
     }else{
@@ -78,17 +165,39 @@ function agregarProducto(filename){
                 price: price,
                 category: category,
                 notification: notification,
-                filename: image
+                filename: image,
+                brand: brand,
+                cantidad: cantidad
             }),
             contentType: 'application/json'
         }).then((result) => {
             if(result.status === 200){
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Producto agregado'
+                })
                 clearInputs();
+                moveToList();
+                reloadData();
             }
         }, (error) => {
             console.log(error);
         });
     }
+}
+function moveToList(){
+    $("#lista-productos").trigger('click');
 }
 function clearInputs(){
     $("#add-name").val('');
@@ -96,12 +205,12 @@ function clearInputs(){
     $("#add-precio").val('');
     $("#add-categoria").val('');
     $("#add-aviso").val('');
+    $("#add-marca").val('');
+    $("#add-q").val('');
     myDropzone.removeAllFiles();
 }
 function runTooltips(){
-    // tippy JS
-    // aviso-tooltip
-    tippy('#aviso-tooltip', {
+    tippy('.aviso-tooltip', {
         content: `Cuando el producto llegue a esta cantidad, se mostrará el mensaje de "Producto agotado" en el listado de productos y en la página del producto.<br>Se notificará al administrador por correo electrónico.`,
         allowHTML: true,
         placement: 'top-start',
@@ -132,12 +241,10 @@ function dropzoneLoad(){
         init: function() {
             myDropzone = this;
             this.on("addedfile", function(file) {
-                // this.processFile(file);
                 $('#borrar-imagen-drop').show();
                 $('#borrar-imagen-drop').addClass('d-block');
 
             });
-            // on success
             this.on("success", function(file, response) {
                 agregarProducto(response.data.filename);
             });
@@ -189,7 +296,7 @@ function datatables(){
     $("#table").DataTable({
         responsive: true,
         select: false,
-        keys: true,
+        keys: false,
         dom: 'Bfrtip',
         buttons: [
             {
@@ -204,6 +311,7 @@ function datatables(){
                 className: 'btn btn-white',
             },
         ],
+        order: [[ 2, "asc" ]],
         "scrollY": "600px",
         "scrollCollapse": true,
         "language": {
@@ -243,20 +351,16 @@ function datatables(){
         //     { targets: '_all', orderable: true }
         // ]
     });
+    $('#info').html('');
+    $('#length').html('');
+    $('#pagination').html('');
+
     $('#table_info').appendTo('#info');
     $('#table_length').appendTo('#length');
-    // $('#table_length').css('display', 'none');
-
     $('#table_filter').css('display', 'none');
-
     $('#table_paginate').appendTo('#pagination');
-
     $('.buttons-pdf').appendTo('#button-group');
     $('.buttons-excel').appendTo('#button-group');
-
-
-
-
     $('#barraBuscar').on('keyup', function(){
         let val = $(this).val();
         g_filter.set("search", val);

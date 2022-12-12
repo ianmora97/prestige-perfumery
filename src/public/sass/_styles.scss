@@ -68,20 +68,23 @@ img{
     color: $light !important;
 }
 /**
+* For
+*/
+
+@for $i from 1 through 10 {
+    .w-#{$i}0 {
+      width: (10 * $i) * 1%;
+    }
+}
+
+
+/**
  * Fonts
 */
 $font-family-base: 'Inter', sans-serif;
 $font-size-base: .85rem;
 $font-weight-base: 400;
 
-/**
- * Widths 
- */
-@for $i from 1 through 10 {
-    .w-#{$i} {
-      width: (10 * $i) * 1%;
-    }
-}
 /**
  * Forms
 */
@@ -363,8 +366,48 @@ button{
         }
     }
 }
+// select the before element of the image on hover
+.img-change{
+    span.image-change-span{
+        transition: all .3s ease-in-out;
+        opacity: 0;
+        cursor: pointer;
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        transform: translateX(-50%);
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.4);
+        z-index: 1;
+    }
+    &:hover{
+        span{
+            opacity: 1;
+            display: block;
+        }
+        span::after{
+            content: "Cambiar Imagen";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-size:17px;
+            font-weight: 400;
+            z-index: 2;
+            width: 100%;
+            text-align: center;
+        }
+    }
+}
 .img-round{
     border-radius: 15px;
+}
+.img-circle{
+    border-radius: 50%;
 }
 /**
  * Borders
@@ -436,6 +479,16 @@ $modal-fade-transform: scale(.8);
 }
 
 
+.editclick{
+    position: absolute;
+    z-index: 999;
+    width: 100px;
+}
+.hover-right{
+    &:hover{
+        background-color: $gray;
+    }
+}
 /**
 * Slides
 */
@@ -444,7 +497,7 @@ $modal-fade-transform: scale(.8);
 }
 #table-container{
     overflow-x: hidden;
-    min-height: 416px;
+    min-height: 660px;
 }
 #slides-container{
     overflow-x: hidden;

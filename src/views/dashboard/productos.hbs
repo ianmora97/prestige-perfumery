@@ -40,7 +40,7 @@
         </div>
         <div class="d-flex justify-content-start align-items-center animate__animated animate__fadeIn">
             <p class="text-muted small mt-1 mb-0 me-3"><i class="fa-solid fa-clock"></i> Actualizado hace: <span id="lastUpdated" class="text-primary">2 seg</span></p>
-            <p class="text-muted small mt-1 mb-0"><i class="fa-solid fa-box-open"></i> Productos: <span id="lastUpdated" class="text-primary">83</span></p>
+            <p class="text-muted small mt-1 mb-0"><i class="fa-solid fa-box-open"></i> Productos: <span id="totalitems" class="text-primary">83</span></p>
         </div>
     </div>
 </div>
@@ -63,9 +63,9 @@
         </div>
         <div class="row mx-0 px-3">
             <div class="col px-1 d-flex justify-content-start align-items-center" id="states">
-                <button type="button" data-type="ratio-filter" id="typeFilter-all" class="btn btn-white pill me-2 active">Todos <span class="badge badge-primary d-none d-md-inline-block">10</span></button>
-                <button type="button" data-type="ratio-filter" id="typeFilter-hombre" class="btn btn-white pill me-2">Hombre <span class="badge badge-green d-none d-md-inline-block">10</span></button>
-                <button type="button" data-type="ratio-filter" id="typeFilter-mujer" class="btn btn-white pill">Mujer <span class="badge badge-orange d-none d-md-inline-block">10</span></button>
+                <button type="button" data-type="ratio-filter" id="typeFilter-all" class="btn btn-white pill me-2 active">Todos <span class="badge badge-primary d-none d-md-inline-block" id="totalitems-1">10</span></button>
+                <button type="button" data-type="ratio-filter" id="typeFilter-hombre" class="btn btn-white pill me-2">Hombre <span class="badge badge-green d-none d-md-inline-block" id="totalitems-h">10</span></button>
+                <button type="button" data-type="ratio-filter" id="typeFilter-mujer" class="btn btn-white pill">Mujer <span class="badge badge-orange d-none d-md-inline-block" id="totalitems-m">10</span></button>
             </div>
             <div class="col-md-6 px-1 d-md-flex justify-content-end align-items-center d-none">
                 <small class="text-muted" id="info"></small>
@@ -79,9 +79,11 @@
                         <th scope="col" style="width: 70px;">Imagen</th>
                         <th scope="col">Código</th>
                         <th scope="col">Nombre</th>
+                        <th scope="col">Tamaño</th>
                         <th scope="col">Categoria</th>
                         <th scope="col">Precio</th>
                         <th scope="col">Inventario</th>
+                        <th scope="col" style="width: 55px;">Editar</th>
                     </tr>
                 </thead>
                 <tbody id="tbody"></tbody>
@@ -97,15 +99,21 @@
         <button type="button" class="btn btn-transparent ms-2" id="lista-productos"><i class="fa-solid fa-chevron-left"></i> Volver</button>
         <div class="row mx-0 mt-3">
             <div class="col-md-6 px-5">
-                <div class="mb-4">
-                    <label for="add-name" class="form-label fw-bold">Nombre del producto</label>
-                    <input type="text" class="form-control" id="add-name" placeholder="Nombre del producto...">
-                    <small class="text-muted">Máximo 100 caracteres.</small>
-                </div>
-                <div class="mb-4">
-                    <label for="add-stock" class="form-label fw-bold">Cantidad en inventario</label>
-                    <input type="number" class="form-control" min="1" minlength="1" id="add-stock" placeholder="Cantidad...">
-                    <small class="text-muted">Cantidad de productos en inventario.</small>
+                <div class="row mx-0 g-0">
+                    <div class="col-6">
+                        <div class="mb-4">
+                            <label for="add-name" class="form-label fw-bold">Nombre</label>
+                            <input type="text" class="form-control" id="add-name" placeholder="Nombre del producto...">
+                            <small class="text-muted">Máximo 100 caracteres.</small>
+                        </div>
+                    </div>
+                    <div class="col-6 ps-3">
+                        <div class="mb-4">
+                            <label for="add-marca" class="form-label fw-bold">Marca</label>
+                            <input type="text" class="form-control" id="add-marca" placeholder="Marca del producto...">
+                            <small class="text-muted">Máximo 100 caracteres.</small>
+                        </div>
+                    </div>
                 </div>
                 <div class="row mx-0 g-0">
                     <div class="col-6">
@@ -117,8 +125,9 @@
                     </div>
                     <div class="col-6 ps-3">
                         <div class="mb-4">
-                            <label for="add-precio" class="form-label fw-bold">Categoria</label>
+                            <label for="add-categoria" class="form-label fw-bold">Categoria</label>
                             <select class="form-select" id="add-categoria" aria-label="Tipo de producto" aria-placeholder="Seleccione un tipo">
+                                <option value="unisex">Unisex</option>
                                 <option value="hombre">Hombre</option>
                                 <option value="mujer">Mujer</option>
                             </select>
@@ -126,10 +135,32 @@
                         </div>
                     </div>
                 </div>
+                <div class="row mx-0 g-0">
+                    <div class="col-6">
+                        <div class="mb-4">
+                            <label for="add-stock" class="form-label fw-bold">Inventario</label>
+                            <input type="number" class="form-control" min="1" minlength="1" id="add-stock" placeholder="Cantidad...">
+                            <small class="text-muted">Cantidad de productos en inventario.</small>
+                        </div>
+                    </div>
+                    <div class="col-6 ps-3">
+                        <div class="mb-4">
+                            <label for="add-aviso" class="form-label fw-bold">Aviso <i class="fa-solid fa-circle-info text-gray-light ps-1 aviso-tooltip" role="button"></i></label>
+                            <input type="number" class="form-control" min="1" minlength="1" id="add-aviso" placeholder="1">
+                            <small class="text-muted">Notificación de producto.</small>
+                        </div>
+                    </div>
+                </div>
                 <div class="mb-4">
-                    <label for="add-aviso" class="form-label fw-bold">Aviso <i class="fa-solid fa-circle-info text-gray-light ps-1" role="button" id="aviso-tooltip"></i></label>
-                    <input type="number" class="form-control" min="1" minlength="1" id="add-aviso" placeholder="1">
-                    <small class="text-muted">Notificación de producto.</small>
+                    <label for="add-cantidad" class="form-label fw-bold">Tamaño</label>
+                    <div class="input-group mb-0">
+                        <input type="number" class="form-control" min="1" minlength="1" id="add-cantidad" placeholder="Cantidad...">
+                        <select class="form-select" id="add-q">
+                            <option value="oz">oz</option>
+                            <option value="ml">ml</option>
+                        </select>
+                    </div>
+                    <small class="text-muted">Cantidad en mililitros u onzas.</small>
                 </div>
             </div>
             <div class="col-md-6 px-5">
@@ -160,12 +191,123 @@
     </div>
 </div>
 
+<div id="editclick" style="display: none;" class="border border-gray-100 rounded-2 bg-white py-2 px-1 editclick">
+    <div >
+        <small class="hover-right d-block px-2 pb-1 mb-0 text-muted border-bottom" role="button" onclick="openEditModal()"><i class="fa-solid fa-pencil"></i> Editar</small>
+        <small class="hover-right d-block px-2 pt-1 mb-0 text-danger" role="button"><i class="fa-solid fa-trash-can"></i> Eliminar</small>
+    </div>
+</div>
+
 <div class="modal fade" id="imagepreview" tabindex="-1" aria-labelledby="imagepreviewLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content modal-transparent">
             <button type="button" class="btn-close btn-close-modal-bottom" data-bs-dismiss="modal" aria-label="Close"></button>
             <div class="modal-body">
                 <img src="/upload/productos/212.jpg" id="image-preview-src" width="100%" class="img-round">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header text-bg-dark">
+                <h5 class="modal-title" id="editModalLabel"><i class="fa-solid fa-box-open text-secondary"></i> Editar Producto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mx-0">
+                    <div class="col-3">
+                        <div class="w-100 mb-2">
+                            <div class="img-change position-relative w-100 mx-auto">
+                                <img src="" id="edit-image" class="img-circle w-100 ">
+                                <span class="image-change-span"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <div class="row mx-0 g-0">
+                            <div class="col-6">
+                                <div class="mb-2">
+                                    <label for="edit-name" class="form-label fw-bold">Nombre</label>
+                                    <input type="text" class="form-control" id="edit-name" placeholder="Nombre del producto...">
+                                    <small class="text-muted">Máximo 100 caracteres.</small>
+                                </div>
+                            </div>
+                            <div class="col-6 ps-3">
+                                <div class="mb-2">
+                                    <label for="edit-marca" class="form-label fw-bold">Marca</label>
+                                    <input type="text" class="form-control" id="edit-marca" placeholder="Marca del producto...">
+                                    <small class="text-muted">Máximo 100 caracteres.</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mx-0 g-0">
+                            <div class="col-6">
+                                <div class="mb-2">
+                                    <label for="edit-precio" class="form-label fw-bold">Precio</label>
+                                    <input type="number" class="form-control" min="1" minlength="1" id="edit-precio" placeholder="Precio del producto...">
+                                    <small class="text-muted">Precio del producto.</small>
+                                </div>
+                            </div>
+                            <div class="col-6 ps-3">
+                                <div class="mb-2">
+                                    <label for="edit-categoria" class="form-label fw-bold">Categoria</label>
+                                    <select class="form-select" id="edit-categoria" aria-label="Tipo de producto" aria-placeholder="Seleccione un tipo">
+                                        <option value="unisex">Unisex</option>
+                                        <option value="hombre">Hombre</option>
+                                        <option value="mujer">Mujer</option>
+                                    </select>
+                                    <small class="text-muted">Para hombre o mujer.</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mx-0 g-0">
+                            <div class="col-6">
+                                <div class="mb-2">
+                                    <label for="edit-cantidad" class="form-label fw-bold">Tamaño</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" min="1" minlength="1" id="edit-cantidad" placeholder="Cantidad...">
+                                        <select class="form-select" id="add-q">
+                                            <option value="oz">oz</option>
+                                            <option value="ml">ml</option>
+                                        </select>
+                                    </div>
+                                    <small class="text-muted">Cantidad en mililitros u onzas.</small>
+                                </div>
+                                
+                            </div>
+                            <div class="col-6 ps-3">
+                                <div class="mb-2">
+                                    <label for="edit-aviso" class="form-label fw-bold">Aviso <i class="fa-solid fa-circle-info text-gray-light ps-1 aviso-tooltip" role="button"></i></label>
+                                    <input type="number" class="form-control" min="1" minlength="1" id="edit-aviso" placeholder="1">
+                                    <small class="text-muted">Notificación de producto.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mx-0 g-0">
+                    <div class="col-6">
+                        <div class="mb-2">
+                            <label for="edit-stock" class="form-label fw-bold">Inventario</label>
+                            <input type="number" class="form-control" min="1" minlength="1" id="edit-stock" placeholder="Cantidad...">
+                            <small class="text-muted">Cantidad de productos en inventario.</small>
+                        </div>
+                    </div>
+                    <div class="col-6 ps-3">
+                        <div class="mb-2">
+                            <label for="edit-promotion" class="form-label fw-bold">Descuento</label>
+                            <input type="number" class="form-control" min="0" minlength="0" max="100" maxlength="100" id="edit-promotion" placeholder="Descuento por aplicar...">
+                            <small class="text-muted">Descuento aplicado en el precio.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="edit-product">Guardar</button>
             </div>
         </div>
     </div>
