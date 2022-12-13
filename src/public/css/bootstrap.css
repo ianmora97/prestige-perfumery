@@ -189,6 +189,9 @@ button {
 .btn-white span.badge.badge-blue {
   background-color: #879ce1 !important;
 }
+.btn-white span.badge.badge-red {
+  background-color: #f57979 !important;
+}
 
 .b-pill {
   font-size: 14px !important;
@@ -276,6 +279,14 @@ button {
 /**
  * Sidebar
 */
+#slides-container {
+  overflow-x: hidden;
+  width: calc(200vw - 200px);
+  display: flex;
+  justify-content: space-between;
+  min-height: 860px;
+}
+
 #sidebar {
   min-width: 100px;
   position: sticky;
@@ -299,6 +310,27 @@ button {
   height: calc(100vh - 162px);
 }
 
+@media (max-width: 650px) {
+  #sidebar {
+    display: none;
+    margin-left: -100px;
+  }
+  #page-content-wrapper {
+    min-width: 100vw;
+    height: 100vh;
+  }
+  #slides-container {
+    width: 200vw;
+  }
+  .slide-w-100 {
+    width: calc(100vw - 2rem) !important;
+  }
+  .slide-add.active {
+    transform: translateX(-100vw) !important;
+    height: 100vh !important;
+    overflow-y: auto;
+  }
+}
 #footer {
   height: 40px;
   position: fixed;
@@ -499,14 +531,6 @@ ul.pagination {
   min-height: 660px;
 }
 
-#slides-container {
-  overflow-x: hidden;
-  width: calc(200vw - 200px);
-  display: flex;
-  justify-content: space-between;
-  min-height: 860px;
-}
-
 .slides-custom {
   display: flex;
   overflow-x: auto;
@@ -545,6 +569,17 @@ ul.pagination {
   width: 200px;
   height: 200px;
   border: #374151 2px dashed;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.imageDrop2 {
+  width: 200px;
+  height: 200px;
+  border: none;
   border-radius: 15px;
   display: flex;
   justify-content: center;
@@ -626,7 +661,7 @@ table.dataTable thead > tr > td.sorting_desc_disabled:after {
 }
 
 table.dataTable.table-striped > tbody > tr.odd > * {
-  background-color: #f5f5f5 !important;
+  background-color: #f5f5f5;
   box-shadow: none !important;
 }
 
@@ -636,6 +671,18 @@ table.dataTable.table-striped > tbody > tr.odd > * {
 
 table.dataTable tbody th.focus, table.dataTable tbody td.focus {
   outline: 2px solid #4f46e5 !important;
+}
+
+table.dataTable.table-striped > tbody > tr.odd.selected > * {
+  box-shadow: inset 0 0 0 9999px rgba(135, 156, 225, 0.44) !important;
+}
+
+table.dataTable > tbody > tr.selected > * {
+  box-shadow: inset 0 0 0 9999px rgba(135, 156, 225, 0.44) !important;
+}
+
+table.dataTable > tbody > tr.child {
+  background-color: #f0f3ff !important;
 }
 
 /*!
@@ -649,7 +696,7 @@ table.dataTable tbody th.focus, table.dataTable tbody td.focus {
   --bs-indigo: #6610f2;
   --bs-purple: #6f42c1;
   --bs-pink: #ffb8d6;
-  --bs-red: #dc3545;
+  --bs-red: #f57979;
   --bs-orange: #f6ad55;
   --bs-yellow: #ffc107;
   --bs-green: #77cdb0;

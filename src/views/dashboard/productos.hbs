@@ -5,8 +5,6 @@
     .dropzone, #dropArea{
         background-color: transparent;
         border: none;
-        min-width: none;
-        min-height: none;
         height: 100%;
         width: 100%;
         display: flex;
@@ -16,14 +14,41 @@
     .dropzone .dz-preview.dz-image-preview{
         background-color: transparent;
     }
-    .dropzone .dz-preview .dz-image{
+    #dropArea.dropzone .dz-preview .dz-image{
         width: 175px;
         height: 175px;
     }
     .dz-progress{
         display: none;
     }
+    #dropArea2{
+        background-color: transparent;
+        border: none;
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    #dropArea2.dropzone .dz-preview.dz-image-preview{
+        background-color: transparent;
+        width: 100%;
+        margin:0;
+    }
+    #dropArea2.dropzone .dz-preview .dz-image{
+        width: 100%;
+        height: 100%;
+    }
+    #dropArea2.dropzone .dz-preview .dz-image img{
+        width: 100%;
+        height: 100%;
+    }
 </style>
+<div id="alert" style="position: absolute; top:10px; left:4%; z-index:9999999;" class="w-90 d-block">
+
+</div>
 <div class="bg-white shadow-custom p-3 animate__animated animate__fadeIn animate__slower">
     <div>
         <nav class="animate__animated animate__fadeIn" style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
@@ -64,8 +89,9 @@
         <div class="row mx-0 px-3">
             <div class="col px-1 d-flex justify-content-start align-items-center" id="states">
                 <button type="button" data-type="ratio-filter" id="typeFilter-all" class="btn btn-white pill me-2 active">Todos <span class="badge badge-primary d-none d-md-inline-block" id="totalitems-1">10</span></button>
-                <button type="button" data-type="ratio-filter" id="typeFilter-hombre" class="btn btn-white pill me-2">Hombre <span class="badge badge-green d-none d-md-inline-block" id="totalitems-h">10</span></button>
-                <button type="button" data-type="ratio-filter" id="typeFilter-mujer" class="btn btn-white pill">Mujer <span class="badge badge-orange d-none d-md-inline-block" id="totalitems-m">10</span></button>
+                <button type="button" data-type="ratio-filter" id="typeFilter-hombre" class="btn btn-white pill me-2">Hombre <span class="badge badge-primary d-none d-md-inline-block" id="totalitems-h">10</span></button>
+                <button type="button" data-type="ratio-filter" id="typeFilter-mujer" class="btn btn-white pill me-2">Mujer <span class="badge badge-primary d-none d-md-inline-block" id="totalitems-m">10</span></button>
+                <button type="button" data-type="ratio-filter" id="typeFilter-unisex" class="btn btn-white pill">Unisex <span class="badge badge-primary d-none d-md-inline-block" id="totalitems-u">10</span></button>
             </div>
             <div class="col-md-6 px-1 d-md-flex justify-content-end align-items-center d-none">
                 <small class="text-muted" id="info"></small>
@@ -76,14 +102,14 @@
             <table class="table table-custom table-borderless table-striped table-responsive " id="table">
                 <thead>
                     <tr>
-                        <th scope="col" style="width: 70px;">Imagen</th>
+                        <th scope="col" style="width: 70px;" data-priority="1">Imagen</th>
                         <th scope="col">Código</th>
-                        <th scope="col">Nombre</th>
+                        <th scope="col" data-priority="3">Nombre</th>
                         <th scope="col">Tamaño</th>
                         <th scope="col">Categoria</th>
+                        <th scope="col" data-priority="4">Inventario</th>
                         <th scope="col">Precio</th>
-                        <th scope="col">Inventario</th>
-                        <th scope="col" style="width: 55px;">Editar</th>
+                        <th scope="col" style="width: 55px;" data-priority="2">Editar</th>
                     </tr>
                 </thead>
                 <tbody id="tbody"></tbody>
@@ -98,16 +124,16 @@
     <div class="bg-white rounded-15 shadow-custom py-3 mx-3 mt-4 slide-w-100 slide-add" id="product-add" data-slide="add">
         <button type="button" class="btn btn-transparent ms-2" id="lista-productos"><i class="fa-solid fa-chevron-left"></i> Volver</button>
         <div class="row mx-0 mt-3">
-            <div class="col-md-6 px-5">
+            <div class="col-md-6 px-3 px-md-4 order-2 order-md-1">
                 <div class="row mx-0 g-0">
-                    <div class="col-6">
+                    <div class="col-md-6">
                         <div class="mb-4">
                             <label for="add-name" class="form-label fw-bold">Nombre</label>
                             <input type="text" class="form-control" id="add-name" placeholder="Nombre del producto...">
                             <small class="text-muted">Máximo 100 caracteres.</small>
                         </div>
                     </div>
-                    <div class="col-6 ps-3">
+                    <div class="col-md-6 ps-0 ps-md-3">
                         <div class="mb-4">
                             <label for="add-marca" class="form-label fw-bold">Marca</label>
                             <input type="text" class="form-control" id="add-marca" placeholder="Marca del producto...">
@@ -116,34 +142,37 @@
                     </div>
                 </div>
                 <div class="row mx-0 g-0">
-                    <div class="col-6">
+                    <div class="col-md-4">
                         <div class="mb-4">
-                            <label for="add-precio" class="form-label fw-bold">Precio</label>
-                            <input type="number" class="form-control" min="1" minlength="1" id="add-precio" placeholder="Precio del producto...">
+                            <label for="add-precio1" class="form-label fw-bold">Precio A <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-1" role="button"></i></label>
+                            <input type="number" class="form-control" min="1" minlength="1" id="add-precio1" placeholder="Precio del producto...">
                             <small class="text-muted">Precio del producto.</small>
                         </div>
                     </div>
-                    <div class="col-6 ps-3">
+                    <div class="col-md-4 ps-0 ps-md-2">
                         <div class="mb-4">
-                            <label for="add-categoria" class="form-label fw-bold">Categoria</label>
-                            <select class="form-select" id="add-categoria" aria-label="Tipo de producto" aria-placeholder="Seleccione un tipo">
-                                <option value="unisex">Unisex</option>
-                                <option value="hombre">Hombre</option>
-                                <option value="mujer">Mujer</option>
-                            </select>
-                            <small class="text-muted">Para hombre o mujer.</small>
+                            <label for="add-precio2" class="form-label fw-bold">Precio B <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-2" role="button"></i></label>
+                            <input type="number" class="form-control" min="1" minlength="1" id="add-precio2" placeholder="Precio del producto...">
+                            <small class="text-muted">Precio del producto.</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4 ps-0 ps-md-2">
+                        <div class="mb-4">
+                            <label for="add-precio3" class="form-label fw-bold">Precio C <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-3" role="button"></i></label>
+                            <input type="number" class="form-control" min="1" minlength="1" id="add-precio3" placeholder="Precio del producto...">
+                            <small class="text-muted">Precio del producto.</small>
                         </div>
                     </div>
                 </div>
                 <div class="row mx-0 g-0">
-                    <div class="col-6">
+                    <div class="col-md-6">
                         <div class="mb-4">
                             <label for="add-stock" class="form-label fw-bold">Inventario</label>
                             <input type="number" class="form-control" min="1" minlength="1" id="add-stock" placeholder="Cantidad...">
                             <small class="text-muted">Cantidad de productos en inventario.</small>
                         </div>
                     </div>
-                    <div class="col-6 ps-3">
+                    <div class="col-md-6 ps-0 ps-md-3">
                         <div class="mb-4">
                             <label for="add-aviso" class="form-label fw-bold">Aviso <i class="fa-solid fa-circle-info text-gray-light ps-1 aviso-tooltip" role="button"></i></label>
                             <input type="number" class="form-control" min="1" minlength="1" id="add-aviso" placeholder="1">
@@ -163,7 +192,7 @@
                     <small class="text-muted">Cantidad en mililitros u onzas.</small>
                 </div>
             </div>
-            <div class="col-md-6 px-5">
+            <div class="col-md-6 px-3 px-md-4 order-1 order-md-2">
                 <div class="">
                     <label class="form-label fw-bold">Imagen del producto</label>
                     <div class="imageDrop mt-2">
@@ -182,7 +211,15 @@
                         </button>
                     </div>
                 </div>
-                
+                <div class="mt-4">
+                    <label for="add-categoria" class="form-label fw-bold">Categoria</label>
+                    <select class="form-select" id="add-categoria" aria-label="Tipo de producto" aria-placeholder="Seleccione un tipo">
+                        <option value="unisex">Unisex</option>
+                        <option value="hombre">Hombre</option>
+                        <option value="mujer">Mujer</option>
+                    </select>
+                    <small class="text-muted">Para hombre o mujer.</small>
+                </div>
             </div>
         </div>
         <div class="d-flex justify-content-start px-5">
@@ -212,17 +249,33 @@
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
-            <div class="modal-header text-bg-dark">
-                <h5 class="modal-title" id="editModalLabel"><i class="fa-solid fa-box-open text-secondary"></i> Editar Producto</h5>
+            <div class="modal-header text-bg-dark pb-2">
+                <p class="modal-title" id="editModalLabel">Editar</p>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row mx-0">
                     <div class="col-3">
-                        <div class="w-100 mb-2">
-                            <div class="img-change position-relative w-100 mx-auto">
+                        <div class="w-100 mb-2 position-relative">
+                            <div class="w-100 mx-auto">
                                 <img src="" id="edit-image" class="img-circle w-100 ">
-                                <span class="image-change-span"></span>
+                            </div>
+                            <div class="position-absolute w-100" style="top: 50%; transform: translateY(-50%);">
+                                <div class="w-100 mx-auto">
+                                    <div id="dropArea2" class="dropzone mx-auto">
+                                        <div class="dz-message">
+                                            <i class="fa-solid fa-image fa-2x text-white"></i>
+                                            <br>
+                                            <span class="text-white">Arrastra una imagen o haz click para subir</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="width: 200px; top:50%; left:50%; transform:translate(-50%, -50%)" class="mx-auto position-absolute ">
+                                <button type="button" class="btn btn-danger btn-sm mt-2 mx-auto"
+                                id="borrar-imagen-drop-actualizar" style="display: none;">
+                                    <i class="fa-solid fa-xmark"></i> Borrar Imagen
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -244,24 +297,36 @@
                             </div>
                         </div>
                         <div class="row mx-0 g-0">
-                            <div class="col-6">
+                            <div class="col-4">
                                 <div class="mb-2">
-                                    <label for="edit-precio" class="form-label fw-bold">Precio</label>
-                                    <input type="number" class="form-control" min="1" minlength="1" id="edit-precio" placeholder="Precio del producto...">
+                                    <label for="edit-precio1" class="form-label fw-bold">Precio A <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-1" role="button"></i></label>
+                                    <input type="number" class="form-control" min="1" minlength="1" id="edit-precio1" placeholder="Precio del producto...">
                                     <small class="text-muted">Precio del producto.</small>
                                 </div>
                             </div>
-                            <div class="col-6 ps-3">
+                            <div class="col-4 ps-2">
                                 <div class="mb-2">
-                                    <label for="edit-categoria" class="form-label fw-bold">Categoria</label>
-                                    <select class="form-select" id="edit-categoria" aria-label="Tipo de producto" aria-placeholder="Seleccione un tipo">
-                                        <option value="unisex">Unisex</option>
-                                        <option value="hombre">Hombre</option>
-                                        <option value="mujer">Mujer</option>
-                                    </select>
-                                    <small class="text-muted">Para hombre o mujer.</small>
+                                    <label for="edit-precio2" class="form-label fw-bold">Precio B <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-2" role="button"></i></label>
+                                    <input type="number" class="form-control" min="1" minlength="1" id="edit-precio2" placeholder="Precio del producto...">
+                                    <small class="text-muted">Precio del producto.</small>
                                 </div>
                             </div>
+                            <div class="col-4 ps-2">
+                                <div class="mb-2">
+                                    <label for="edit-precio3" class="form-label fw-bold">Precio C <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-3" role="button"></i></label>
+                                    <input type="number" class="form-control" min="1" minlength="1" id="edit-precio3" placeholder="Precio del producto...">
+                                    <small class="text-muted">Precio del producto.</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label for="edit-categoria" class="form-label fw-bold">Categoria</label>
+                            <select class="form-select" id="edit-categoria" aria-label="Tipo de producto" aria-placeholder="Seleccione un tipo">
+                                <option value="unisex">Unisex</option>
+                                <option value="hombre">Hombre</option>
+                                <option value="mujer">Mujer</option>
+                            </select>
+                            <small class="text-muted">Para hombre o mujer.</small>
                         </div>
                         <div class="row mx-0 g-0">
                             <div class="col-6">
@@ -306,8 +371,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-white" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" id="edit-product">Guardar</button>
+                <button type="button" class="btn btn-white btn-lg" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> Cerrar</button>
+                <button type="button" class="btn btn-primary" id="edit-product" id="btn-actualizar"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
             </div>
         </div>
     </div>

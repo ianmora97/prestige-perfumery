@@ -96,4 +96,32 @@ exports.create = async (body, resolve) => {
             data: error
         });
     });
+};
+
+exports.update = async (body, resolve) => {
+    Product.update({
+        name: body.name,
+        brand: body.brand,
+        category: body.category,
+        price: body.price,
+        image: body.filename,
+        stock: body.stock,
+        notification: body.notification,
+        promotion: body.promotion,
+        cantidad: body.cantidad
+    }, {
+        where: {
+            id: body.id
+        }
+    }).then((product) => {
+        resolve({
+            status: 200,
+            data: product
+        });
+    }).catch((error) => {
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
 }

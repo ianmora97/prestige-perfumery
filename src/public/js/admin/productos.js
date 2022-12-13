@@ -2,7 +2,8 @@ var g_filter = new Map();
 var g_dataMap = new Map();
 var g_data = [];
 
-var myDropzone;
+var dropzoneAgregar;
+var dropzoneActualizar;
 
 var g_selected = "";
 //* Modals
@@ -55,13 +56,22 @@ function fillStats(data){
     hombre  = hombre.length > 99 ? "99+" : hombre.length;
     $("#totalitems-h").html(hombre);
 
+    let unisex = data.filter((item) => item.category == "unisex");
+    unisex  = unisex.length > 99 ? "99+" : unisex.length;
+    $("#totalitems-u").html(unisex);
+
 }
 function openEditModal(){
     let prod = g_dataMap.get(g_selected);
 
+    let {price1, price2, price3} = JSON.parse(prod.price);
+
     $("#edit-name").val(prod.name);
     $("#edit-marca").val(prod.brand);
-    $("#edit-precio").val(prod.price);
+    $("#edit-precio1").val(price1);
+    $("#edit-precio2").val(price2);
+    $("#edit-precio3").val(price3);
+
     $("#edit-categoria").val(prod.category);
     $("#edit-stock").val(prod.stock);
     $("#edit-aviso").val(prod.notification);
@@ -70,6 +80,11 @@ function openEditModal(){
     $("#edit-q").val(cantidad[1]);
     $("#edit-promotion").val(prod.promotion);
     $("#edit-image").attr("src", "/upload/productos/" + prod.image);
+
+    $("#editModalLabel").html(`
+        <h5 class="mb-0"><i class="fa-solid fa-box-open text-secondary"></i> Editar Producto<br></h5>
+        <small class="text-muted">${prod.uuid}</small>
+    `);
 
 
     editModal.show();
@@ -85,6 +100,14 @@ function fillProductos(data){
     zoomImages();
 }
 function addRow(e){
+    let {price1, price2, price3} = JSON.parse(e.price);
+    let color = "success";
+    if(e.stock <= e.notification + 5){
+        color = "warning";
+    }if(e.stock <= e.notification){
+        color = "danger";
+    }
+    console.log(e.stock, e.notification)
     $("#tbody").append(`
         <tr>
             <td class="">
@@ -95,18 +118,26 @@ function addRow(e){
             <td class="">${e.code}</td>
             <td class="">
                 <div class="d-flex flex-column align-items-start justify-content-start">
-                    <span class="fw-bold">${e.name}</span>
+                    <span class="fw-bold lead">${e.name}</span>
                     <span class="text-muted">${e.brand}</span>
                 </div>
             </td>
             <td class="">${e.cantidad}</td>
-            <td class=""><span class="badge b-pill badge-${e.category == "hombre" ? "green":"orange"}">${_.capitalize(e.category)}</span></td>
+            <td class=""><span class="badge b-pill badge-blue">${_.capitalize(e.category)}</span></td>
             <td class="">
-                <div class="d-flex flex-column align-items-start justify-content-start">
-                    <span class="">₡ ${e.price}</span>
-                    <span class="text-muted">${e.promotion == 0 ? "Sin Descuento":`${e.promotion}%`}</span>
+                ${e.stock} <i class="fa-solid fa-circle fa-2xs text-${color}"></i>
             </td>
-            <td class="">${e.stock}</td>
+            <td class="">
+                <div class="d-flex flex-column align-items-start justify-content-center">
+                    <span class=""> 
+                        <span class="badge b-pill badge-green">A ₡ ${price1}</span>
+                        <span class="badge b-pill badge-orange">B ₡ ${price2}</span>
+                        <span class="badge b-pill badge-blue">C ₡ ${price3}</span>
+                    </span>
+                    <small class="text-muted">${e.promotion == 0 ? "Sin Descuento":`${e.promotion}%`}</small>
+                </div>
+            </td>
+            
             <td class="">
                 <button class="btn btn-sm btn-white" onclick="openContextMenu('${e.uuid}', this)">
                     <i class="fa-solid fa-ellipsis"></i>
@@ -116,6 +147,9 @@ function addRow(e){
     `);
 }
 function openContextMenu(uuid, element){
+    //select the tr element
+    let tr = $(element).closest("tr");
+    tr.addClass("selected");
     let buttonClick = $(element);
     let position = buttonClick.offset();
     let top = position.top + buttonClick.height() - 10;
@@ -133,18 +167,43 @@ function openContextMenu(uuid, element){
     });
 }
 function formatInputs(){
-    $("#add-precio").on('keyup', function(evt){
+    $("#add-precio1").on('keyup', function(evt){
         let val = $(this).val();
         let n = val.replace(/\./g, '');
         n = parseInt(n);
         n = n.toLocaleString('es-ES');
         $(this).val(n);
     });
+    $("#add-precio2").on('keyup', function(evt){
+        let val = $(this).val();
+        let n = val.replace(/\./g, '');
+        n = parseInt(n);
+        n = n.toLocaleString('es-ES');
+        $(this).val(n);
+    });
+    $("#add-precio3").on('keyup', function(evt){
+        let val = $(this).val();
+        let n = val.replace(/\./g, '');
+        n = parseInt(n);
+        n = n.toLocaleString('es-ES');
+        $(this).val(n);
+    });
+
 }
 function agregarProducto(filename){
     let name = $("#add-name").val();
     let stock = parseInt($("#add-stock").val());
-    let price = $("#add-precio").val();
+    let price1 = $("#add-precio1").val();
+    let price2 = $("#add-precio2").val();
+    let price3 = $("#add-precio3").val();
+
+    let price = JSON.stringify({
+        price1: price1,
+        price2: price2,
+        price3: price3
+    });
+    console.log(price);
+
     let category = $("#add-categoria").val();
     let notification = parseInt($("#add-aviso").val());
     let brand = $("#add-marca").val();
@@ -152,49 +211,81 @@ function agregarProducto(filename){
     let c = $("#add-cantidad").val();
     let cantidad =  c +" "+ q;
     let image = filename;
-    if(name === '' || stock === '' || price === '' || category === '' || notification === '', brand === '', c === ''){
-        alert('Todos los campos son obligatorios');
-        return;
-    }else{
-        $.ajax({
-            url: '/api/product/add',
-            method: 'POST',
-            data: JSON.stringify({
-                name: name,
-                stock: stock,
-                price: price,
-                category: category,
-                notification: notification,
-                filename: image,
-                brand: brand,
-                cantidad: cantidad
-            }),
-            contentType: 'application/json'
-        }).then((result) => {
-            if(result.status === 200){
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                      toast.addEventListener('mouseenter', Swal.stopTimer)
-                      toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                });
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Producto agregado'
-                })
-                clearInputs();
-                moveToList();
-                reloadData();
-            }
-        }, (error) => {
-            console.log(error);
-        });
+    $.ajax({
+        url: '/api/product/add',
+        method: 'POST',
+        data: JSON.stringify({
+            name: name,
+            stock: stock,
+            price: price,
+            category: category,
+            notification: notification,
+            filename: image,
+            brand: brand,
+            cantidad: cantidad
+        }),
+        contentType: 'application/json'
+    }).then((result) => {
+        if(result.status === 200){
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener('mouseenter', Swal.stopTimer)
+                  toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+            Toast.fire({
+                icon: 'success',
+                title: 'Producto agregado'
+            })
+            clearInputs();
+            moveToList();
+            reloadData();
+        }
+    }, (error) => {
+        console.log(error);
+    });
+}
+function verifyInputs(){
+    let name = $("#add-name").val();
+    let stock = parseInt($("#add-stock").val());
+    let price1 = $("#add-precio1").val();
+    let price2 = $("#add-precio2").val();
+    let price3 = $("#add-precio3").val();
+    let price = JSON.stringify({
+        price1: price1,
+        price2: price2,
+        price3: price3
+    });
+    let category = $("#add-categoria").val();
+    let notification = parseInt($("#add-aviso").val());
+    let brand = $("#add-marca").val();
+    let c = $("#add-cantidad").val();
+    if(name === '' || stock === '' || price1 === '' || price2 === '' || price3 === '' || category === '' || notification === '', brand === '', c === ''){
+        createAlert('danger', 'Error', 'Todos los campos son obligatorios.');
+        return false;
     }
+    return true;
+}
+function createAlert(type, title, text){
+    $("#alert").html(`
+        <div class="alert alert-${type} alert-dismissible fade show animate__animated animate__fadeIn" role="alert">
+            <i class="fa-solid fa-triangle-exclamation"></i> <b>${title}</b> ${text}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `);
+    setTimeout(() => {
+        $("#alert .alert").removeClass("animate__fadeIn");
+    },1000);
+    setTimeout(() => {
+        animateCSS('#alert', 'fadeOut', () => {
+            $("#alert").html('');
+        });
+    }, 5000);
 }
 function moveToList(){
     $("#lista-productos").trigger('click');
@@ -207,7 +298,7 @@ function clearInputs(){
     $("#add-aviso").val('');
     $("#add-marca").val('');
     $("#add-q").val('');
-    myDropzone.removeAllFiles();
+    dropzoneAgregar.removeAllFiles();
 }
 function runTooltips(){
     tippy('.aviso-tooltip', {
@@ -217,7 +308,30 @@ function runTooltips(){
         theme: 'light-custom',
         interactive: true,
         animation: 'shift-away-extreme',
-        trigger: 'click',
+    });
+    tippy('.cat-1', {
+        content: `Precio de venta para clientes normales.`,
+        allowHTML: true,
+        placement: 'top-start',
+        theme: 'light-custom',
+        interactive: true,
+        animation: 'shift-away-extreme',
+    });
+    tippy('.cat-2', {
+        content: `Precio de venta para clientes regulares.`,
+        allowHTML: true,
+        placement: 'top-start',
+        theme: 'light-custom',
+        interactive: true,
+        animation: 'shift-away-extreme',
+    });
+    tippy('.cat-3', {
+        content: `Precio de venta para clientes VIP.`,
+        allowHTML: true,
+        placement: 'top-start',
+        theme: 'light-custom',
+        interactive: true,
+        animation: 'shift-away-extreme',
     });
 }
 function zoomImages(){
@@ -229,7 +343,7 @@ function zoomImages(){
     });
 }
 function dropzoneLoad(){
-    myDropzone = new Dropzone("#dropArea", {
+    dropzoneAgregar = new Dropzone("#dropArea", {
         autoProcessQueue: false,
         parallelUploads: 1,
         url: "/api/product/addimage",
@@ -239,7 +353,7 @@ function dropzoneLoad(){
         thumbnailWidth: 180,
         thumbnailHeight: 180,
         init: function() {
-            myDropzone = this;
+            dropzoneAgregar = this;
             this.on("addedfile", function(file) {
                 $('#borrar-imagen-drop').show();
                 $('#borrar-imagen-drop').addClass('d-block');
@@ -251,12 +365,51 @@ function dropzoneLoad(){
         }
     });
     $('#btn-agregar').on('click',function(){
-        myDropzone.processQueue();
+        if(verifyInputs()){
+            dropzoneAgregar.processQueue();
+        }
     });
     $('#borrar-imagen-drop').on('click',function(){
-        myDropzone.removeAllFiles();
+        dropzoneAgregar.removeAllFiles();
         $('#borrar-imagen-drop').hide();
         $('#borrar-imagen-drop').removeClass('d-block');
+    });
+    // TODO: Dropzone para actualizar la imagen del producto
+    dropzoneActualizar = new Dropzone("#dropArea2", {
+        autoProcessQueue: false,
+        parallelUploads: 1,
+        url: "/api/product/replaceImage",
+        method: "post",
+        maxFiles: 1,
+        maxFilesize: 6,
+        thumbnailMethod: 'crop',
+        acceptedFiles: 'image/jpeg, image/png, image/jpg',
+        thumbnailWidth: 250,
+        thumbnailHeight: 250,
+        // resize
+        resizeWidth: 250,
+        resizeHeight: 250,
+        resizeMethod: 'crop',
+        resizeQuality: 1,
+
+        init: function() {
+            dropzoneActualizar = this;
+            this.on("addedfile", function(file) {
+                $('#borrar-imagen-drop-actualizar').show();
+                $('#borrar-imagen-drop-actualizar').addClass('d-block');
+            });
+            this.on("success", function(file, response) {
+                actualizarProducto(response.data.filename);
+            });
+        }
+    });
+    $('#btn-actualizar').on('click',function(){
+        dropzoneActualizar.processQueue();
+    });
+    $('#borrar-imagen-drop-actualizar').on('click',function(){
+        dropzoneActualizar.removeAllFiles();
+        $('#borrar-imagen-drop-actualizar').hide();
+        $('#borrar-imagen-drop-actualizar').removeClass('d-block');
     });
 }
 function animateSlides(){
@@ -295,7 +448,7 @@ function checkRatioFilter(){
 function datatables(){
     $("#table").DataTable({
         responsive: true,
-        select: false,
+        select: true,
         keys: false,
         dom: 'Bfrtip',
         buttons: [
@@ -317,7 +470,14 @@ function datatables(){
         "language": {
             "decimal":        "",
             "emptyTable":     "No hay productos",
-            "info":           "Mostrando _END_ de _TOTAL_ productos",
+            "info":           "Mostrando _END_ de _TOTAL_ productos ",
+            select: {
+                rows: {
+                    _: "",
+                    0: "",
+                    1: ""
+                }
+            },
             "infoEmpty":      "Mostrando 0 hasta 0 de 0 productos",
             "infoFiltered":   "(Filtrado de _MAX_ productos totales)",
             "infoPostFix":    "",
@@ -346,10 +506,25 @@ function datatables(){
             [ 10, 50, 100, -1 ],
             [ '10', '50', '100', 'Todos' ]
         ],
-        // columnDefs: [
-        //     { targets: [0, 6], orderable: false,},
-        //     { targets: '_all', orderable: true }
-        // ]
+        responsive: {
+            details: {
+                type: 'column',
+                target: 'tr',
+                renderer: function ( api, rowIdx, columns ) {
+                    var data = $.map( columns, function ( col, i ) {
+                        return col.hidden ?`
+                                <tr data-dt-row="${col.rowIndex}" data-dt-column="${col.columnIndex}" style="min-width:200px;">
+                                    <td class="fw-bold">${col.title}:</td>
+                                    <td>${col.data}</td>
+                                </tr>
+                                `:'';
+                    } ).join('');
+                    return data ?
+                        $('<table/>').append( data ) :
+                        false;
+                }
+            },
+        }
     });
     $('#info').html('');
     $('#length').html('');

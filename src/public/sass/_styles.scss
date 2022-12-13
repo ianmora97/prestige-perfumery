@@ -18,6 +18,7 @@ $pink: #ffb8d6;
 $green: #77cdb0;
 $orange: #f6ad55;
 $blue: #879ce1;
+$red: #f57979;
 
 $theme-colors: (
     "primary": $primary,
@@ -205,6 +206,9 @@ button{
         &.badge-blue{
             background-color: $blue !important;
         }
+        &.badge-red{
+            background-color: $red !important;
+        }
     }
 }
 .b-pill{
@@ -290,6 +294,13 @@ button{
 /**
  * Sidebar
 */
+#slides-container{
+    overflow-x: hidden;
+    width: calc(200vw - 200px);
+    display: flex;
+    justify-content: space-between;
+    min-height: 860px;
+}
 #sidebar{
     min-width: 100px;
     position: sticky;
@@ -309,6 +320,28 @@ button{
     min-width: calc(100vw - 100px);
     position: relative;
     height: calc(100vh - 162px);
+}
+// hide sidebar on mobile
+@media (max-width: 650px) {
+    #sidebar{
+        display: none;
+        margin-left: -100px;
+    }
+    #page-content-wrapper{
+        min-width: 100vw;
+        height: 100vh;
+    }
+    #slides-container{
+        width: 200vw;
+    }
+    .slide-w-100{
+        width: calc(100vw - 2rem) !important;
+    }
+    .slide-add.active{
+        transform: translateX(calc(-100vw )) !important;
+        height: 100vh !important;
+        overflow-y: auto;
+    }
 }
 #footer{
     height: 40px;
@@ -499,13 +532,7 @@ $modal-fade-transform: scale(.8);
     overflow-x: hidden;
     min-height: 660px;
 }
-#slides-container{
-    overflow-x: hidden;
-    width: calc(200vw - 200px);
-    display: flex;
-    justify-content: space-between;
-    min-height: 860px;
-}
+
 
 .slides-custom{
     display: flex;
@@ -539,6 +566,16 @@ $modal-fade-transform: scale(.8);
     width: 200px;
     height: 200px;
     border: $dark-100 2px dashed;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.imageDrop2{
+    width: 200px;
+    height: 200px;
+    border: none;
     border-radius: 15px;
     display: flex;
     justify-content: center;
@@ -629,7 +666,7 @@ table.dataTable thead>tr>td.sorting_desc_disabled:after  {
 }
 
 table.dataTable.table-striped>tbody>tr.odd>*{
-    background-color: #f5f5f5 !important;
+    background-color: #f5f5f5;
     box-shadow: none !important;
 }
 .dataTables_wrapper.no-footer .dataTables_scrollBody{
@@ -637,4 +674,13 @@ table.dataTable.table-striped>tbody>tr.odd>*{
 }
 table.dataTable tbody th.focus, table.dataTable tbody td.focus{
     outline: 2px solid $primary !important;
+}
+table.dataTable.table-striped>tbody>tr.odd.selected>*{
+    box-shadow: inset 0 0 0 9999px rgba(135 ,156 ,225 , 0.44) !important;
+}
+table.dataTable>tbody>tr.selected>*{
+    box-shadow: inset 0 0 0 9999px rgba(135 ,156 ,225 , 0.44) !important;
+}
+table.dataTable>tbody>tr.child{
+    background-color: #f0f3ff !important;
 }

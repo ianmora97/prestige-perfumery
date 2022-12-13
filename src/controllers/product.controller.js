@@ -2,6 +2,7 @@ const Product = require('../models/product.model');
 const logger = require('../utils/logger');
 
 const multer  = require('multer');
+const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 
@@ -47,7 +48,7 @@ module.exports = {
             });
         } catch (error) {
             logger.error(error);
-            
+            res.status(500).json({status: false, message: error.message});
         }
     },
     create: (req, res) => {
@@ -57,5 +58,27 @@ module.exports = {
         Product.create(req.body, (result) => {
             res.status(result.status).json(result);
         });
+    },
+    replaceImage: (req, res) => {
+        try {
+            let oldImage = path.join(__dirname, '../public/upload/productos/', req.body.oldImage);
+            if(fs.existsSync(oldImage)){
+                fs.unlinkSync(oldImage, (error) => {
+                    if(error){
+                        logger.error(error);
+                    }
+                });
+            }
+            upload(req, res, (error) => {
+                if(error){
+                    res.status(500).json({status: false, message: error.message});
+                }else{
+                    res.status(200).json({status: true, message: 'File uploaded successfully', data: req.file});
+                }
+            });
+        } catch (error) {
+            logger.error(error);
+            res.status(500).json({status: false, message: error.message});
+        }
     }
 }
