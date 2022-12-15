@@ -5,6 +5,9 @@ var g_data = [];
 var dropzoneAgregar;
 var dropzoneActualizar;
 
+var g_imageTypeselected = "customimage";
+var g_imageLoaded = false;
+
 var g_selected = "";
 //* Modals
 const modalImagePreview = new bootstrap.Modal('#imagepreview')
@@ -14,11 +17,47 @@ function init(){
     formatInputs();
     runTooltips();
     checkRatioFilter();
-    animateSlides();
-    changeSlides();
     dropzoneLoad();
-    
+    imagelinkload();
     brignData();
+    onTabsImageAdd();
+}
+function onTabsImageAdd(){
+    Array.from(document.querySelectorAll('button[data-toggle-add="tab"]'))
+    .forEach(tabEl => {
+        tabEl.addEventListener('shown.bs.tab', event => {
+            let prev = event.relatedTarget // previous active tab
+            let curr = event.target // newly activated tab
+            g_imageTypeselected = curr.getAttribute('data-bs-target').split('-')[1];
+            console.log(g_imageTypeselected);
+        });
+    });
+}
+function imagelinkload(){
+    $("#add-imagelink").on('keyup', function(){
+        let link = $(this).val();
+        var img = new Image();
+        img.src = link;
+        img.onload = function() {
+            $("button[data-bs-target='#pills-customimage']").attr('disabled', true);
+            $("button[data-bs-target='#pills-customimage']").addClass('disabled');
+
+            $("#imagepreviewlink").html(
+                `<img src="${link}" style="width: 200px;" class="mx-auto d-block" alt="Imagen">`
+            );
+            if(link.length > 0){
+                $("#imagepreviewlink").show();
+            }else{
+                $("#imagepreviewlink").hide();
+            }
+        };
+        if(link.length == 0){
+            $("button[data-bs-target='#pills-customimage']").attr('disabled', false);
+            $("button[data-bs-target='#pills-customimage']").removeClass('disabled');
+
+            $("#imagepreviewlink").html("");
+        }
+    });
 }
 function reloadData(){
     var table = $('#table').DataTable();
@@ -85,8 +124,6 @@ function openEditModal(){
         <h5 class="mb-0"><i class="fa-solid fa-box-open text-secondary"></i> Editar Producto<br></h5>
         <small class="text-muted">${prod.uuid}</small>
     `);
-
-
     editModal.show();
 }
 function fillProductos(data){
@@ -115,7 +152,7 @@ function addRow(e){
                     <img src="/upload/productos/${e.image}" width="60px" alt="" class="img-fluid hover-img img-round">
                 </div>
             </td>
-            <td class="">${e.code}</td>
+            <td><span class="text-primary">${e.code}</span></td>
             <td class="">
                 <div class="d-flex flex-column align-items-start justify-content-start">
                     <span class="fw-bold lead">${e.name}</span>
@@ -125,7 +162,12 @@ function addRow(e){
             <td class="">${e.cantidad}</td>
             <td class=""><span class="badge b-pill badge-blue">${_.capitalize(e.category)}</span></td>
             <td class="">
-                ${e.stock} <i class="fa-solid fa-circle fa-2xs text-${color}"></i>
+                <div class="d-flex justify-content-start align-items-center ps-3">
+                    <div contentEditable="true" id="contentEditable-stock_${e.uuid}" onkeydown="avoidEditablecontents(this)" onkeyup="changeStockValueTable(this)">
+                        ${e.stock} 
+                    </div>
+                    <i class="fa-solid fa-circle fa-2xs text-${color} ps-2" id="color-stock-${e.uuid}"></i>
+                </div>
             </td>
             <td class="">
                 <div class="d-flex flex-column align-items-start justify-content-center">
@@ -146,6 +188,55 @@ function addRow(e){
         </tr>
     `);
 }
+function avoidEditablecontents(element){
+    if(event.keyCode == 13){
+        event.preventDefault();
+        let uuid = element.id.split("_")[1];
+        let stock = element.innerText;
+
+        if(isNaN(stock)){
+            createSwalAlertToast("error", "El valor ingresado no es un número");
+            return;
+        }
+        $.ajax({
+            url: "/api/product/stock",
+            type: "PUT",
+            data: {
+                uuid,
+                stock
+            },
+        }).then((data) => {
+            console.log(data);
+            if(data.status == "200"){
+                createSwalAlertToast("success", "Inventario Actualizado");
+                $(element).closest("tr").next().find("div[contentEditable=true]").focus();
+            }
+        }, (error) => {
+            console.log(error);
+        });
+        return;
+    }else{
+        // allow only arrow keys, backspace, delete and numbers
+        if(event.keyCode != 37 && event.keyCode != 38 && event.keyCode != 39 && event.keyCode != 40 && event.keyCode != 46 && event.keyCode != 8 && (event.keyCode < 48 || event.keyCode > 57)){
+        // if(event.keyCode != 8 && (event.keyCode < 48 || event.keyCode > 57)){
+            event.preventDefault();
+        }
+    }
+}
+function changeStockValueTable(element){
+    let uuid = element.id.split("_")[1];
+    let stock = element.innerText;
+    let color = "success";
+    let notification = g_dataMap.get(uuid).notification;
+    if(stock <= notification + 5){
+        color = "warning";
+    }if(stock <= notification){
+        color = "danger";
+    }
+    $("#color-stock-" + uuid).removeClass("text-success text-warning text-danger");
+    $("#color-stock-" + uuid).addClass("text-" + color);
+}
+
 function openContextMenu(uuid, element){
     //select the tr element
     let tr = $(element).closest("tr");
@@ -305,7 +396,7 @@ function runTooltips(){
         content: `Cuando el producto llegue a esta cantidad, se mostrará el mensaje de "Producto agotado" en el listado de productos y en la página del producto.<br>Se notificará al administrador por correo electrónico.`,
         allowHTML: true,
         placement: 'top-start',
-        theme: 'light-custom',
+        theme: 'dark-custom',
         interactive: true,
         animation: 'shift-away-extreme',
     });
@@ -313,7 +404,7 @@ function runTooltips(){
         content: `Precio de venta para clientes normales.`,
         allowHTML: true,
         placement: 'top-start',
-        theme: 'light-custom',
+        theme: 'dark-custom',
         interactive: true,
         animation: 'shift-away-extreme',
     });
@@ -321,7 +412,7 @@ function runTooltips(){
         content: `Precio de venta para clientes regulares.`,
         allowHTML: true,
         placement: 'top-start',
-        theme: 'light-custom',
+        theme: 'dark-custom',
         interactive: true,
         animation: 'shift-away-extreme',
     });
@@ -329,7 +420,7 @@ function runTooltips(){
         content: `Precio de venta para clientes VIP.`,
         allowHTML: true,
         placement: 'top-start',
-        theme: 'light-custom',
+        theme: 'dark-custom',
         interactive: true,
         animation: 'shift-away-extreme',
     });
@@ -410,30 +501,6 @@ function dropzoneLoad(){
         dropzoneActualizar.removeAllFiles();
         $('#borrar-imagen-drop-actualizar').hide();
         $('#borrar-imagen-drop-actualizar').removeClass('d-block');
-    });
-}
-function animateSlides(){
-    animateCSS("#product-list", "fadeIn");
-}
-function changeSlides(){
-    $("#agregar-producto").on('click', function(e){
-        $("#product-add").addClass('active fadeInOpacity');
-        $("#product-list").addClass('active fadeOutOpacity');
-
-        $("#agregar-producto").attr('disabled', true);
-        $("#agregar-producto").addClass('disabled');
-    });
-    $("#lista-productos").on('click', function(e){
-        $("#product-add").removeClass('active fadeInOpacity').addClass('fadeOutOpacity');
-        $("#product-list").removeClass('active fadeOutOpacity').addClass('fadeInOpacity');
-
-        setTimeout(() => {
-            $("#product-add").removeClass('fadeOutOpacity');
-            $("#product-list").removeClass('fadeInOpacity');
-        }, 1000);
-
-        $("#agregar-producto").attr('disabled', false);
-        $("#agregar-producto").removeClass('disabled');
     });
 }
 function checkRatioFilter(){
@@ -541,6 +608,39 @@ function datatables(){
         g_filter.set("search", val);
         searchonTable();
     });
+}
+
+function createSwalAlert(type, title, text){
+    Swal.fire({
+        icon: type,
+        title: title,
+        text: text,
+        showConfirmButton: false,
+        timer: 1500
+    });
+}
+function createSwalAlertToast(type, text){
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+    Toast.fire({
+        icon: type,
+        text: text,
+        showClass: {
+            popup: 'animate__animated animate__fadeInRight'
+        },
+        hideClass: {
+            popup: 'animate__animated animate__fadeOutRight'
+        }
+    })
 }
 
 function searchonTable(){

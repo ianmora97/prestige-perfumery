@@ -125,3 +125,23 @@ exports.update = async (body, resolve) => {
         });
     });
 }
+exports.updateStock = async (body, resolve) => {
+    Product.update({
+        stock: body.stock
+    }, {
+        where: {
+            uuid: body.uuid
+        }
+    }).then((product) => {
+        resolve({
+            status: 200,
+            data: product
+        });
+    }).catch((error) => {
+        console.log(error);
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+}

@@ -80,11 +80,27 @@ img{
 
 
 /**
+ * Gradients
+*/
+.bg-dark-gradient{
+    background: linear-gradient(160deg, rgba(0,0,0,1) 0%, $dark 100%);
+}
+
+
+/**
  * Fonts
 */
 $font-family-base: 'Inter', sans-serif;
 $font-size-base: .85rem;
 $font-weight-base: 400;
+
+/**
+ * Dashboard general
+*/
+.header-continue-back{
+    height: 150px;
+}
+
 
 /**
  * Forms
@@ -351,10 +367,10 @@ button{
     width: calc(100% - 100px);
 }
 #logo{
-    height: 55px;
+    height: 51px;
 }
 #header{
-    height: 55px;
+    max-height: 51px;
     position: sticky;
     top: 0;
     right: 0;
@@ -487,6 +503,23 @@ $modal-fade-transform: scale(.8);
     height: 40px !important;
     background-color: white !important;
 }
+/**
+* offcanvas
+*/
+.offcanvas.offcanvas-end{
+    box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.2) !important;
+}
+.offcanvas .offcanvasfooter{
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    border-top: 1px solid #e0e0e0;
+    padding: .5rem 1rem;
+}
+
+
 
 /**
 * Tippy JS
@@ -510,7 +543,25 @@ $modal-fade-transform: scale(.8);
 .tippy-box[data-theme~='light-custom'][data-placement^='right'] .tippy-arrow {
     color: #f0f0f0;
 }
-
+// dark-custom
+.tippy-box[data-theme~='dark-custom']{
+    background-color: $dark-900;
+    color: #f0f0f0;
+    font-weight: 400;
+    font-size: 12px;
+}
+.tippy-box[data-theme~='dark-custom'][data-placement^='top'] .tippy-arrow {
+    color: $dark-900;
+}
+.tippy-box[data-theme~='dark-custom'][data-placement^='bottom'] .tippy-arrow {
+    color: $dark-900;
+}
+.tippy-box[data-theme~='dark-custom'][data-placement^='left'] .tippy-arrow {
+    color: $dark-900;
+}
+.tippy-box[data-theme~='dark-custom'][data-placement^='right'] .tippy-arrow {
+    color: $dark-900;
+}
 
 .editclick{
     position: absolute;
@@ -530,7 +581,7 @@ $modal-fade-transform: scale(.8);
 }
 #table-container{
     overflow-x: hidden;
-    min-height: 660px;
+    min-height: 430px;
 }
 
 
@@ -604,6 +655,47 @@ $modal-fade-transform: scale(.8);
         opacity: 1;
     }
 }
+// ! ---------------------------------------- CHART JS ----------------------------------------
+
+#chartjs-tooltip{
+    background: radial-gradient(circle, rgba(79,70,229,0.2645260252538515) 0%, rgba(255,255,255,0) 100%);
+    height: 150px;
+    width: 80px;
+    position: relative;
+    transition: all 0.5s ease-in-out;
+    &::after{
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        height: 100%;
+        background: radial-gradient(circle, rgba(79,70,229,1) 10%, rgba(255,255,255,0) 100%);
+    }
+}
+.chartjs-tooltip-body{
+    border: 1px solid $gray-100;
+    border-radius: 5px;
+    padding: 0.5rem;
+    background-color: $light;
+    position: absolute;
+    top: 43%;
+    left: 0;
+    transform: translateX(50%);
+    width: 100px;
+}
+
+
+// ! ---------------------------------------- swal2Alert ----------------------------------------
+.swal2-popup.swal2-toast{
+    padding: 0.4rem 1rem !important;
+}
+// get icon
+.swal2-popup.swal2-toast .swal2-icon{
+    zoom: 0.7;
+}
+
 // ! ---------------------------------------- DATA TABLES ----------------------------------------
 table.dataTable thead>tr>th.sorting:before, 
 table.dataTable thead>tr>th.sorting_asc:before, 

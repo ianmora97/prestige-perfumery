@@ -80,5 +80,10 @@ module.exports = {
             logger.error(error);
             res.status(500).json({status: false, message: error.message});
         }
+    },
+    updateStock: (req, res) => {
+        Product.updateStock(req.body, (result) => {
+            res.status(result.status).json(result);
+        });
     }
 }

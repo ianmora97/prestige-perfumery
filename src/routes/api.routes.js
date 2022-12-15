@@ -18,6 +18,7 @@ router.get('/api/product/all', PRODUCT.getAll); // No authentication required
 router.post('/api/product/add', isAuthenticated, PRODUCT.create);
 router.post('/api/product/addimage', isAuthenticated, PRODUCT.addImage);
 router.post('/api/product/replaceImage', isAuthenticated, PRODUCT.replaceImage);
+router.put('/api/product/stock', isAuthenticated, PRODUCT.updateStock);
 
 
 

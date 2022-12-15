@@ -20,14 +20,17 @@ function isAuthenticated(req, res, next) {
         let tokenName = headers.split(";").filter((item) => item.includes("token="))[0];
         if(tokenName === undefined) res.redirect('/');
         else tokenName = tokenName.split("=")[1];
-        jwt.verify(tokenName, process.env.SECRET_KEY, (err, decoded) => {
-            if (err) {
-                console.log(err);
-                res.redirect('/');
-            } else {
-                next();
-            }
-        });
+        if(tokenName === undefined){
+            res.redirect('/');
+        }else{
+            jwt.verify(tokenName, process.env.SECRET_KEY, (err, decoded) => {
+                if (err) {
+                    res.redirect('/');
+                } else {
+                    next();
+                }
+            });
+        }
     }
 }
 
