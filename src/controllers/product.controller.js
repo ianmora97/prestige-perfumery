@@ -1,55 +1,13 @@
 const Product = require('../models/product.model');
 const logger = require('../utils/logger');
 
-const multer  = require('multer');
-const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
-const path = require('path');
-
-let imagePath = path.join(__dirname, '../public/upload/productos');
-const storage = multer.diskStorage({
-    destination: imagePath,
-    filename: (req, file, cb) => {
-        cb(null,uuidv4() + path.extname(file.originalname).toLocaleLowerCase());
-    }   
-});
-
-const upload = multer({
-    storage,
-    dest: imagePath,
-    fileFilter: (req, file, cb) => {
-        const filetypes = /jpeg|jpg|png|JPEG|JPG|PNG/
-        const mimetype = filetypes.test(file.mimetype);
-        const extname = filetypes.test(path.extname(file.originalname));
-        if(mimetype && extname){
-            return cb(null, true);
-        }else{
-            req.validatorFile = {status:false, message: 'Error: File type not supported', type: path.extname(file.originalname)};
-            cb(null, false, new Error('File type not supported'));
-        }
-    }
-}).single('file');
-
 
 module.exports = {
     getAll: (req, res) => {
         Product.getAll((result) => {
             res.status(result.status).json(result.data);
         });
-    },
-    addImage: (req, res) => {
-        try {
-            upload(req, res, (error) => {
-                if(error){
-                    res.status(500).json({status: false, message: error.message});
-                }else{
-                    res.status(200).json({status: true, message: 'File uploaded successfully', data: req.file});
-                }
-            });
-        } catch (error) {
-            logger.error(error);
-            res.status(500).json({status: false, message: error.message});
-        }
     },
     create: (req, res) => {
         let code = uuidv4();
@@ -59,30 +17,18 @@ module.exports = {
             res.status(result.status).json(result);
         });
     },
-    replaceImage: (req, res) => {
-        try {
-            let oldImage = path.join(__dirname, '../public/upload/productos/', req.body.oldImage);
-            if(fs.existsSync(oldImage)){
-                fs.unlinkSync(oldImage, (error) => {
-                    if(error){
-                        logger.error(error);
-                    }
-                });
-            }
-            upload(req, res, (error) => {
-                if(error){
-                    res.status(500).json({status: false, message: error.message});
-                }else{
-                    res.status(200).json({status: true, message: 'File uploaded successfully', data: req.file});
-                }
-            });
-        } catch (error) {
-            logger.error(error);
-            res.status(500).json({status: false, message: error.message});
-        }
+    update: (req, res) => {
+        Product.update(req.body, (result) => {
+            res.status(result.status).json(result);
+        });
     },
     updateStock: (req, res) => {
         Product.updateStock(req.body, (result) => {
+            res.status(result.status).json(result);
+        });
+    },
+    delete: (req, res) => {
+        Product.delete(req.body, (result) => {
             res.status(result.status).json(result);
         });
     }

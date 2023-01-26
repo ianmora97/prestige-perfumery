@@ -1,51 +1,5 @@
-<script>
-    Dropzone.autoDiscover = false;
-</script>
-<style>
-    .dropzone, #dropArea{
-        background-color: transparent;
-        border: none;
-        height: 100%;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    .dropzone .dz-preview.dz-image-preview{
-        background-color: transparent;
-    }
-    #dropArea.dropzone .dz-preview .dz-image{
-        width: 175px;
-        height: 175px;
-    }
-    .dz-progress{
-        display: none;
-    }
-    #dropArea2{
-        background-color: transparent;
-        border: none;
-        height: 100%;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    #dropArea2.dropzone .dz-preview.dz-image-preview{
-        background-color: transparent;
-        width: 100%;
-        margin:0;
-    }
-    #dropArea2.dropzone .dz-preview .dz-image{
-        width: 100%;
-        height: 100%;
-    }
-    #dropArea2.dropzone .dz-preview .dz-image img{
-        width: 100%;
-        height: 100%;
-    }
-</style>
+<script src="https://unpkg.com/html5-qrcode@2.0.9/dist/html5-qrcode.min.js"></script>
+
 <div id="alert" style="position: absolute; top:10px; left:4%; z-index:9999999;" class="w-90 d-block">
 
 </div>
@@ -60,10 +14,6 @@
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="fw-bold mb-0 animate__animated animate__fadeIn">Productos</h2>
             <div class="d-flex justify-content-end align-items-center">
-                <button type="button" class="btn btn-primary" id="agregar-producto" data-bs-toggle="offcanvas" 
-                    data-bs-target="#agregarCanvas" aria-controls="agregarCanvas">
-                    <i class="fa-solid fa-plus"></i> <span class="d-none d-md-inline">Agregar Producto</span>
-                </button>
             </div>
         </div>
         <div class="d-flex justify-content-start align-items-center animate__animated animate__fadeIn">
@@ -74,166 +24,184 @@
 </div>
 
 <div class="mb-2">
-    <div class="bg-white rounded-15 shadow-custom py-3 mx-3 mt-4 animate__animated animate__fadeInUp mb-5">
-        <div class="row mx-0 px-3 mb-3">
-            <div class="col px-1">
-                <div class="form-icon">
-                    <i class="fa-solid fa-search"></i>
-                    <input class="form-control" type="text" placeholder="Buscar..." 
-                    id="barraBuscar" aria-label="Buscar un producto">
+    <nav class="mx-3 my-3">
+        <div class="nav nav-pills" id="nav-tab" role="tablist">
+            <button class="nav-link me-4 active" id="nav-list-tab" data-bs-toggle="tab" data-bs-target="#nav-list" type="button"
+                role="tab" aria-controls="nav-list" aria-selected="true"><i class="fa-solid fa-boxes-stacked"></i> Lista</button>
+            <button class="nav-link" id="nav-agregar-tab" data-bs-toggle="tab" data-bs-target="#nav-agregar" type="button"
+                role="tab" aria-controls="nav-agregar" aria-selected="false"><i class="fa-solid fa-plus"></i> Agregar</button>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-list" role="tabpanel" aria-labelledby="nav-list-tab" tabindex="0">
+            <div class="bg-white rounded-15 shadow-custom py-3 mx-3 animate__animated animate__fadeIn mb-5">
+                <div class="row mx-0 px-3 mb-3">
+                    <div class="col px-1">
+                        <div class="d-flex justify-content-start align-items-center">
+                            <div class="form-icon me-2" style="width: 300px;">
+                                <i class="fa-solid fa-search"></i>
+                                <input class="form-control" type="text" placeholder="Buscar..." 
+                                id="barraBuscar" aria-label="Buscar un producto">
+                            </div>
+                            <button type="button" onclick="openScaner('search');" class="btn btn-primary btn-sm"><i class="fa-solid fa-barcode"></i> Escanear</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4 px-1 d-md-flex d-none justify-content-md-end align-items-center mt-3 mt-md-0" id="button-group">
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4"></div>
-            <div class="col-md-4 px-1 d-md-flex d-none justify-content-md-end align-items-center mt-3 mt-md-0" id="button-group">
-            </div>
-        </div>
-        <div class="row mx-0 px-3">
-            <div class="col px-1 d-flex justify-content-start align-items-center" id="states">
-                <button type="button" data-type="ratio-filter" id="typeFilter-all" class="btn btn-white pill me-2 active">Todos <span class="badge badge-primary d-none d-md-inline-block" id="totalitems-1">10</span></button>
-                <button type="button" data-type="ratio-filter" id="typeFilter-hombre" class="btn btn-white pill me-2">Hombre <span class="badge badge-primary d-none d-md-inline-block" id="totalitems-h">10</span></button>
-                <button type="button" data-type="ratio-filter" id="typeFilter-mujer" class="btn btn-white pill me-2">Mujer <span class="badge badge-primary d-none d-md-inline-block" id="totalitems-m">10</span></button>
-                <button type="button" data-type="ratio-filter" id="typeFilter-unisex" class="btn btn-white pill">Unisex <span class="badge badge-primary d-none d-md-inline-block" id="totalitems-u">10</span></button>
-            </div>
-            <div class="col-md-6 px-1 d-md-flex justify-content-end align-items-center d-none">
-                <small class="text-muted" id="info"></small>
-                <div class="ms-4" id="length"></div>
-            </div>
-        </div>
-        <div class="table-container mt-2" id="table-container">
-            <table class="table table-custom table-borderless table-striped table-responsive " id="table">
-                <thead>
-                    <tr>
-                        <th scope="col" style="width: 70px;" data-priority="1">Imagen</th>
-                        <th scope="col">Código</th>
-                        <th scope="col" data-priority="3">Nombre</th>
-                        <th scope="col">Tamaño</th>
-                        <th scope="col">Categoria</th>
-                        <th scope="col" data-priority="4">Inventario</th>
-                        <th scope="col">Precio</th>
-                        <th scope="col" style="width: 55px;" data-priority="2">Editar</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody"></tbody>
-            </table>
-        </div>
-        <div class="d-flex justify-content-end px-3 pagination-tables" id="pagination">
-            
-        </div>
-    </div>
-</div>
-
-<div class="offcanvas offcanvas-end border-0" tabindex="-1" id="agregarCanvas" data-bs-backdrop="false" 
-data-bs-scroll="true" aria-labelledby="agregarCanvasLabel" style="width: 450px;">
-    <div class="offcanvas-header text-bg-dark-900" style="height: 51px;">
-        <h5 class="offcanvas-title" id="agregarCanvasLabel">Agregar Producto</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-        <label for="add-name" class="form-label fw-bold">Nombre y Marca</label>
-        <div class="input-group mb-4">
-            <input type="text" class="form-control" id="add-name" placeholder="Nombre">
-            <input type="text" class="form-control" id="add-marca" placeholder="Marca">
-        </div>
-        <div class="row mx-0 g-0">
-            <div class="col-sm-4 mb-4">
-                <label for="add-precio1" class="form-label fw-bold">Precio A <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-1" role="button"></i></label>
-                <input type="number" class="form-control" min="1" minlength="1" id="add-precio1" placeholder="Precio del producto...">
-            </div>
-            <div class="col-sm-4">
-                <label for="add-precio2" class="form-label fw-bold">Precio B <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-2" role="button"></i></label>
-                <input type="number" class="form-control" min="1" minlength="1" id="add-precio2" placeholder="Precio del producto...">
-            </div>
-            <div class="col-sm-4">
-                <label for="add-precio3" class="form-label fw-bold">Precio C <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-3" role="button"></i></label>
-                <input type="number" class="form-control" min="1" minlength="1" id="add-precio3" placeholder="Precio del producto...">
-            </div>
-        </div>
-        <div class="row mx-0 g-0 mb-3">
-            <div class="col-sm-7">
-                 <div class="">
-                    <label for="add-stock" class="form-label fw-bold">Inventario</label>
-                    <input type="number" class="form-control" min="1" minlength="1" id="add-stock" placeholder="Cantidad...">
-                    <small class="text-muted">Cantidad de productos en inventario.</small>
+                <div class="row mx-0 px-3">
+                    <div class="col px-1 d-flex justify-content-start align-items-center" id="states">
+                        <button type="button" data-type="ratio-filter" id="typeFilter-all" class="btn btn-white pill me-2 active">Todos <span class="badge badge-primary d-none d-md-inline-block" id="totalitems-1">10</span></button>
+                        <button type="button" data-type="ratio-filter" id="typeFilter-hombre" class="btn btn-white pill me-2">Hombre <span class="badge badge-primary d-none d-md-inline-block" id="totalitems-h">10</span></button>
+                        <button type="button" data-type="ratio-filter" id="typeFilter-mujer" class="btn btn-white pill me-2">Mujer <span class="badge badge-primary d-none d-md-inline-block" id="totalitems-m">10</span></button>
+                        <button type="button" data-type="ratio-filter" id="typeFilter-unisex" class="btn btn-white pill">Unisex <span class="badge badge-primary d-none d-md-inline-block" id="totalitems-u">10</span></button>
+                    </div>
+                    <div class="col-md-6 px-1 d-md-flex justify-content-end align-items-center d-none">
+                        <small class="text-muted" id="info"></small>
+                        <div class="ms-4" id="length"></div>
+                    </div>
                 </div>
-            </div> 
-            <div class="col-sm-5">
-                <div class=" ps-2">
-                    <label for="add-aviso" class="form-label fw-bold">Aviso <i class="fa-solid fa-circle-info text-gray-light ps-1 aviso-tooltip" role="button"></i></label>
-                    <input type="number" class="form-control" min="1" minlength="1" id="add-aviso" placeholder="1">
-                    <small class="text-muted">Notificación de producto.</small>
+                <div class="table-container mt-2" id="table-container">
+                    <table class="table table-custom table-borderless table-striped table-responsive " id="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width: 70px;" data-priority="1">Imagen</th>
+                                <th scope="col">Código</th>
+                                <th scope="col" data-priority="3">Nombre</th>
+                                <th scope="col">Tamaño</th>
+                                <th scope="col">Categoria</th>
+                                <th scope="col" data-priority="4">Inventario</th>
+                                <th scope="col">Precio</th>
+                                <th scope="col" data-priority="2">Editar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody"></tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-end px-3 pagination-tables" id="pagination">
+                    
                 </div>
             </div>
         </div>
-       
-        <div class="mb-3">
-            <label for="add-cantidad" class="form-label fw-bold">Tamaño</label>
-            <div class="input-group mb-0">
-                <input type="number" class="form-control" min="1" minlength="1" id="add-cantidad" placeholder="Cantidad...">
-                <select class="form-select" id="add-q" style="max-width: 80px;">
-                    <option value="ml">ml</option>
-                    <option value="oz">oz</option>
-                </select>
-            </div>
-            <small class="text-muted">Cantidad en mililitros u onzas.</small>
-        </div>
-        <div class="mb-4">
-            <label for="add-categoria" class="form-label fw-bold">Categoria</label>
-            <select class="form-select" id="add-categoria" aria-label="Tipo de producto" aria-placeholder="Seleccione un tipo">
-                <option value="unisex">Unisex</option>
-                <option value="hombre">Hombre</option>
-                <option value="mujer">Mujer</option>
-            </select>
-            <small class="text-muted">Para hombre o mujer.</small>
-        </div>
-        <label class="form-label fw-bold">Imagen del producto</label>
-        <ul class="nav nav-pills nav-fill mb-3" id="pills-tab-imagen" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="pills-customimage-tab" data-bs-toggle="pill" data-toggle-add="tab" data-bs-target="#pills-customimage" type="button"
-                 role="tab" aria-controls="pills-customimage" aria-selected="true"><i class="fa-solid fa-cloud-arrow-up"></i> Subir Imagen</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="pills-linkimage-tab" data-bs-toggle="pill" data-toggle-add="tab" data-bs-target="#pills-linkimage" type="button"
-                 role="tab" aria-controls="pills-linkimage" aria-selected="false"><i class="fa-solid fa-thumbtack"></i> Usar Link</button>
-            </li>
-        </ul>
-        <div class="tab-content" id="pills-tab-imagenContent" style="height: 240px;">
-            <div class="tab-pane fade show active" id="pills-customimage" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
-                <div class="imageDrop mt-3 mx-auto">
-                    <div id="dropArea" class="dropzone">
-                        <div class="dz-message">
-                            <i class="fa-solid fa-image fa-2x"></i>
-                            <br>
-                            <span class="text-muted">Arrastra una imagen o haz click para subir</span>
+        <div class="tab-pane fade" id="nav-agregar" role="tabpanel" aria-labelledby="nav-agregar-tab" tabindex="0">
+            <div class="bg-white rounded-15 shadow-custom py-3 mx-3 px-3 animate__animated animate__fadeIn mb-5">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0 fw-bold">Agregar Producto</h4>
+                    <button type="button" class="btn btn-primary btn-lg" id="btn-agregar"><i class="fa-solid fa-plus"></i> Agregar Producto</button>
+                </div>
+                <hr>
+                <div class="row mx-0">
+                    <div class="col-sm-6">
+                        <label for="add-name" class="form-label fw-bold">Nombre y Marca</label>
+                        <div class="input-group mb-4">
+                            <input type="text" class="form-control" id="add-name" placeholder="Nombre">
+                            <input type="text" class="form-control" id="add-marca" placeholder="Marca">
+                        </div>
+                        <div class="row mx-0 g-0">
+                            <div class="col-sm-4 pe-2 mb-4">
+                                <label for="add-precio1" class="form-label fw-bold">Precio A <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-1" role="button"></i></label>
+                                <input type="number" class="form-control" min="1" minlength="1" id="add-precio1" placeholder="Precio del producto...">
+                            </div>
+                            <div class="col-sm-4 pe-2">
+                                <label for="add-precio2" class="form-label fw-bold">Precio B <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-2" role="button"></i></label>
+                                <input type="number" class="form-control" min="1" minlength="1" id="add-precio2" placeholder="Precio del producto...">
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="add-precio3" class="form-label fw-bold">Precio C <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-3" role="button"></i></label>
+                                <input type="number" class="form-control" min="1" minlength="1" id="add-precio3" placeholder="Precio del producto...">
+                            </div>
+                        </div>
+                        <div class="row mx-0 g-0 mb-3">
+                            <div class="col-sm-7">
+                                <div class="">
+                                    <label for="add-stock" class="form-label fw-bold">Inventario</label>
+                                    <input type="number" class="form-control" min="1" minlength="1" id="add-stock" placeholder="Cantidad...">
+                                    <small class="text-muted">Cantidad de productos en inventario.</small>
+                                </div>
+                            </div> 
+                            <div class="col-sm-5">
+                                <div class="ps-2">
+                                    <label for="add-aviso" class="form-label fw-bold">Aviso <i class="fa-solid fa-circle-info text-gray-light ps-1 aviso-tooltip" role="button"></i></label>
+                                    <input type="number" class="form-control" min="1" minlength="1" id="add-aviso" placeholder="1">
+                                    <small class="text-muted">Notificación de producto.</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mx-0 g-0 mb-3">
+                            <div class="col-sm-6 pe-2">
+                                <div class="mb-3">
+                                    <label for="add-cantidad" class="form-label fw-bold">Tamaño</label>
+                                    <div class="input-group mb-0">
+                                        <input type="number" class="form-control" min="1" minlength="1" id="add-cantidad" placeholder="Cantidad...">
+                                        <select class="form-select" id="add-q" style="max-width: 80px;">
+                                            <option value="ml">ml</option>
+                                            <option value="oz">oz</option>
+                                        </select>
+                                    </div>
+                                    <small class="text-muted">Cantidad en mililitros u onzas.</small>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                 <div class="mb-3">
+                                    <label for="add-categoria" class="form-label fw-bold">Categoria</label>
+                                    <select class="form-select" id="add-categoria" aria-label="Tipo de producto" aria-placeholder="Seleccione un tipo">
+                                        <option value="unisex">Unisex</option>
+                                        <option value="hombre">Hombre</option>
+                                        <option value="mujer">Mujer</option>
+                                    </select>
+                                    <small class="text-muted">Para hombre o mujer.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label fw-bold">Imagen del producto</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="link-toimage">URL</span>
+                            <input type="text" class="form-control" id="add-imagelink" placeholder="https://" aria-label="Link to image" aria-describedby="link-toimage">
+                        </div>
+                        <div id="imagepreviewlink"></div>
+                        <hr>
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-primary" onclick="openScaner('add');"><i class="fa-solid fa-barcode"></i> Escanear código de Barras</button>
+                            <div id="barcodeResult"></div>
                         </div>
                     </div>
                 </div>
-                <div style="width: 200px;">
-                    <button type="button" class="btn btn-danger mt-2 mx-auto"
-                    id="borrar-imagen-drop" style="display: none;">
-                        <i class="fa-solid fa-xmark"></i> Borrar Imagen
-                    </button>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="pills-linkimage" role="tabpanel" aria-labelledby="pills-linkimage-tab" tabindex="0">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="link-toimage">URL</span>
-                    <input type="text" class="form-control" id="add-imagelink" placeholder="https://" aria-label="Link to image" aria-describedby="link-toimage">
-                </div>
-                <div id="imagepreviewlink"></div>
             </div>
         </div>
-
-    </div>
-    <div class="offcanvasfooter">
-        <button type="button" class="btn btn-primary btn-lg" id="btn-agregar"><i class="fa-solid fa-plus"></i> Agregar Producto</button>
     </div>
 </div>
-
+<style>
+    #barcodePreview{
+        position:relative;
+    }
+    #barcodePreview canvas{
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 9;
+    }
+</style>
 
 <div id="editclick" style="display: none;" class="border border-gray-100 rounded-2 bg-white py-2 px-1 editclick">
     <div >
-        <small class="hover-right d-block px-2 pb-1 mb-0 text-muted border-bottom" role="button" onclick="openEditModal()"><i class="fa-solid fa-pencil"></i> Editar</small>
-        <small class="hover-right d-block px-2 pt-1 mb-0 text-danger" role="button"><i class="fa-solid fa-trash-can"></i> Eliminar</small>
+        <small class="hover-right d-block px-2 pb-1 mb-0 text-muted border-bottom" role="button" onclick="openEditModal()"></small>
+        <small class="hover-right d-block px-2 pt-1 mb-0 text-danger" onclick="eliminarProducto()" role="button"></small>
+    </div>
+</div>
+
+<div class="modal fade" id="escanerModal" tabindex="-1" aria-labelledby="escanerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Buscar Producto</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="barcodePreview" class="d-flex justify-content-center"></div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -242,14 +210,14 @@ data-bs-scroll="true" aria-labelledby="agregarCanvasLabel" style="width: 450px;"
         <div class="modal-content modal-transparent">
             <button type="button" class="btn-close btn-close-modal-bottom" data-bs-dismiss="modal" aria-label="Close"></button>
             <div class="modal-body">
-                <img src="/upload/productos/212.jpg" id="image-preview-src" width="100%" class="img-round">
+                <img src="" id="image-preview-src" width="100%" class="img-round">
             </div>
         </div>
     </div>
 </div>
 
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-dialog modal-dialog-centered modal-xxl">
         <div class="modal-content">
             <div class="modal-header text-bg-dark pb-2">
                 <p class="modal-title" id="editModalLabel">Editar</p>
@@ -257,31 +225,23 @@ data-bs-scroll="true" aria-labelledby="agregarCanvasLabel" style="width: 450px;"
             </div>
             <div class="modal-body">
                 <div class="row mx-0">
-                    <div class="col-3">
+                    <div class="col-3 ps-0">
                         <div class="w-100 mb-2 position-relative">
                             <div class="w-100 mx-auto">
-                                <img src="" id="edit-image" class="img-circle w-100 ">
+                                <img src="" id="edit-image" class="img-circle w-90">
                             </div>
-                            <div class="position-absolute w-100" style="top: 50%; transform: translateY(-50%);">
-                                <div class="w-100 mx-auto">
-                                    <div id="dropArea2" class="dropzone mx-auto">
-                                        <div class="dz-message">
-                                            <i class="fa-solid fa-image fa-2x text-white"></i>
-                                            <br>
-                                            <span class="text-white">Arrastra una imagen o haz click para subir</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="width: 200px; top:50%; left:50%; transform:translate(-50%, -50%)" class="mx-auto position-absolute ">
-                                <button type="button" class="btn btn-danger btn-sm mt-2 mx-auto"
-                                id="borrar-imagen-drop-actualizar" style="display: none;">
-                                    <i class="fa-solid fa-xmark"></i> Borrar Imagen
-                                </button>
+                           <div class="mb-1">
+                                <label for="edit-image-path" class="form-label fw-bold">Imagen Link</label>
+                                <input type="text" class="form-control" id="edit-image-path" placeholder="Link de la imagen...">
                             </div>
                         </div>
                     </div>
                     <div class="col-9">
+                        <div class="mb-2">
+                            <label for="edit-image-path" class="form-label fw-bold">Código de Barras</label>
+                            <input type="text" class="form-control" id="edit-barcode" placeholder="Código de Barras...">
+                        </div>
+                        <hr>
                         <div class="row mx-0 g-0">
                             <div class="col-6">
                                 <div class="mb-2">
@@ -336,7 +296,7 @@ data-bs-scroll="true" aria-labelledby="agregarCanvasLabel" style="width: 450px;"
                                     <label for="edit-cantidad" class="form-label fw-bold">Tamaño</label>
                                     <div class="input-group">
                                         <input type="number" class="form-control" min="1" minlength="1" id="edit-cantidad" placeholder="Cantidad...">
-                                        <select class="form-select" id="add-q">
+                                        <select class="form-select" id="edit-q">
                                             <option value="ml">ml</option>
                                             <option value="oz">oz</option>
                                         </select>
@@ -355,6 +315,7 @@ data-bs-scroll="true" aria-labelledby="agregarCanvasLabel" style="width: 450px;"
                         </div>
                     </div>
                 </div>
+                <hr>
                 <div class="row mx-0 g-0">
                     <div class="col-6">
                         <div class="mb-2">
@@ -371,10 +332,12 @@ data-bs-scroll="true" aria-labelledby="agregarCanvasLabel" style="width: 450px;"
                         </div>
                     </div>
                 </div>
+                <hr>
+                <div class="row mx-0 g-1" id="bodegas-list-update"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white btn-lg" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> Cerrar</button>
-                <button type="button" class="btn btn-primary" id="edit-product" id="btn-actualizar"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+                <button type="button" class="btn btn-primary" id="edit-product" onclick="updateProduct()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
             </div>
         </div>
     </div>

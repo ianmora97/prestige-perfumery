@@ -9,27 +9,15 @@ function error(err, ip, add = ""){
         if (err) console.log(err);
     });
 }
-
-function activity(act){
+/**
+ * 
+ * @param {String} act Activity to log ? What is the activity?
+ * @param {String} who Who is doing the activity?
+ */
+function activity(act, who){
     var date = moment().format('YYYY-MM-DD HH:mm:ss');
-    var log = `${date} | ${act}\n${"----------".repeat(20)}\n`;
+    var log = `${date} | ${act} | by ${who}\n${"----------".repeat(20)}\n`;
     fs.appendFile(path.join(__dirname, '../logs/activity.log'), log + '\n', (err) => {
-        if (err) console.log(err);
-    });
-}
-
-function insert(act, ip){
-    var date = moment().format('YYYY-MM-DD HH:mm:ss');
-    var log = `${date} | ${ip} | ${act}\n${"----------".repeat(20)}\n`;
-    fs.appendFile(path.join(__dirname, '../logs/inserts.log'), log + '\n', (err) => {
-        if (err) console.log(err);
-    });
-}
-
-function deleteLog(act, ip){
-    var date = moment().format('YYYY-MM-DD HH:mm:ss');
-    var log = `${date} | ${ip} | ${act}\n${"----------".repeat(20)}\n`;
-    fs.appendFile(path.join(__dirname, '../logs/deletes.log'), log + '\n', (err) => {
         if (err) console.log(err);
     });
 }
@@ -37,6 +25,4 @@ function deleteLog(act, ip){
 module.exports = {
     error,
     activity,
-    insert,
-    deleteLog
 }

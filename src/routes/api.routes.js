@@ -9,17 +9,23 @@ require("dotenv").config();
 const USER = require('../controllers/user.controller');
 router.get('/api/user/all', isAuthenticated, USER.getAll);
 router.post('/api/user/add', isAuthenticated, USER.create);
-
 /**
  * CRUD for Products
  */
 const PRODUCT = require('../controllers/product.controller');
 router.get('/api/product/all', PRODUCT.getAll); // No authentication required
 router.post('/api/product/add', isAuthenticated, PRODUCT.create);
-router.post('/api/product/addimage', isAuthenticated, PRODUCT.addImage);
-router.post('/api/product/replaceImage', isAuthenticated, PRODUCT.replaceImage);
+router.put('/api/product/update', isAuthenticated, PRODUCT.update);
 router.put('/api/product/stock', isAuthenticated, PRODUCT.updateStock);
-
+router.delete('/api/product/delete', isAuthenticated, PRODUCT.delete);
+/**
+ * CRUD for Bodega
+ */
+const BODEGA = require('../controllers/bodega.controller');
+router.get('/api/bodega/all', isAuthenticated, BODEGA.getAll);
+router.post('/api/bodega/add', isAuthenticated, BODEGA.create);
+router.put('/api/bodega/update', isAuthenticated, BODEGA.update);
+router.delete('/api/bodega/delete', isAuthenticated, BODEGA.delete);
 
 
 function isAuthenticated(req, res, next) {

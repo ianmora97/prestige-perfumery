@@ -52,12 +52,23 @@ const Product = mysqlcon.define('t_product',{
     cantidad:{
         type: DataTypes.STRING,
         allowNull: false
+    },
+    barcode:{
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    bodega:{
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
 }, {
     freezeTableName: true,
     timestamps: false
 });
 
+/**
+ * Select all products
+ */
 exports.getAll = async (resolve) => {
     Product.findAll().then((products) => {
         resolve({
@@ -71,7 +82,9 @@ exports.getAll = async (resolve) => {
         });
     });
 };
-
+/**
+ * Creates a new product
+ */
 exports.create = async (body, resolve) => {
     Product.create({
         code: body.code,
@@ -84,7 +97,10 @@ exports.create = async (body, resolve) => {
         stock: body.stock,
         notification: body.notification,
         promotion: body.promotion,
-        cantidad: body.cantidad
+        cantidad: body.cantidad,
+        barcode: body.barcode,
+        bodega: body.bodega
+
     }).then((product) => {
         resolve({
             status: 200,
@@ -108,7 +124,9 @@ exports.update = async (body, resolve) => {
         stock: body.stock,
         notification: body.notification,
         promotion: body.promotion,
-        cantidad: body.cantidad
+        cantidad: body.cantidad,
+        barcode: body.barcode,
+        bodega: body.bodega
     }, {
         where: {
             id: body.id
@@ -139,6 +157,24 @@ exports.updateStock = async (body, resolve) => {
         });
     }).catch((error) => {
         console.log(error);
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+}
+
+exports.delete = async (body, resolve) => {
+    Product.destroy({
+        where: {
+            id: body.id
+        }
+    }).then((product) => {
+        resolve({
+            status: 200,
+            data: product
+        });
+    }).catch((error) => {
         resolve({
             status: 500,
             data: error

@@ -2,8 +2,9 @@ var g_filter = new Map();
 var g_dataMap = new Map();
 var g_data = [];
 
-var dropzoneAgregar;
-var dropzoneActualizar;
+var g_bodegas = [];
+
+var isSearch = false;
 
 var g_imageTypeselected = "customimage";
 var g_imageLoaded = false;
@@ -11,16 +12,97 @@ var g_imageLoaded = false;
 var g_selected = "";
 //* Modals
 const modalImagePreview = new bootstrap.Modal('#imagepreview')
-const editModal = new bootstrap.Modal('#editModal')
+const editModal = new bootstrap.Modal('#editModal');
+
+var modalEscaner = document.getElementById('escanerModal');
+const escanerModal = new bootstrap.Modal(modalEscaner);
 
 function init(){
     formatInputs();
     runTooltips();
     checkRatioFilter();
-    dropzoneLoad();
     imagelinkload();
     brignData();
     onTabsImageAdd();
+    eventListeners();
+}
+function eventListeners(){
+    $("#btn-agregar").on('click', function(){
+        agregarProducto();
+    });
+}
+function openScaner(type){
+    isSearch = type == "search" ? true : false;
+    
+    escanerModal.show();
+
+    modalEscaner.addEventListener('shown.bs.modal', function (event) {
+        scanBarcode();
+    });
+}
+
+function scanBarcode(){
+    Quagga.init({
+        inputStream : {
+          name : "Live",
+          type : "LiveStream",
+          target: document.querySelector('#barcodePreview'),
+          singleChannel: false
+        },
+        decoder : {
+          readers : ["upc_reader","upc_e_reader","ean_reader"],
+        },
+        locate: true,
+    }, function(err) {
+        if (err) {
+            console.log("ERROR",err);
+            return
+        }
+        console.log("Initialization finished. Ready to start");
+        Quagga.start();
+    });
+    Quagga.onDetected(function(data){
+        if(data.codeResult.code){
+            if(isSearch){
+                console.log(data.codeResult.code);
+                searchScaner(data.codeResult.code);
+            }else{
+                $("#barcodeResult").html(`
+                    <div class="alert alert-success mt-4 animate__animated animate__fadeInDown" role="alert">
+                        <h4 class="alert-heading mb-1"><i class="fa-solid fa-barcode"></i> 
+                            <span id="barcodeResultText">${data.codeResult.code}</span>
+                        </h4>
+                    </div>
+                `);
+            }
+            $("#barcodePreview").html("");
+            Quagga.stop();
+            escanerModal.hide();
+        }
+    });
+    Quagga.onProcessed(function(result) {
+        var drawingCtx = Quagga.canvas.ctx.overlay,
+            drawingCanvas = Quagga.canvas.dom.overlay;
+
+        if (result) {
+            if (result.boxes) {
+                drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute("width")), parseInt(drawingCanvas.getAttribute("height")));
+                result.boxes.filter(function (box) {
+                    return box !== result.box;
+                }).forEach(function (box) {
+                    Quagga.ImageDebug.drawPath(box, {x: 0, y: 1}, drawingCtx, {color: "green", lineWidth: 2});
+                });
+            }
+
+            if (result.box) {
+                Quagga.ImageDebug.drawPath(result.box, {x: 0, y: 1}, drawingCtx, {color: "#00F", lineWidth: 2});
+            }
+
+            if (result.codeResult && result.codeResult.code) {
+                Quagga.ImageDebug.drawPath(result.line, {x: 'x', y: 'y'}, drawingCtx, {color: 'red', lineWidth: 3});
+            }
+        }
+    });
 }
 function onTabsImageAdd(){
     Array.from(document.querySelectorAll('button[data-toggle-add="tab"]'))
@@ -82,7 +164,17 @@ function brignData(){
     }, (error) => {
         console.log(error);
     });
+    $.ajax({
+        url: '/api/bodega/all',
+        method: 'GET',
+        contentType: 'application/json'
+    }).then((result) => {
+        g_bodegas = result;
+    }, (error) => {
+        console.log(error);
+    });
 }
+
 function fillStats(data){
     $("#totalitems").html(data.length);
     $("#totalitems-1").html(data.length);
@@ -100,8 +192,8 @@ function fillStats(data){
     $("#totalitems-u").html(unisex);
 
 }
-function openEditModal(){
-    let prod = g_dataMap.get(g_selected);
+function openEditModal(uuid){
+    let prod = g_dataMap.get(uuid);
 
     let {price1, price2, price3} = JSON.parse(prod.price);
 
@@ -118,13 +210,185 @@ function openEditModal(){
     $("#edit-cantidad").val(cantidad[0]);
     $("#edit-q").val(cantidad[1]);
     $("#edit-promotion").val(prod.promotion);
-    $("#edit-image").attr("src", "/upload/productos/" + prod.image);
+    $("#edit-image").attr("src", prod.image);
+    $("#edit-image-path").val(prod.image);
+
+    $("#edit-barcode").val(prod.barcode);
+
+    iterateonBodegas(prod.bodega);
 
     $("#editModalLabel").html(`
         <h5 class="mb-0"><i class="fa-solid fa-box-open text-secondary"></i> Editar Producto<br></h5>
-        <small class="text-muted">${prod.uuid}</small>
+        <small class="text-muted" id="update-modal-uuid">${prod.uuid}</small>
     `);
     editModal.show();
+}
+function iterateonBodegas(bodegas){
+    console.log(JSON.parse(bodegas));
+    // #bodegas-list-update
+    $("#bodegas-list-update").html("");
+    // creates a list of text-inputs for each bodega
+    g_bodegas.forEach((bodega,i) => {
+        let bodegaName = bodega.nombre;
+        let bodegaId = i;
+        let bodegaStock = 0;
+        Object.values(JSON.parse(bodegas)).forEach((b) => {
+            if(b.id == bodegaId){
+                bodegaStock = b.cantidad;
+            }
+        });
+        $("#bodegas-list-update").append(`
+            <div class="col-md">
+                <div class="form-group">
+                    <label class="form-label fw-bold" for="bodega-${bodegaId}">${bodegaName}</label>
+                    <input type="number" class="form-control" placeholder="Cantidad de productos en ${bodegaName}" id="bodega-${bodegaId}" value="${bodegaStock}">
+                </div>
+            </div>
+        `);
+    });
+}
+function updateProduct(){
+    // #update-modal-uuid
+    let uuid = $("#update-modal-uuid").html();
+    let prod = g_dataMap.get(uuid);
+
+    let price1 = $("#edit-precio1").val();
+    let price2 = $("#edit-precio2").val();
+    let price3 = $("#edit-precio3").val();
+
+    // get nombre, marca, categoria, stock, aviso, cantidad, q, promotion, imag
+    
+    let nombre = $("#edit-name").val();
+    let marca = $("#edit-marca").val();
+    let category = $("#edit-categoria").val();
+    let stock = parseInt($("#edit-stock").val());
+    let aviso = parseInt($("#edit-aviso").val());
+    let c = $("#edit-cantidad").val();
+    let q = $("#edit-q").val();
+    let promotion = $("#edit-promotion").val();
+    let image = $("#edit-image-path").val();
+
+    let barcode = $("#edit-barcode").val();
+
+    let cantidad =  c +" "+ q;
+
+    // get bodega -> convert to object
+    let bodegas = {};
+    g_bodegas.forEach((bodega,i) => {
+        let bodegaName = bodega.nombre;
+        let bodegaId = i;
+        let bodegaStock = $("#bodega-"+bodegaId).val();
+        bodegas[bodegaId] = {
+            name: bodegaName,
+            cantidad: bodegaStock
+        };
+    });
+
+    let data = {
+        id: prod.id,
+        name: nombre,
+        brand: marca,
+        category: category,
+        stock: stock,
+        notification: aviso,
+        cantidad: cantidad,
+        promotion: promotion,
+        filename: image,
+        bodega: JSON.stringify(bodegas),
+        price: JSON.stringify({
+            price1: price1,
+            price2: price2,
+            price3: price3
+        }),
+        barcode: barcode
+    };
+    verifyEditInputs().then(() => {
+        // ajax
+        $.ajax({
+            url: '/api/product/update',
+            method: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(data)
+        }).then((result) => {
+            reloadData();
+            editModal.hide();
+            Swal.fire({
+                title: 'Producto actualizado',
+                text: 'El producto ha sido actualizado correctamente',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        });
+    });
+
+
+}
+function verifyEditInputs(){
+    return new Promise((resolve, reject) => {
+        let name = $("#edit-name").val();
+        let stock = parseInt($("#edit-stock").val());
+        let price1 = $("#edit-precio1").val();
+        let price2 = $("#edit-precio2").val();
+        let price3 = $("#edit-precio3").val();
+        let price = JSON.stringify({
+            price1: price1,
+            price2: price2,
+            price3: price3
+        });
+        let category = $("#edit-categoria").val();
+        let notification = parseInt($("#edit-aviso").val());
+        let brand = $("#edit-marca").val();
+        let c = $("#edit-cantidad").val();
+        let image = $("#edit-image-path").val();
+        let barcode = $("#edit-barcode").val();
+        console.log(typeof barcode);
+        if(barcode == '' || image == '' || name == '' || stock == '' || price1 == '' || price2 == '' || price3 == '' || category == '' || notification == '' || brand == '' || c == ''){
+            console.log("empty inputs");
+            reject();
+        }else{
+            resolve();
+        }
+    });
+}
+function eliminarProducto(uuid){
+    let prod = g_dataMap.get(uuid);
+
+    Swal.fire({
+        title: '¿Desea eliminar el producto?',
+        text: "Esta acción no se puede deshacer",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#96d7f4',
+        cancelButtonColor: '#f26262',
+        confirmButtonText: 'Si, Eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/api/product/delete',
+                method: 'DELETE',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    id: prod.id
+                })
+            }).then((result) => {
+                reloadData();
+                editModal.hide();
+                Swal.fire({
+                    title: 'Producto eliminado',
+                    text: 'El producto ha sido eliminado correctamente',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }, (error) => {
+                console.log(error);
+            });
+        }
+    })
+
+    
 }
 function fillProductos(data){
     $("#tbody").html("");
@@ -137,56 +401,60 @@ function fillProductos(data){
     zoomImages();
 }
 function addRow(e){
-    let {price1, price2, price3} = JSON.parse(e.price);
-    let color = "success";
-    if(e.stock <= e.notification + 5){
-        color = "warning";
-    }if(e.stock <= e.notification){
-        color = "danger";
-    }
-    console.log(e.stock, e.notification)
-    $("#tbody").append(`
-        <tr>
-            <td class="">
-                <div class="d-flex justify-content-center align-items-center" role="button">
-                    <img src="/upload/productos/${e.image}" width="60px" alt="" class="img-fluid hover-img img-round">
-                </div>
-            </td>
-            <td><span class="text-primary">${e.code}</span></td>
-            <td class="">
-                <div class="d-flex flex-column align-items-start justify-content-start">
-                    <span class="fw-bold lead">${e.name}</span>
-                    <span class="text-muted">${e.brand}</span>
-                </div>
-            </td>
-            <td class="">${e.cantidad}</td>
-            <td class=""><span class="badge b-pill badge-blue">${_.capitalize(e.category)}</span></td>
-            <td class="">
-                <div class="d-flex justify-content-start align-items-center ps-3">
-                    <div contentEditable="true" id="contentEditable-stock_${e.uuid}" onkeydown="avoidEditablecontents(this)" onkeyup="changeStockValueTable(this)">
-                        ${e.stock} 
+    try {
+        let {price1, price2, price3} = JSON.parse(e.price);
+        let color = "success";
+        if(e.stock <= e.notification + 5){
+            color = "warning";
+        }if(e.stock <= e.notification){
+            color = "danger";
+        }
+        $("#tbody").append(`
+            <tr>
+                <td class="">
+                    <div class="d-flex justify-content-center align-items-center" role="button">
+                        <img src="${e.image}" width="60px" alt="" class="img-fluid hover-img img-round">
                     </div>
-                    <i class="fa-solid fa-circle fa-2xs text-${color} ps-2" id="color-stock-${e.uuid}"></i>
-                </div>
-            </td>
-            <td class="">
-                <div class="d-flex flex-column align-items-start justify-content-center">
-                    <span class=""> 
-                        <span class="badge b-pill badge-green">A ₡ ${price1}</span>
-                        <span class="badge b-pill badge-orange">B ₡ ${price2}</span>
-                        <span class="badge b-pill badge-blue">C ₡ ${price3}</span>
-                    </span>
-                    <small class="text-muted">${e.promotion == 0 ? "Sin Descuento":`${e.promotion}%`}</small>
-                </div>
-            </td>
-            
-            <td class="">
-                <button class="btn btn-sm btn-white" onclick="openContextMenu('${e.uuid}', this)">
-                    <i class="fa-solid fa-ellipsis"></i>
-                </button>
-            </td>
-        </tr>
-    `);
+                </td>
+                <td><span class="text-primary">${e.barcode}</span></td>
+                <td class="">
+                    <div class="d-flex flex-column align-items-start justify-content-start">
+                        <span class="fw-bold lead">${e.name}</span>
+                        <span class="text-muted">${e.brand}</span>
+                    </div>
+                </td>
+                <td class="">${e.cantidad}</td>
+                <td class=""><span class="badge b-pill badge-blue">${e.category}</span></td>
+                <td class="">
+                    <div class="d-flex justify-content-start align-items-center ps-3">
+                        <div contentEditable="true" class="p-1 h4 mb-0" role="button" id="contentEditable-stock_${e.uuid}" onkeydown="avoidEditablecontents(this)" onkeyup="changeStockValueTable(this)">
+                            ${e.stock} 
+                        </div>
+                        <i class="fa-solid fa-circle fa-2xs text-${color} ps-2" id="color-stock-${e.uuid}"></i>
+                    </div>
+                </td>
+                <td class="">
+                    <div class="d-flex flex-column align-items-start justify-content-center">
+                        <span class=""> 
+                            <span class="badge b-pill badge-green">A ₡ ${price1}</span>
+                            <span class="badge b-pill badge-orange">B ₡ ${price2}</span>
+                            <span class="badge b-pill badge-blue">C ₡ ${price3}</span>
+                        </span>
+                        <small class="text-muted">${e.promotion == 0 ? "Sin Descuento":`${e.promotion}%`}</small>
+                    </div>
+                </td>
+                
+                <td class="">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <button type="button" class="btn btn-outline-primary me-2" style="width: max-content; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="openEditModal('${e.uuid}')"><i class="fa-solid fa-pen"></i> Editar</button>
+                        <button type="button" class="btn btn-danger" style="width: max-content; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="eliminarProducto('${e.uuid}')"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `);
+    } catch (error) {
+        console.log(error);
+    }
 }
 function avoidEditablecontents(element){
     if(event.keyCode == 13){
@@ -281,7 +549,7 @@ function formatInputs(){
     });
 
 }
-function agregarProducto(filename){
+function agregarProducto(){
     let name = $("#add-name").val();
     let stock = parseInt($("#add-stock").val());
     let price1 = $("#add-precio1").val();
@@ -293,7 +561,14 @@ function agregarProducto(filename){
         price2: price2,
         price3: price3
     });
-    console.log(price);
+    let temBodega = {}
+    g_bodegas.forEach(e => {
+        temBodega[e.id + ""] = {
+            nombre: e.nombre,
+            cantidad: 0
+        };
+    })
+    let bodega = JSON.stringify(temBodega);
 
     let category = $("#add-categoria").val();
     let notification = parseInt($("#add-aviso").val());
@@ -301,66 +576,78 @@ function agregarProducto(filename){
     let q = $("#add-q").val();
     let c = $("#add-cantidad").val();
     let cantidad =  c +" "+ q;
-    let image = filename;
-    $.ajax({
-        url: '/api/product/add',
-        method: 'POST',
-        data: JSON.stringify({
-            name: name,
-            stock: stock,
-            price: price,
-            category: category,
-            notification: notification,
-            filename: image,
-            brand: brand,
-            cantidad: cantidad
-        }),
-        contentType: 'application/json'
-    }).then((result) => {
-        if(result.status === 200){
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                  toast.addEventListener('mouseenter', Swal.stopTimer)
-                  toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            });
-            Toast.fire({
-                icon: 'success',
-                title: 'Producto agregado'
-            })
-            clearInputs();
-            moveToList();
-            reloadData();
-        }
-    }, (error) => {
-        console.log(error);
+    let image = $("#add-imagelink").val();
+    let barcode = $("#barcodeResultText").text();
+    
+    verifyInputs().then(e =>{
+        $.ajax({
+            url: '/api/product/add',
+            method: 'POST',
+            data: JSON.stringify({
+                name: name,
+                stock: stock,
+                price: price,
+                category: category,
+                notification: notification,
+                filename: image,
+                brand: brand,
+                cantidad: cantidad,
+                barcode: barcode,
+                bodega: bodega
+            }),
+            contentType: 'application/json'
+        }).then((result) => {
+            if(result.status === 200){
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Producto agregado'
+                })
+                clearInputs();
+                moveToList();
+                reloadData();
+            }
+        }, (error) => {
+            console.log(error);
+        });
+    }).catch(e=>{
+        createAlert('danger', 'Error', 'Todos los campos son obligatorios.');
     });
 }
 function verifyInputs(){
-    let name = $("#add-name").val();
-    let stock = parseInt($("#add-stock").val());
-    let price1 = $("#add-precio1").val();
-    let price2 = $("#add-precio2").val();
-    let price3 = $("#add-precio3").val();
-    let price = JSON.stringify({
-        price1: price1,
-        price2: price2,
-        price3: price3
+    return new Promise((resolve, reject) => {
+        let name = $("#add-name").val();
+        let stock = parseInt($("#add-stock").val());
+        let price1 = $("#add-precio1").val();
+        let price2 = $("#add-precio2").val();
+        let price3 = $("#add-precio3").val();
+        let price = JSON.stringify({
+            price1: price1,
+            price2: price2,
+            price3: price3
+        });
+        let category = $("#add-categoria").val();
+        let notification = parseInt($("#add-aviso").val());
+        let brand = $("#add-marca").val();
+        let c = $("#add-cantidad").val();
+        let image = $("#add-imagelink").val();
+        let barcode = $("#barcodeResult").find("#barcodeResultText").text();
+        if(barcode === '' || image === '' || name === '' || stock === '' || price1 === '' || price2 === '' || price3 === '' || category === '' || notification === '' || brand === '' || c === ''){
+            reject();
+        }else{
+            resolve();
+        }
     });
-    let category = $("#add-categoria").val();
-    let notification = parseInt($("#add-aviso").val());
-    let brand = $("#add-marca").val();
-    let c = $("#add-cantidad").val();
-    if(name === '' || stock === '' || price1 === '' || price2 === '' || price3 === '' || category === '' || notification === '', brand === '', c === ''){
-        createAlert('danger', 'Error', 'Todos los campos son obligatorios.');
-        return false;
-    }
-    return true;
 }
 function createAlert(type, title, text){
     $("#alert").html(`
@@ -389,7 +676,6 @@ function clearInputs(){
     $("#add-aviso").val('');
     $("#add-marca").val('');
     $("#add-q").val('');
-    dropzoneAgregar.removeAllFiles();
 }
 function runTooltips(){
     tippy('.aviso-tooltip', {
@@ -431,76 +717,6 @@ function zoomImages(){
         $('#image-preview-src').attr('src', $(this).attr('src'));
         modalImagePreview.show();
         
-    });
-}
-function dropzoneLoad(){
-    dropzoneAgregar = new Dropzone("#dropArea", {
-        autoProcessQueue: false,
-        parallelUploads: 1,
-        url: "/api/product/addimage",
-        method: "post",
-        maxFiles: 1,
-        maxFilesize: 5,
-        thumbnailWidth: 180,
-        thumbnailHeight: 180,
-        init: function() {
-            dropzoneAgregar = this;
-            this.on("addedfile", function(file) {
-                $('#borrar-imagen-drop').show();
-                $('#borrar-imagen-drop').addClass('d-block');
-
-            });
-            this.on("success", function(file, response) {
-                agregarProducto(response.data.filename);
-            });
-        }
-    });
-    $('#btn-agregar').on('click',function(){
-        if(verifyInputs()){
-            dropzoneAgregar.processQueue();
-        }
-    });
-    $('#borrar-imagen-drop').on('click',function(){
-        dropzoneAgregar.removeAllFiles();
-        $('#borrar-imagen-drop').hide();
-        $('#borrar-imagen-drop').removeClass('d-block');
-    });
-    // TODO: Dropzone para actualizar la imagen del producto
-    dropzoneActualizar = new Dropzone("#dropArea2", {
-        autoProcessQueue: false,
-        parallelUploads: 1,
-        url: "/api/product/replaceImage",
-        method: "post",
-        maxFiles: 1,
-        maxFilesize: 6,
-        thumbnailMethod: 'crop',
-        acceptedFiles: 'image/jpeg, image/png, image/jpg',
-        thumbnailWidth: 250,
-        thumbnailHeight: 250,
-        // resize
-        resizeWidth: 250,
-        resizeHeight: 250,
-        resizeMethod: 'crop',
-        resizeQuality: 1,
-
-        init: function() {
-            dropzoneActualizar = this;
-            this.on("addedfile", function(file) {
-                $('#borrar-imagen-drop-actualizar').show();
-                $('#borrar-imagen-drop-actualizar').addClass('d-block');
-            });
-            this.on("success", function(file, response) {
-                actualizarProducto(response.data.filename);
-            });
-        }
-    });
-    $('#btn-actualizar').on('click',function(){
-        dropzoneActualizar.processQueue();
-    });
-    $('#borrar-imagen-drop-actualizar').on('click',function(){
-        dropzoneActualizar.removeAllFiles();
-        $('#borrar-imagen-drop-actualizar').hide();
-        $('#borrar-imagen-drop-actualizar').removeClass('d-block');
     });
 }
 function checkRatioFilter(){
@@ -650,6 +866,11 @@ function searchonTable(){
         search += value + " ";
     });
     table.search(search).draw();
+}
+
+function searchScaner(name){
+    var table = $("#table").DataTable();
+    table.search(name).draw();
 }
 
 document.addEventListener("DOMContentLoaded", init);

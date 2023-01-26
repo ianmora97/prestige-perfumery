@@ -3,7 +3,7 @@ $primary-light: lighten($primary, 10%);
 
 $secondary: #96d7f4;
 $success: #38c172;
-$danger: #fc5656;
+$danger: #f26262;
 $warning: #f6993f;
 $dark: #1f2937;
 $dark-900: #111827;
@@ -299,6 +299,21 @@ button{
 .btn-danger{
     color: white !important;
 }
+.btn-expand-text{
+    transition: all .3s ease-in-out;
+
+    span{
+        transition: all .3s ease-in-out;
+        display: none;
+        opacity: 0;
+    }
+    &:hover{
+        span{
+            display: inline-block;
+            opacity: 1;
+        }
+    }
+}
 
 
 [data-type="ratio-filter"]{
@@ -519,7 +534,17 @@ $modal-fade-transform: scale(.8);
     padding: .5rem 1rem;
 }
 
-
+@media (min-width: 1024px) {
+    .modal-xxl{
+        --bs-modal-width: 80vw !important;
+    }
+}
+// on mobile devices
+@media (max-width: 1024px) {
+    .modal-xxl{
+        --bs-modal-width: 90vw !important;
+    }
+}
 
 /**
 * Tippy JS
