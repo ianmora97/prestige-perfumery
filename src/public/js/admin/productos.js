@@ -3,6 +3,7 @@ var g_dataMap = new Map();
 var g_data = [];
 
 var g_bodegas = [];
+var g_bodegasMap = new Map();
 
 var isSearch = false;
 
@@ -16,6 +17,14 @@ const editModal = new bootstrap.Modal('#editModal');
 
 var modalEscaner = document.getElementById('escanerModal');
 const escanerModal = new bootstrap.Modal(modalEscaner);
+
+// modal for bodega
+var modalBodegaE = document.getElementById('modalBodegaEdit');
+const modalBodegaEdit = new bootstrap.Modal('#modalBodegaEdit');
+
+var modalBodegaA = document.getElementById('modalBodegaAdd');
+const modalBodegaAdd = new bootstrap.Modal('#modalBodegaAdd');
+
 
 function init(){
     formatInputs();
@@ -164,12 +173,102 @@ function brignData(){
     }, (error) => {
         console.log(error);
     });
+    getDataBodega();
+}
+function getDataBodega(){
     $.ajax({
         url: '/api/bodega/all',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
         g_bodegas = result;
+        fillBodegas(result);
+
+    }, (error) => {
+        console.log(error);
+    });
+}
+
+function fillBodegas(data){
+    $("#card-bodegas-items").empty();
+    data.forEach((item) => {
+        addBodegaCard(item);
+        g_bodegasMap.set(item.id, item);
+    });
+    $("#card-bodegas-items").append(`
+        <div class="col-md-2">
+            <div class="card-bodega" onclick="addNewBodega()">
+                <i class="fa-solid fa-plus fa-2x text-white"></i>
+            </div>
+        </div>
+    `);
+}
+function addBodegaCard(e){
+    $("#card-bodegas-items").append(`
+        <div class="col-md-2">
+            <div class="card-bodega" onclick="openUpdateBodega('${e.id}')">
+                <h5 class="fw-bold text-white">${e.nombre}</h5>
+            </div>
+        </div>
+    `);
+}
+function openUpdateBodega(id){
+    let bodega = g_bodegasMap.get(parseInt(id));
+    $("#update-bodega-name").val(bodega.nombre);
+    $("#update-bodega-id").html(bodega.id);
+    
+    modalBodegaEdit.show();
+}
+function actulizarBodega(){
+    let id = $("#update-bodega-id").html();
+    let nombre = $("#update-bodega-name").val();
+    $.ajax({
+        url: '/api/bodega/update',
+        method: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            id: id,
+            nombre: nombre
+        })
+    }).then((result) => {
+        getDataBodega();
+        modalBodegaEdit.hide();
+    }, (error) => {
+        console.log(error);
+    });
+}
+function addNewBodega(){
+    $("#add-bodega-name").val("");
+    modalBodegaAdd.show();
+}
+function agregarBodega(){
+    let nombre = $("#add-bodega-name").val();
+    $.ajax({
+        url: '/api/bodega/add',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            nombre: nombre
+        })
+    }).then((result) => {
+        getDataBodega();
+        modalBodegaAdd.hide();
+    }, (error) => {
+        console.log(error);
+    });
+}
+function eliminarBodega(){
+    let id = $("#update-bodega-id").html();
+    $.ajax({
+        url: '/api/bodega/delete',
+        method: 'DELETE',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            id: id
+        })
+    }).then((result) => {
+        getDataBodega();
+        modalBodegaEdit.hide();
     }, (error) => {
         console.log(error);
     });
@@ -224,17 +323,15 @@ function openEditModal(uuid){
     editModal.show();
 }
 function iterateonBodegas(bodegas){
-    console.log(JSON.parse(bodegas));
-    // #bodegas-list-update
+    let arr = JSON.parse(bodegas); // type: array
     $("#bodegas-list-update").html("");
-    // creates a list of text-inputs for each bodega
     g_bodegas.forEach((bodega,i) => {
         let bodegaName = bodega.nombre;
         let bodegaId = i;
         let bodegaStock = 0;
-        Object.values(JSON.parse(bodegas)).forEach((b) => {
-            if(b.id == bodegaId){
-                bodegaStock = b.cantidad;
+        arr.forEach((elem) => {
+            if(elem.nombre == bodegaName){
+                bodegaStock = elem.cantidad;
             }
         });
         $("#bodegas-list-update").append(`
@@ -252,9 +349,9 @@ function updateProduct(){
     let uuid = $("#update-modal-uuid").html();
     let prod = g_dataMap.get(uuid);
 
-    let price1 = $("#edit-precio1").val();
-    let price2 = $("#edit-precio2").val();
-    let price3 = $("#edit-precio3").val();
+    let price1 = $("#edit-precio1").val().replace(/\./g,'');
+    let price2 = $("#edit-precio2").val().replace(/\./g,'');
+    let price3 = $("#edit-precio3").val().replace(/\./g,'');
 
     // get nombre, marca, categoria, stock, aviso, cantidad, q, promotion, imag
     
@@ -272,16 +369,13 @@ function updateProduct(){
 
     let cantidad =  c +" "+ q;
 
-    // get bodega -> convert to object
-    let bodegas = {};
+    let bodegas = [];
     g_bodegas.forEach((bodega,i) => {
-        let bodegaName = bodega.nombre;
-        let bodegaId = i;
-        let bodegaStock = $("#bodega-"+bodegaId).val();
-        bodegas[bodegaId] = {
-            name: bodegaName,
-            cantidad: bodegaStock
-        };
+        let cantidad = parseInt($("#bodega-"+i).val());
+        bodegas.push({
+            nombre: bodega.nombre,
+            cantidad: cantidad
+        });
     });
 
     let data = {
@@ -342,9 +436,7 @@ function verifyEditInputs(){
         let c = $("#edit-cantidad").val();
         let image = $("#edit-image-path").val();
         let barcode = $("#edit-barcode").val();
-        console.log(typeof barcode);
         if(barcode == '' || image == '' || name == '' || stock == '' || price1 == '' || price2 == '' || price3 == '' || category == '' || notification == '' || brand == '' || c == ''){
-            console.log("empty inputs");
             reject();
         }else{
             resolve();
@@ -413,7 +505,7 @@ function addRow(e){
             <tr>
                 <td class="">
                     <div class="d-flex justify-content-center align-items-center" role="button">
-                        <img src="${e.image}" width="60px" alt="" class="img-fluid hover-img img-round">
+                        <img src="${e.image}" height="70px" alt="" class="hover-img img-round">
                     </div>
                 </td>
                 <td><span class="text-primary">${e.barcode}</span></td>
@@ -433,12 +525,12 @@ function addRow(e){
                         <i class="fa-solid fa-circle fa-2xs text-${color} ps-2" id="color-stock-${e.uuid}"></i>
                     </div>
                 </td>
-                <td class="">
+                <td class="" data-search="${price1} - ${price2} - ${price3}">
                     <div class="d-flex flex-column align-items-start justify-content-center">
                         <span class=""> 
-                            <span class="badge b-pill badge-green">A ₡ ${price1}</span>
-                            <span class="badge b-pill badge-orange">B ₡ ${price2}</span>
-                            <span class="badge b-pill badge-blue">C ₡ ${price3}</span>
+                            <span class="badge b-pill badge-green">₡ ${price1}</span>
+                            <span class="badge b-pill badge-orange">₡ ${price2}</span>
+                            <span class="badge b-pill badge-blue">₡ ${price3}</span>
                         </span>
                         <small class="text-muted">${e.promotion == 0 ? "Sin Descuento":`${e.promotion}%`}</small>
                     </div>
@@ -474,7 +566,6 @@ function avoidEditablecontents(element){
                 stock
             },
         }).then((data) => {
-            console.log(data);
             if(data.status == "200"){
                 createSwalAlertToast("success", "Inventario Actualizado");
                 $(element).closest("tr").next().find("div[contentEditable=true]").focus();
@@ -552,23 +643,23 @@ function formatInputs(){
 function agregarProducto(){
     let name = $("#add-name").val();
     let stock = parseInt($("#add-stock").val());
-    let price1 = $("#add-precio1").val();
-    let price2 = $("#add-precio2").val();
-    let price3 = $("#add-precio3").val();
+    let price1 = $("#add-precio1").val().replace(/\./g,'');
+    let price2 = $("#add-precio2").val().replace(/\./g,'');
+    let price3 = $("#add-precio3").val().replace(/\./g,'');
 
     let price = JSON.stringify({
         price1: price1,
         price2: price2,
         price3: price3
     });
-    let temBodega = {}
+    let bodegas = []
     g_bodegas.forEach(e => {
-        temBodega[e.id + ""] = {
+        bodegas.push({
             nombre: e.nombre,
             cantidad: 0
-        };
+        })
     })
-    let bodega = JSON.stringify(temBodega);
+    let bodega = JSON.stringify(bodegas);
 
     let category = $("#add-categoria").val();
     let notification = parseInt($("#add-aviso").val());
@@ -722,7 +813,7 @@ function zoomImages(){
 function checkRatioFilter(){
     $("[data-type='ratio-filter']").on('click', function(e){
         let val = $(this).attr('id').split("-")[1];
-        $(this).addClass('active').siblings().removeClass('active');
+        // $(this).addClass('active').siblings().removeClass('active');
         if(val == "all") val = "";
         g_filter.set("ratio", val);
         searchonTable();
@@ -824,6 +915,7 @@ function datatables(){
         g_filter.set("search", val);
         searchonTable();
     });
+    
 }
 
 function createSwalAlert(type, title, text){

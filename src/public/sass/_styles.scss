@@ -316,12 +316,27 @@ button{
 }
 
 
-[data-type="ratio-filter"]{
-    display: flex !important;
-    align-items: center;
+.card-bodega{
+    border-radius: 15px;
+    background-color: $dark;
+    padding: 1rem;
+    min-height: 100px;
+    text-align: center;
+    box-shadow: 0 4px 10px 0 rgba(0,0,0,0.1);
+    transition: all .3s ease-in-out;
+    display: flex;
     justify-content: center;
-}
+    align-items: center;
+    cursor: pointer;
+    &:hover{
+        scale: 1.01;
+    }
 
+}
+.selectize-control.multi .selectize-input>div.active{
+    background-color: $primary !important;
+    color: white !important;
+}
 /**
  * Sidebar
 */

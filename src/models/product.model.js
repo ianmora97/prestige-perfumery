@@ -1,5 +1,5 @@
 const mysqlcon = require('../database/mysqlcon');
-const { DataTypes, Sequelize, QueryTypes } = require('sequelize');
+const { DataTypes, Op, QueryTypes } = require('sequelize');
 
 const Product = mysqlcon.define('t_product',{
     id:{
@@ -82,6 +82,44 @@ exports.getAll = async (resolve) => {
         });
     });
 };
+exports.findOne = async (id, resolve) => {
+    Product.findOne({
+        where: {
+            id: id
+        }
+    }).then((product) => {
+        resolve({
+            status: 200,
+            data: product
+        });
+    }).catch((error) => {
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+};
+exports.getProducts = async (resolve) => {
+    Product.findAll({
+        where: {
+            stock: {
+                [Op.gte]: 1
+            }
+        },
+        attributes: ['id', 'name', 'brand', 'stock', 'category', 'price']
+    }).then((products) => {
+        resolve({
+            status: 200,
+            data: products
+        });
+    }).catch((error) => {
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+};
+
 /**
  * Creates a new product
  */
@@ -137,6 +175,26 @@ exports.update = async (body, resolve) => {
             data: product
         });
     }).catch((error) => {
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+}
+exports.remove1Stock = async (body, resolve) => {
+    Product.update({
+        stock: mysqlcon.literal(`stock - ${body.cantidad}`)
+    }, {
+        where: {
+            id: body.id
+        }
+    }).then((product) => {
+        resolve({
+            status: 200,
+            data: product
+        });
+    }).catch((error) => {
+        console.log(error);
         resolve({
             status: 500,
             data: error

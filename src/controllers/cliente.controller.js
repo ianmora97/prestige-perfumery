@@ -1,34 +1,46 @@
-const Bodega = require('../models/bodega.model');
+const Cliente = require('../models/cliente.model');
 const logger = require('../utils/logger');
 const jwt = require('jsonwebtoken');
 require("dotenv").config();
 
+
 module.exports = {
     getAll: (req, res) => {
-        Bodega.getAll((result) => {
+        if(req.query.type != undefined && req.query.type == "selectize"){
+            Cliente.getAllSelectize((result) => {
+                res.status(result.status).json(result.data);
+            });
+        }else{
+            Cliente.getAll((result) => {
+                res.status(result.status).json(result.data);
+            });
+        }
+    },
+    findOne: (req, res) => {
+        Cliente.findOne(req.params.id, (result) => {
             res.status(result.status).json(result.data);
         });
     },
     create: (req, res) => {
-        Bodega.create(req.body, (result) => {
+        Cliente.create(req.body, (result) => {
             who(req).then((user) => {
-                logger.activity(`Bodega "${req.body.nombre}" creada`, user);
+                logger.activity(`Cliente "${req.body.nombre}" creado`, user);
             })
             res.status(result.status).json(result);
         });
     },
     update: (req, res) => {
-        Bodega.update(req.body, (result) => {
+        Cliente.update(req.body, (result) => {
             who(req).then((user) => {
-                logger.activity(`Bodega actualizada a "${req.body.nombre}"`, user);
+                logger.activity(`Cliente "${req.body.nombre}" actualizado`, user);
             })
             res.status(result.status).json(result);
         });
     },
     delete: (req, res) => {
-        Bodega.delete(req.body.id, (result) => {
+        Cliente.delete(req.params.id, (result) => {
             who(req).then((user) => {
-                logger.activity(`Bodega "${req.body.id}" eliminada`, user);
+                logger.activity(`Cliente "${req.params.id}" eliminado`, user);
             })
             res.status(result.status).json(result);
         });

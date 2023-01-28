@@ -1,35 +1,50 @@
-const Bodega = require('../models/bodega.model');
+const Purchase = require('../models/purchase.model');
+const Product = require('../models/product.model');
 const logger = require('../utils/logger');
 const jwt = require('jsonwebtoken');
 require("dotenv").config();
 
 module.exports = {
     getAll: (req, res) => {
-        Bodega.getAll((result) => {
+        Purchase.getAll((result) => {
             res.status(result.status).json(result.data);
         });
     },
-    create: (req, res) => {
-        Bodega.create(req.body, (result) => {
+    findOne: (req, res) => {
+        Purchase.findOne(req.params.id, (result) => {
+            res.status(result.status).json(result.data);
+        });
+    },
+    createAdmin: (req, res) => {
+        req.body.productos.forEach((item) => {
+            Product.remove1Stock({id: item.product, cantidad: item.cantidad}, (result) => {
+                if(result.status === 200){
+                    console.log("Stock actualizado");
+                }else{
+                    console.log("Error al actualizar stock");
+                }
+            });
+        });
+        Purchase.create(req.body, (result) => {
             who(req).then((user) => {
-                logger.activity(`Bodega "${req.body.nombre}" creada`, user);
-            })
+                logger.activity(`Orden Generada ${req.body.id} creada`, user);
+            });
             res.status(result.status).json(result);
         });
     },
     update: (req, res) => {
-        Bodega.update(req.body, (result) => {
+        Purchase.update(req.body, (result) => {
             who(req).then((user) => {
-                logger.activity(`Bodega actualizada a "${req.body.nombre}"`, user);
-            })
+                logger.activity(`Compra ${req.body.id} actualizada`, user);
+            });
             res.status(result.status).json(result);
         });
     },
     delete: (req, res) => {
-        Bodega.delete(req.body.id, (result) => {
+        Purchase.delete(req.params.id, (result) => {
             who(req).then((user) => {
-                logger.activity(`Bodega "${req.body.id}" eliminada`, user);
-            })
+                logger.activity(`Compra ${req.params.id} eliminada`, user);
+            });
             res.status(result.status).json(result);
         });
     }

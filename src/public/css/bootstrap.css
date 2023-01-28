@@ -297,10 +297,26 @@ button {
   opacity: 1;
 }
 
-[data-type=ratio-filter] {
-  display: flex !important;
-  align-items: center;
+.card-bodega {
+  border-radius: 15px;
+  background-color: #1f2937;
+  padding: 1rem;
+  min-height: 100px;
+  text-align: center;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+  display: flex;
   justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.card-bodega:hover {
+  scale: 1.01;
+}
+
+.selectize-control.multi .selectize-input > div.active {
+  background-color: #4f46e5 !important;
+  color: white !important;
 }
 
 /**
