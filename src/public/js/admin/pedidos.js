@@ -1,3 +1,4 @@
+var g_filter = new Map();
 var g_dataMap = new Map();
 var g_data = [];
 
@@ -7,13 +8,57 @@ var g_productosData = new Map();
 var modalAgregarPedido = document.getElementById('agregarPedidoModal');
 const agregarPedidoModal = new bootstrap.Modal('#agregarPedidoModal');
 
+var modalverPedido = document.getElementById('verPedidoModal');
+const verPedidoModal = new bootstrap.Modal('#verPedidoModal');
+
 
 function init(){
     brignData();
     brignClients();
     brignProducts();
+    onverPedidoModal();
+    checkRatioFilter();
 }
-
+function createSwalAlertToast(type, text){
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+    Toast.fire({
+        icon: type,
+        text: text,
+        showClass: {
+            popup: 'animate__animated animate__fadeInRight'
+        },
+        hideClass: {
+            popup: 'animate__animated animate__fadeOutRight'
+        }
+    })
+}
+function checkRatioFilter(){
+    $("[data-type='ratio-filter']").on('click', function(e){
+        let val = $(this).attr('id').split("-")[1];
+        // $(this).addClass('active').siblings().removeClass('active');
+        if(val == "all") val = "";
+        g_filter.set("ratio", val);
+        searchonTable();
+    });
+}
+function searchonTable(){
+    var table = $("#table").DataTable();
+    let search = "";
+    g_filter.forEach((value, key) => {
+        search += value + " ";
+    });
+    table.search(search).draw();
+}
 function brignData(){
     let ajaxTime = new Date().getTime();
     $.ajax({
@@ -72,23 +117,35 @@ function addRow(e){
         }
         $("#tbody").append(`
             <tr>
-                <td class="">
-                    <a href="#" class="link-primary text-decoration-none">#${e.id}</a>
+                <td class="text-center" data-filter="${e.id}">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#verPedidoModal" data-bs-id="${e.id}" class="link-primary text-decoration-none">#${e.id}</a>
                 </td>
                 <td class="">
                     ${e.nombre}
                 </td>
-                <td class="">${items.total}</td>
+                <td class="">
+                    <span>${items.total}
+                        <span class="d-none">${JSON.stringify(items.productos)}</span>
+                    </span>
+                </td>
                 <td class="">
                     <span class="text-primary">${precio}</span>
                 </td>
-                <td class="" data-filter="${estado}">
-                    <span class="badge b-pill badge-${color}">${estado}</span>
+                <td class="" data-filter="${estado}" data-order="${e.state}" data-search="${estado}">
+                    <div class="dropdown">
+                        <button class="btn btn-${color} dropdown-toggle b-pill" id="dropdown-status-${e.id}" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        ${estado}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item text-blue"  role="button" onclick="cambiarStatus('${e.id}','2')">Empacado</a></li>
+                            <li><a class="dropdown-item text-green"  role="button" onclick="cambiarStatus('${e.id}','3')">Entregado</a></li>
+                            <li><a class="dropdown-item text-red"  role="button" onclick="cambiarStatus('${e.id}','4')">Cancelado</a></li>
+                        </ul>
+                    </div>
                 </td>
                 <td class="">
                     <div class="d-flex justify-content-center align-items-center">
-                        <button type="button" class="btn btn-outline-primary me-2" style="width: max-content; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="openEditModal('${e.id}')"><i class="fa-solid fa-pen"></i> Editar</button>
-                        <button type="button" class="btn btn-danger" style="width: max-content; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="eliminarProducto('${e.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                        <button type="button" class="btn btn-danger" style="width: max-content; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="eliminarPedido('${e.id}')"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                 </td>
             </tr>
@@ -102,8 +159,15 @@ function datatables(){
         responsive: true,
         select: true,
         keys: false,
-
-        order: [[ 3, "asc" ]],
+        columns:[
+            {data: "id"},
+            {data: "nombre"},
+            {data: "productos"},
+            {data: "precio"},
+            {data: "estado"},
+            {data: "acciones"},
+        ],
+        order: [[ 4, "desc" ]],
         "scrollY": "600px",
         "scrollCollapse": true,
         "language": {
@@ -165,6 +229,7 @@ function datatables(){
             },
         }
     });
+
     $('#info').html('');
     $('#length').html('');
     $('#pagination').html('');
@@ -180,6 +245,35 @@ function datatables(){
         searchonTable();
     });
     
+}
+function cambiarStatus(id,status){
+    if(parseInt(status) == 2){
+        $("#dropdown-status-"+id).html(`Empacado`);
+        $("#dropdown-status-"+id).removeClass("btn-blue").removeClass("btn-orange").removeClass("btn-green")
+        .addClass("btn-blue");
+    }else if(parseInt(status) == 3){
+        $("#dropdown-status-"+id).html(`Entregado`);
+        $("#dropdown-status-"+id).removeClass("btn-blue").removeClass("btn-orange").removeClass("btn-green")
+        .addClass("btn-green");
+    }else if(parseInt(status) == 4){
+        $("#dropdown-status-"+id).html(`Cancelado`);
+        $("#dropdown-status-"+id).removeClass("btn-blue").removeClass("btn-orange").removeClass("btn-green")
+        .addClass("btn-red");
+    }
+    $.ajax({
+        url: '/api/purchase/status/update',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            id: parseInt(id),
+            status: parseInt(status)
+        })
+    }).then((result) => {
+        createSwalAlertToast("success", `Estado del pedido #${id} actualizado`);
+    }, (error) => {
+        console.log(error);
+    });
+
 }
 function brignClients(){
     $.ajax({
@@ -246,24 +340,26 @@ function selectizeProducts(data){
           
             return group;
         },
-        // when a item is selected add it to the list
         onItemAdd: function(value, $item){
             let e = g_productosData.get(parseInt(value));
             addProdctItem(e);
+        },
+        onItemRemove: function(value){
+            let e = g_productosData.get(parseInt(value));
+            $("#product-item-"+e.id).remove();
         }
     });
 }
 function addProdctItem(e){
-    let precios = JSON.parse(e.price); // array
+    let precios = JSON.parse(e.price);
     $("#products-list").append(`
-        <li class="list-group-item d-flex justify-content-between align-items-center bg-gray border-blue">
-            <div>
-                <h5 class="mb-0 fw-bold">${e.name}</h5>
-                <span class="text-muted">${e.brand}</span>
-            </div>
-            
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
+        <li class="list-group-item bg-gray border-blue" id="product-item-${e.id}">
+            <div class="row mx-0 g-0">
+                <div class="col-md-7 d-flex justify-content-start align-items-start flex-column">
+                    <h5 class="mb-0 fw-bold text-dark">${e.name}</h5>
+                    <span class="text-muted">${e.brand}</span>
+                </div>
+                <div style="width:360px;">
                     <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-1" data-precio="${precios.price1}">
                     <label class="btn btn-outline-green me-2" style="width:100px;" for="precio-item-${e.id}-1">A ${precios.price1}</label>
 
@@ -271,10 +367,13 @@ function addProdctItem(e){
                     <label class="btn btn-outline-orange me-2" style="width:100px;" for="precio-item-${e.id}-2">B ${precios.price2}</label>
 
                     <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-3" data-precio="${precios.price3}">
-                    <label class="btn btn-outline-blue me-2" style="width:100px;" for="precio-item-${e.id}-3">C ${precios.price3}</label>
+                    <label class="btn btn-outline-blue" style="width:100px;" for="precio-item-${e.id}-3">C ${precios.price3}</label>
                 </div>
-                <div class="margin-right:35px;">
-                    <input type="number" class="form-control" id="cantidad-producto-${e.id}" style="width:60px;" value="1" placeholder="Cantidad" steps="1" min="1" min-lenght="1" value="1">
+                <div class="col-md d-flex justify-content-start align-items-start flex-column">
+                    <div class="input-group">
+                        <span class="input-group-text" id="iconoCantidad${e.id}"><i class="fa-solid fa-plus-minus"></i></span>
+                        <input type="number" class="form-control" id="cantidad-producto-${e.id}" aria-describedby="iconoCantidad${e.id}" value="1" placeholder="Cantidad" steps="1" min="1" min-lenght="1" value="1" max="${e.stock}" maxlength="${e.stock}">
+                    </div>
                 </div>
             </div>
         </li>
@@ -285,7 +384,10 @@ function agregarPedido(){
     let cliente = $("#add-client").val();
     let p = $("#add-productos").val();
 
-    if(cliente == "" || p.length == 0){
+    let notas = $("#add-notas").val();
+    let metodoPago = $("#add-metodoPago").val();
+
+    if(cliente == "" || p.length == 0 || metodoPago == ""){
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
@@ -298,7 +400,7 @@ function agregarPedido(){
     p.forEach(e=>{
         let cantidad = parseInt($(`#cantidad-producto-${e}`).val());
         let precio = parseInt($(`input[name="precio-item-${e}"]:checked`).data("precio"));
-        preciosSum += precio * cantidad;
+        preciosSum += (precio * cantidad);
         priceType.push({
             product: parseInt(e),
             price: precio,
@@ -318,6 +420,8 @@ function agregarPedido(){
             productos: priceType,
             precio: preciosSum
         }),
+        notas: notas,
+        metodoPago: metodoPago,
         productos: productos
     }
     $.ajax({
@@ -343,6 +447,8 @@ function agregarPedido(){
         })
         clearInputs();
         reloadData();
+        // close modal
+        agregarPedidoModal.hide();
     }, (error) => {
         console.log(error);
     });
@@ -352,6 +458,172 @@ function clearInputs(){
     $("#add-productos").val("");
 }
 
+// TODO: ============================== CHECK PEDIDO ==============================
+function brignOneProduct(id){
+    return new Promise((resolve, reject)=>{
+        $.ajax({
+            url: '/api/product/one/'+id,
+            method: 'GET',
+            contentType: 'application/json'
+        }).then((result) => {
+            resolve(result);
+        }, (error) => {
+            console.log(error);
+            reject(error);
+        });
+    });
+}
+function onverPedidoModal(){
+    modalverPedido.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const id = button.getAttribute('data-bs-id');
+
+        let orden = g_dataMap.get(parseInt(id));
+        let items = JSON.parse(orden.items);
+        
+        clearModalData();
+        addClientData(orden);
+        let subtotal = 0;
+        let total = 0;
+        items.productos.forEach(e=>{
+            addProductotoModal(e);
+            subtotal += e.price * e.cantidad;
+        });
+        total = subtotal + 500;
+        $("#order-subtotal").html(`₡${subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`);
+        $("#order-total").html(`₡${total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`);
+
+    });
+}
+function addProductotoModal(e){
+    brignOneProduct(e.product)
+    .then((result)=>{
+        $("#product-list-group").append(`
+            <li class="list-group-item">
+                <div class="row mx-0">
+                    <div class="col-md-8">
+                        <div class="d-flex justify-content-start align-items-start">
+                            <img src="${result.image}" width="90px" class="img-round">
+                            <div class="ps-2 mt-1">
+                                <p class="fw-bold mb-0 text-dark">${result.name} ${result.brand}</p>
+                                <small class="d-block text-dark">${capitalisedFL(result.category)} - ${result.cantidad}</small>
+                                <small class="d-block text-muted">${result.barcode}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-center">
+                        <p class="mb-0">₡${e.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} x ${e.cantidad}</p>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-center justify-content-end">
+                        <p class="mb-0">₡${(e.price * e.cantidad).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+                    </div>
+                </div>
+            </li>
+        `);
+    });
+}
+function addClientData(e){
+    let color = "orange"; // recibido
+    let estado = "Recibido";
+    if(e.state == 2){
+        color = "blue"; // empacado
+        estado = "Empacado";
+        $("#history-order-icon-empacada")
+        .removeClass("fa-fill-gray").removeClass("fa-fill-blue")
+        .addClass("fa-fill-blue");
+
+        $("#history-order-empacada").show();
+    } 
+    else if(e.state == 3) {
+        color = "green"; // entregado
+        estado = "Entregado";
+
+        $("#history-order-icon-empacada")
+        .removeClass("fa-fill-gray").removeClass("fa-fill-blue")
+        .addClass("fa-fill-blue");
+
+        $("#history-order-icon-entregada")
+        .removeClass("fa-fill-gray").removeClass("fa-fill-blue")
+        .addClass("fa-fill-blue");
+
+        $("#history-order-empacada").show();
+        $("#history-order-entregada").show();
+    }
+    else if(e.state == 4) {
+        color = "red"; // cancelado
+        estado = "Cancelado";
+    }
+
+    $("#status-orden-modal").html(`<span class="badge bg-${color}">${estado}</span>`);
+    $("#orden-id-modal").html(`#${e.id}`);
+
+    $("#info-order-name").html(e.nombre);
+    $("#info-order-phone").html(`
+        <a href="tel:+506${e.phone}" class="text-decoration-none text-primary">${e.phone}</a>
+    `);
+    $("#info-order-email").html(`
+        <a href="mailto:${e.email}" class="text-decoration-none text-primary">${e.email}</a>
+    `);
+    $("#info-order-location").html(e.direction);
+    $("#info-order-metodopago").html(e.metodoPago);
+
+    $("#order-notes").html(e.notas);
+}
+function clearModalData(){
+    $("#product-list-group").empty();
+    $("#status-orden-modal").empty();
+
+    $("#history-order-icon-empacada").removeClass("fa-fill-blue").addClass("fa-fill-gray");
+    $("#history-order-icon-entregada").removeClass("fa-fill-blue").addClass("fa-fill-gray");
+
+    $("#history-order-empacada").hide();
+    $("#history-order-entregada").hide();
+
+    $("#info-order-name").empty();
+    $("#info-order-phone").empty();
+    $("#info-order-email").empty();
+    $("#info-order-location").empty();
+    $("#info-order-metodopago").empty();
+}
+// ! ==================== DELETE ====================
+
+function eliminarPedido(id){
+    Swal.fire({
+        title: '¿Desea eliminar el pedido?',
+        text: "Esta acción no se puede deshacer",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#96d7f4',
+        cancelButtonColor: '#f26262',
+        confirmButtonText: 'Si, Eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/api/purchase/delete',
+                method: 'DELETE',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    id: id
+                })
+            }).then((result) => {
+                reloadData();
+                Swal.fire({
+                    title: 'Pedido eliminado',
+                    text: 'El Pedido ha sido eliminado correctamente',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }, (error) => {
+                console.log(error);
+            });
+        }
+    })
+}
 
 
+function capitalisedFL(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 document.addEventListener('DOMContentLoaded', init);

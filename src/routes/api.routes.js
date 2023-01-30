@@ -15,7 +15,7 @@ router.post('/api/user/add', isAuthenticated, USER.create);
 const PRODUCT = require('../controllers/product.controller');
 router.get('/api/product/all', PRODUCT.getAll); // No authentication required
 router.get('/api/product/all/selectize',isAuthenticated, PRODUCT.getProducts);
-router.get('/api/product/all/:id', isAuthenticated, PRODUCT.findOne);
+router.get('/api/product/one/:id', isAuthenticated, PRODUCT.findOne);
 router.post('/api/product/add', isAuthenticated, PRODUCT.create);
 router.put('/api/product/update', isAuthenticated, PRODUCT.update);
 router.put('/api/product/stock', isAuthenticated, PRODUCT.updateStock);
@@ -32,11 +32,13 @@ router.delete('/api/bodega/delete', isAuthenticated, BODEGA.delete);
  * CRUD for Purchase
 */
 const PURCHASE = require('../controllers/purchase.controller');
-router.get('/api/purchase/all', PURCHASE.getAll);
+router.get('/api/purchase/all', isAuthenticated, PURCHASE.getAll);
+router.get('/api/purchase/all/recibidos', isAuthenticated, PURCHASE.recibidos);
 router.get('/api/purchase/all/:id', isAuthenticated, PURCHASE.findOne);
 router.post('/api/purchase/add', isAuthenticated, PURCHASE.createAdmin);
 router.post('/api/purchase/add/client', PURCHASE.createAdmin);
 router.put('/api/purchase/update', isAuthenticated, PURCHASE.update);
+router.post('/api/purchase/status/update', isAuthenticated, PURCHASE.updateStatus);
 router.delete('/api/purchase/delete', isAuthenticated, PURCHASE.delete);
 /**
  * CRUD for Cliente

@@ -85,7 +85,7 @@ exports.getAll = async (resolve) => {
 exports.findOne = async (id, resolve) => {
     Product.findOne({
         where: {
-            id: id
+            id: parseInt(id)
         }
     }).then((product) => {
         resolve({

@@ -1,7 +1,96 @@
 
-
+var g_dataPedidos = [];
 function init(){
     createCharts();
+    getData();
+}
+function getData(){
+    $.ajax({
+        url: '/api/purchase/all',
+        method: 'GET',
+        contentType: 'application/json'
+    }).then((result) => {
+        g_dataPedidos = result;
+        fillPedidos(result);
+        createPedidosChart(result);
+    }, (error) => {
+        console.log(error);
+    });
+}
+function createPedidosChart(data){
+    let result = [0, 0, 0];
+    data.forEach((item) => {
+        result[item.state - 1] += 1;
+    });
+    
+    showPedidosGraph(result);
+}
+function showPedidosGraph(data){
+    var pedidosChart = document.getElementById("pedidosChart");
+    var ctx = pedidosChart.getContext("2d");
+
+    var pedidosChartJS = new Chart(pedidosChart, {
+        type: 'doughnut',
+        data: {
+            labels: ['Recibidos', 'Empacados', 'Entregados'],
+            datasets: [{
+                label: 'Pedidos',
+                data: data,
+                backgroundColor: [
+                    'rgba(79,70,229, 0.5)',
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(255, 206, 86, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(79,70,229, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                display: false
+            },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                            return previousValue + currentValue;
+                        });
+                        var currentValue = dataset.data[tooltipItem.index];
+                        var percentage = Math.floor(((currentValue/total) * 100)+0.5);         
+                        return data.labels[tooltipItem.index] + ": " + currentValue + " (" + percentage + "%)";
+                    }
+                }
+            }
+        }
+    });
+}
+function fillPedidos(data){
+    $("#list-group-pedidos-recibido").html("");
+    data
+    .filter((item) => {
+        return item.state == 1;
+    })
+    .forEach((item) => {
+        addRowPedido(item);
+    });
+}
+function addRowPedido(e){
+    let items = JSON.parse(e.items);
+    $("#list-group-pedidos-recibido").append(`
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="#" class="text-decoration-none text-primary">#${e.id}</a>
+            <p class="mb-0 text-dark">${e.nombre}</p>
+            <p class="mb-0 text-dark">${items.total} ${items.total >= 2 ? "productos":"producto"}</p>
+            <p class="mb-0 text-primary">₡ ${items.precio.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+        </li>
+    `);
 }
 
 function createCharts(){

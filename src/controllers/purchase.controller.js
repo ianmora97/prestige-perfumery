@@ -15,13 +15,18 @@ module.exports = {
             res.status(result.status).json(result.data);
         });
     },
+    recibidos: (req, res) => {
+        Purchase.recibidos((result) => {
+            res.status(result.status).json(result.data);
+        });
+    },
     createAdmin: (req, res) => {
         req.body.productos.forEach((item) => {
             Product.remove1Stock({id: item.product, cantidad: item.cantidad}, (result) => {
                 if(result.status === 200){
-                    console.log("Stock actualizado");
-                }else{
-                    console.log("Error al actualizar stock");
+                    who(req).then((user) => {
+                        logger.activity(`Stock del producto "${item.product}" actualizado`, user);
+                    });
                 }
             });
         });
@@ -40,10 +45,18 @@ module.exports = {
             res.status(result.status).json(result);
         });
     },
-    delete: (req, res) => {
-        Purchase.delete(req.params.id, (result) => {
+    updateStatus: (req, res) => {
+        Purchase.updateStatus(req.body, (result) => {
             who(req).then((user) => {
-                logger.activity(`Compra ${req.params.id} eliminada`, user);
+                logger.activity(`Estado de la compra ${req.body.id} actualizado`, user);
+            });
+            res.status(result.status).json(result);
+        });
+    },
+    delete: (req, res) => {
+        Purchase.delete(req.body.id, (result) => {
+            who(req).then((user) => {
+                logger.activity(`Compra ${req.body.id} eliminada`, user);
             });
             res.status(result.status).json(result);
         });

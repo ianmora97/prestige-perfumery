@@ -37,7 +37,8 @@ $theme-colors: (
     "pink": $pink,
     "green": $green,
     "orange": $orange,
-    "blue": $blue
+    "blue": $blue,
+    "red": $red
 );
 
 /**
@@ -227,6 +228,31 @@ button{
         }
     }
 }
+.dropdown-toggle{
+    &.b-pill{
+        border:none !important;
+    }
+    &.btn-orange{
+        background-color: lighten($orange, 25%) !important;
+        color: $orange !important;
+    }
+    &.btn-pink{
+        background-color: lighten($pink, 25%) !important;
+        color: $pink !important;
+    }
+    &.btn-green{
+        background-color: lighten($green, 25%) !important;
+        color: $green !important;
+    }
+    &.btn-blue{
+        background-color: lighten($blue, 25%) !important;
+        color: $blue !important;
+    }
+    &.btn-red{
+        background-color: lighten($red, 25%) !important;
+        color: $red !important;
+    }
+}
 .b-pill{
     font-size: 14px !important;
     font-weight: 500 !important;
@@ -315,6 +341,21 @@ button{
     }
 }
 
+.list-group-noborder > .list-group-item{
+    border: none;
+}
+.icon-order-history{
+    position: relative;
+    margin-bottom: 30px;
+    &::before{
+        content: '';
+        position: absolute;
+        height: 25px;
+        border-left: 3px dotted $gray-900;
+        left: 3.1rem;
+        bottom: -28px;
+    }
+}
 
 .card-bodega{
     border-radius: 15px;
@@ -337,6 +378,7 @@ button{
     background-color: $primary !important;
     color: white !important;
 }
+
 /**
  * Sidebar
 */
@@ -353,7 +395,7 @@ button{
     top: 0;
     left: 0;
     height: 100vh;
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
     z-index: 999;
 }
@@ -487,6 +529,44 @@ button{
 }
 .img-circle{
     border-radius: 50%;
+}
+.fa-fill-blue{
+    color: $blue;
+    i.fa-circle{
+        &::after{
+            background: rgb(223, 236, 248);
+            position: absolute;
+            content: "";
+            width: 80%;
+            height: 90%;
+            top: 5%;
+            left: 10%;
+            border-radius: 50%;
+        }
+        &::before{
+            position: relative;
+            z-index: 1;
+        }
+    }
+}
+.fa-fill-gray{
+    color: #bdbdbd;
+    i.fa-circle{
+        &::after{
+            background: #eaeaea;
+            position: absolute;
+            content: "";
+            width: 80%;
+            height: 90%;
+            top: 5%;
+            left: 10%;
+            border-radius: 50%;
+        }
+        &::before{
+            position: relative;
+            z-index: 1;
+        }
+    }
 }
 /**
  * Borders

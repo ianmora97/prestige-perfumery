@@ -46,16 +46,16 @@
                             <a type="button" data-type="ratio-filter" id="typeFilter-all" class="dropdown-item"><i class="fa-solid fa-circle fa-xs"></i> Todos</a>
                         </li>
                         <li>
-                            <a type="button" data-type="ratio-filter" id="typeFilter-recibido" class="dropdown-item"><i class="fa-solid fa-circle fa-xs"></i> Recibido</a>
+                            <a type="button" data-type="ratio-filter" id="typeFilter-recibido" class="dropdown-item"><i class="fa-solid fa-circle fa-xs text-orange"></i> Recibido</a>
                         </li>
                         <li>
-                            <a type="button" data-type="ratio-filter" id="typeFilter-empacado" class="dropdown-item"><i class="fa-solid fa-circle fa-xs"></i> Empacado</a>
+                            <a type="button" data-type="ratio-filter" id="typeFilter-empacado" class="dropdown-item"><i class="fa-solid fa-circle fa-xs text-blue"></i> Empacado</a>
                         </li>
                         <li>
-                            <a type="button" data-type="ratio-filter" id="typeFilter-entregado" class="dropdown-item"><i class="fa-solid fa-circle fa-xs"></i> Entregado</a>
+                            <a type="button" data-type="ratio-filter" id="typeFilter-entregado" class="dropdown-item"><i class="fa-solid fa-circle fa-xs text-green"></i> Entregado</a>
                         </li>
                         <li>
-                            <a type="button" data-type="ratio-filter" id="typeFilter-cancelado" class="dropdown-item"><i class="fa-solid fa-circle fa-xs"></i> Cancelado</a>
+                            <a type="button" data-type="ratio-filter" id="typeFilter-cancelado" class="dropdown-item"><i class="fa-solid fa-circle fa-xs text-danger"></i> Cancelado</a>
                         </li>
 
                     </ul>
@@ -87,6 +87,138 @@
     </div>
 </div>
 
+<div class="modal fade" id="verPedidoModal" tabindex="-1" role="dialog" aria-labelledby="verPedidoModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-bg-dark">
+                <h5 class="modal-title" id="verPedidoModalTitle"><i class="fa-solid fa-box-open fa-sm text-secondary"></i> Detalles de la orden <span id="orden-id-modal" class="text-blue"></span></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mx-0 mt-3 g-3">
+                    <div class="col-md">
+                        <div class="shadow rounded-3 p-3">
+                            <h4 class="fw-bold">Productos en la orden <span id="status-orden-modal">Recibido</span></h4>
+                            <hr>
+                            <div style="height: 328px; overflow-y:auto;">
+                                <ul class="list-group list-group-flush" id="product-list-group"></ul>
+                            </div>
+                            <hr>
+                            <div class="row mx-0">
+                                <div class="col-md-8">
+                                    <div class="d-flex justify-content-start align-items-start">
+                                        <h6 class="fw-bold text-dark">Notas:</h6>
+                                        <p id="order-notes" class="text-muted"></p>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <p class="mb-1">Subtotal</p>
+                                    <p class="mb-1">Envio</p>
+                                    <p class="fw-bold mb-1 text-dark">Total</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <p class="fw-bold mb-1 text-dark text-end small" id="order-subtotal">0</p>
+                                    <p class="fw-bold mb-1 text-dark text-end small" id="order-envio">500</p>
+                                    <p class="fw-bold mb-1 text-dark text-end" id="order-total">0</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="shadow rounded-3 p-3 mt-4">
+                            <h4 class="fw-bold">Detalles del cliente</h4>
+                            <hr>
+                            <div class="row mx-0">
+                                <div class="col-md-6">
+                                    <p>
+                                        <i class="fa-solid fa-user"></i> 
+                                        <span id="info-order-name"></span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>
+                                        <i class="fa-solid fa-envelope"></i> 
+                                        <span id="info-order-email"></span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>
+                                        <i class="fa-solid fa-phone"></i> 
+                                        <span id="info-order-phone"></span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>
+                                        <i class="fa-solid fa-location-dot"></i>
+                                        <span id="info-order-location"></span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>
+                                        <i class="fa-solid fa-credit-card"></i> 
+                                        <span id="info-order-metodopago"></span>
+                                    </p>
+                                </div>
+                            </div>
+                         </div>
+                    </div>
+                    <div style="width: 350px;">
+                        <div class="shadow rounded-3 p-3 h-100">
+                            <h4 class="fw-bold">Historial de la Orden</h4>
+                            <hr>
+                            <div class="d-flex flex-column align-items-start px-3">
+                                <div class="d-flex justify-content-center icon-order-history mt-4">
+                                    <div>
+                                        <span class="fa-stack fa-3x fa-fill-blue">
+                                            <i class="fa-regular fa-circle fa-stack-2x"></i>
+                                            <i class="fa-solid fa-basket-shopping fa-stack-1x"></i>
+                                        </span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <p class="text-dark fw-bold mb-0">
+                                            Orden Recibida <i class="fa-solid fa-circle-check text-success"></i>
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-center icon-order-history">
+                                    <div>
+                                        <span class="fa-stack fa-3x fa-fill-gray" id="history-order-icon-empacada">
+                                            <i class="fa-regular fa-circle fa-stack-2x"></i>
+                                            <i class="fa-solid fa-box fa-stack-1x"></i>
+                                        </span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <p class="text-dark fw-bold mb-0">
+                                            Empacada <span id="history-order-empacada" style="display: none;"><i class="fa-solid fa-circle-check text-success"></i></span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-center">
+                                    <div>
+                                        <span class="fa-stack fa-3x fa-fill-gray" id="history-order-icon-entregada">
+                                            <i class="fa-regular fa-circle fa-stack-2x"></i>
+                                            <i class="fa-solid fa-truck fa-stack-1x"></i>
+                                        </span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <p class="text-dark fw-bold mb-0">
+                                            Entregada <span id="history-order-entregada" style="display: none;"><i class="fa-solid fa-circle-check text-success"></i></span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white btn-lg" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="agregarPedidoModal" tabindex="-1" aria-labelledby="agregarPedidoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xxl">
         <div class="modal-content">
@@ -110,19 +242,34 @@
                     </div>
                 </div>
                 <hr>
-                <div class="row mx-0 justify-content-between">
-                    <div class="col-3">
+                <div class="row mx-0 g-0">
+                    <div class="col-md-7">
                         <h5 class="fw-bold">Producto Seleccionado</h5>
-
                     </div>
-                    <div class="d-flex justify-content-start" style="width: 430px; margin-right: 25px;">
+                    <div class="d-flex justify-content-start" style="width: 360px; margin-right: 25px;">
                         <h5 class="fw-bold" style="width: 330px;">Precio</h5>
-                        <div class="">
-                            <h5 class="fw-bold">Cantidad</h5>
-                        </div>
+                    </div>
+                    <div class="col-md">
+                        <h5 class="fw-bold">Cantidad</h5>
                     </div>
                 </div>
                 <ul class="list-group" id="products-list"></ul>
+                <hr>
+                <div class="row mx-0">
+                    <div class="col-md-6">
+                        <label for="add-notas" class="form-label fw-bold">Notas de la orden <small class="text-muted">(Opcional)</small></label>
+                        <textarea class="form-control bg-white" id="add-notas" rows="3"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="add-metodoPago" class="form-label fw-bold">Método de pago</label>
+                        <select id="add-metodoPago" class="form-select bg-white" placeholder="Seleccione un método de pago...">
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Tarjeta">Tarjeta</option>
+                            <option value="SINPE">Sinpe</option>
+                            <option value="Transferencia">Transferencia</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white btn-lg" data-bs-dismiss="modal">Cancelar</button>
