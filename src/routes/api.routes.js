@@ -52,6 +52,18 @@ router.get('/api/cliente/all/:id', isAuthenticated, CLIENTE.findOne);
 router.post('/api/cliente/add', isAuthenticated, CLIENTE.create);
 router.put('/api/cliente/update', isAuthenticated, CLIENTE.update);
 router.delete('/api/cliente/delete', isAuthenticated, CLIENTE.delete);
+/**
+ * CRUD for Report 
+*/
+const REPORT = require('../controllers/report.controller');
+router.get('/api/report/all', isAuthenticated, REPORT.getAll);
+router.get('/api/report/allclient', REPORT.getAllJoin);
+router.get('/api/report/allthisyear', REPORT.getAllFromThisYear);
+router.get('/api/report/getallsixmonths', REPORT.getAll6Months);
+router.get('/api/report/all/:id', isAuthenticated, REPORT.findOne);
+router.post('/api/report/add', isAuthenticated, REPORT.create);
+router.put('/api/report/update', isAuthenticated, REPORT.update);
+router.delete('/api/report/delete', isAuthenticated, REPORT.delete);
 
 function isAuthenticated(req, res, next) {
     let headers = req.headers['cookie'] || req.headers['authorization'];

@@ -207,6 +207,26 @@ button {
   background-color: #f57979 !important;
 }
 
+.bg-orange-light {
+  background-color: #fce7ce !important;
+}
+
+.bg-pink-light {
+  background-color: white !important;
+}
+
+.bg-green-light {
+  background-color: #d4efe6 !important;
+}
+
+.bg-blue-light {
+  background-color: #edf0fb !important;
+}
+
+.bg-red-light {
+  background-color: #fef0f0 !important;
+}
+
 .dropdown-toggle.b-pill {
   border: none !important;
 }

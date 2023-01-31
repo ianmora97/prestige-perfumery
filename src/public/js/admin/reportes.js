@@ -1,29 +1,33 @@
+var g_filter = new Map();
+var g_dataMap = new Map();
+var g_data = [];
 
 var g_dataPedidos = [];
+
+
 function init(){
-    getData();
+    brignData('alltime');
 }
-function getData(){
+function reloadData(){
+    var table = $('#table').DataTable();
+    table.destroy();
+    $('#tbody').empty();
+    brignData('alltime');
+}
+function brignData(time){
+    let ajaxTime = new Date().getTime();
     $.ajax({
-        url: '/api/purchase/all/lastmonth',
+        url: '/api/report/allclient?time=' + time,
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
-        g_dataPedidos = result.lastMonth;
-        fillPedidos(result.lastMonth);
-        createPedidosChart(result.lastMonth);
-        statsPedidosMonth(result);
-    }, (error) => {
-        console.log(error);
-    });
-    $.ajax({
-        url: '/api/product/all/productslow',
-        method: 'GET',
-        contentType: 'application/json'
-    }).then((result) => {
-        fillProductsLowStock(result);
-    }, (error) => {
-        console.log(error);
+        let totalTime = new Date().getTime() - ajaxTime;
+        let a = Math.ceil(totalTime / 1000);
+        let t = a == 1 ? a + ' seg' : a + ' segs';
+        $("#lastUpdated").html(t);
+        console.log(result);
+        fillTable(result);
+        $("#totalitems").html(data.length);
     });
     $.ajax({
         url: '/api/report/getallsixmonths',
@@ -33,45 +37,19 @@ function getData(){
         fillStats(result);
         createCharts(result);
     });
-}
-function fillStats(data){
-    let total = 0;
-    data.forEach(item => {
-        total += parseFloat(item.total);
-    });
-
-    let mediaTotal = total / 6;
-
-    $("#cantidad-ingresos").html(`₡ ${total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`);
-}
-function fillProductsLowStock(data){
-    $("#low-products-inventory").empty();
-    data.forEach((e) => {
-        let color = "success";
-        if(e.stock <= e.notification + 5){
-            color = "warning";
-        }if(e.stock <= e.notification){
-            color = "danger";
-        }
-        $("#low-products-inventory").append(`
-            <a href="/admin/productos?uuid=${e.uuid}" class="list-group-item list-group-item-action" style="--bs-list-group-action-hover-bg:#f2f1ff;">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex justify-content-start align-items-start">
-                        <img src="${e.image}" width="60px" height="60px" class="img-round">
-                        <div class="ps-2 mt-1">
-                            <p class="fw-bold mb-0 text-dark">${e.name} ${e.brand}</p>
-                            <small class="d-block text-dark">${capitalisedFL(e.category)} - ${e.cantidad}</small>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-start align-items-center">
-                        <h3 class="text-dark mb-0">${e.stock}</h3>
-                        <i class="fa-solid fa-circle fa-2xs text-${color} ps-2"></i>
-                    </div>
-                </div>
-            </a>
-        `);
+    $.ajax({
+        url: '/api/purchase/all/lastmonth',
+        method: 'GET',
+        contentType: 'application/json'
+    }).then((result) => {
+        g_dataPedidos = result.lastMonth;
+        statsPedidosMonth(result);
+        createPedidosChart(result.lastMonth);
+    }, (error) => {
+        console.log(error);
     });
 }
+
 function statsPedidosMonth(result){
     $("#stats-pedidos-cant").html(result.lastMonth.length);
 
@@ -97,6 +75,7 @@ function statsPedidosMonth(result){
 
 }
 function createPedidosChart(data){
+    console.log(data);
     let result = [0, 0, 0];
     data.forEach((item) => {
         result[item.state - 1] += 1;
@@ -174,47 +153,163 @@ function showPedidosGraph(data){
         }
     });
 }
-function fillPedidos(data){
-    $("#list-group-pedidos-recibido").html("");
-    data
-    .filter((item) => {
-        return item.state == 1;
-    })
-    .forEach((item) => {
-        addRowPedido(item);
+function fillStats(data){
+    let total = 0;
+    let cantidad = 0;
+    data.forEach(item => {
+        total += parseFloat(item.total);
+        cantidad += parseInt(item.cantidad);
     });
+
+    let mediaTotal = total / 6;
+
+    $("#stat-producto-vendido").html(cantidad);
+    $("#stat-total-ingreso").html(`₡ ${total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`);
+
+    $("#stat-producto-mensual").html(Math.round(cantidad / 6) + " productos vendidos en promedio por mes");
+    $("#stat-ingreso-mensual").html(`₡ ${mediaTotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`);
+    
 }
-function addRowPedido(e){
-    let items = JSON.parse(e.items);
-    $("#list-group-pedidos-recibido").append(`
+function fillTable(data){
+    $("#tbody").html("");
+    data.forEach((item,i) => {
+        addRow(item,i);
+    });
+    datatables();
+}
+function addRow(e,i){
+    let precio = e.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    
+    let color = "red";
+    let level = "Bajo"
+    if(i < 5){
+        color = "green";
+        level = "Alto";
+    }else if(i >= 5 && i < 8){
+        color = "orange";
+        level = "Medio";
+    }
+    $("#tbody").append(`
         <tr>
-            <td class="text-center">
-                <a href="/admin/pedidos?id=${e.id}" class="text-decoration-none text-primary">#${e.id}</a>
+            <td class="text-center">${i+1}</td>
+            <td class="ps-4">${e.nombre} ${i <= 5? "🔥":""}</td>
+            <td class="">${e.cedula}</td>
+            <td data-filter="${level}">
+                <span class="badge bg-${color}">${level}</span>
             </td>
-            <td class="mb-0 text-dark">${e.nombre}</td>
-            <td class="mb-0 text-dark">${items.total} ${items.total >= 2 ? "productos":"producto"}</td>
-            <td class="mb-0 text-primary">₡ ${items.precio.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
-            <td class="mb-0">
-                <span class="badge b-pill badge-orange">Recibido</span>
+            <td class="">
+                <span class="text-primary">${e.cantidad} productos</span>
+            </td>
+            <td class="">
+                <span class="text-primary">₡ ${precio}</span>
             </td>
         </tr>
     `);
 }
+function datatables(){
+    $("#table").DataTable({
+        responsive: true,
+        select: true,
+        keys: true,
+        order: [[ 4, "asc" ]],
+        "scrollY": "600px",
+        "scrollCollapse": true,
+        "language": {
+            "decimal":        "",
+            "emptyTable":     "No hay reportes",
+            "info":           "Mostrando _END_ de _TOTAL_ reportes ",
+            select: {
+                rows: {
+                    _: "",
+                    0: "",
+                    1: ""
+                }
+            },
+            "infoEmpty":      "Mostrando 0 hasta 0 de 0 reportes",
+            "infoFiltered":   "(Filtrado de _MAX_ reportes totales)",
+            "infoPostFix":    "",
+            "thousands":      ",",
+            "lengthMenu":     "Mostrando _MENU_",
+            "loadingRecords": "Cargando...",
+            "processing":     "Procesando...",
+            "search":         "Buscar:",
+            "zeroRecords":    "No se encontraron reportes similares",
+        },
+        responsive: {
+            details: {
+                type: 'column',
+                target: 'tr',
+                renderer: function ( api, rowIdx, columns ) {
+                    var data = $.map( columns, function ( col, i ) {
+                        return col.hidden ?`
+                                <tr data-dt-row="${col.rowIndex}" data-dt-column="${col.columnIndex}" style="min-width:200px;">
+                                    <td class="fw-bold">${col.title}:</td>
+                                    <td>${col.data}</td>
+                                </tr>
+                                `:'';
+                    } ).join('');
+                    return data ?
+                        $('<table/>').append( data ) :
+                        false;
+                }
+            },
+        }
+    });
+    $('#info').html('');
+    $('#length').html('');
+    $('#pagination').html('');
+
+    $('#table_info').appendTo('#info');
+
+    $('#table_length').css('display', 'none');
+    $('#table_filter').css('display', 'none');
+    $('#table_paginate').css('display', 'none');
+
+    $('#barraBuscar').on('keyup', function(){
+        let val = $(this).val();
+        g_filter.set("search", val);
+        search(val);
+    });
+}
+function cambiarFechaTabla(time){
+    let type = {
+        alltime: "Todo el tiempo",
+        currentmonth: "Ultimo Mes",
+        currentyear: "Ultimo Año",
+    }
+    $("#dropdown-filtro-fecha-table").html(`<i class="fa-solid fa-clock-rotate-left"></i> ${type[time]}`);
+    var table = $('#table').DataTable();
+    table.destroy();
+    $('#tbody').empty();
+    brignData(time);
+}
+
+// ***************+++++*************** CHARTS ***************+++++***************
+// ***************+++++*************** CHARTS ***************+++++***************
+// ***************+++++*************** CHARTS ***************+++++***************
+// ***************+++++*************** CHARTS ***************+++++***************
+
+
 
 function createCharts(result){
     let months = [];
     let min, max = 0;
+    
     result.forEach((item, i) => {
         months.push(moment().month(item.month-1).format('MMM YYYY'));
         if(i == 0){
-            min = moment().month(item.month-1).format('D MMM YYYY');
+            min = moment().month(item.month-1).format('1 MMM YYYY');
         }
         if(i == result.length-1){
-            max = moment().month(item.month-1).format('1 MMM YYYY');
+            max = moment().month(item.month-1).format('D MMM YYYY');
         }
     });
+
     let labels = months;
-    $("#dateIncomeRange").html(`${max} - ${min}`)
+    $("#dateIncomeRange").html(`
+        ${min} - ${max}
+    `)
+
     let y = [1200, 1009, 100, 500, 2000, 530, 1400];
     let data = [];
     for(let i = 0; i < 6; i++){
@@ -224,6 +319,7 @@ function createCharts(result){
         })
     }
     data.reverse();
+    
     createIncomeChart(labels, data);
 }
 var incomeChartJS;
@@ -256,6 +352,8 @@ function createIncomeChart(labels, data){
             }],
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             interaction: {
                 mode: 'index',
                 intersect: false,
@@ -295,12 +393,11 @@ function createIncomeChart(labels, data){
             },
             animation: {
                 easing: 'easeInSine',
-                duration: 1500
+                duration: 1000
             }
         }
     });
 }
-
 var customChartTooltip = (context) => {
     let tooltipEl = document.getElementById('chartjs-tooltip');
     if (!tooltipEl) {
@@ -347,5 +444,23 @@ var customChartTooltip = (context) => {
     tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px';
     tooltipEl.style.pointerEvents = 'none';
 }
+// TODO ===========+++++========= Animaciones ===========+++++=========
 
-document.addEventListener("DOMContentLoaded", init);
+// call incEltNbr(id) to increment the number in the element with the given id
+function incEltNbr(id) {
+    elt = document.getElementById(id);
+    endNbr = Number(document.getElementById(id).innerHTML);
+    incNbrRec(0, endNbr, elt);
+}
+
+function incNbrRec(i, endNbr, elt) {
+    if (i <= endNbr) {
+        elt.innerHTML = i;
+        setTimeout(function () {
+            incNbrRec(i + 1, endNbr, elt);
+        }, 1);
+    }
+}
+
+
+document.addEventListener('DOMContentLoaded', init);

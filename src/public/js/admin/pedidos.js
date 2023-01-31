@@ -414,10 +414,12 @@ function agregarPedido(){
     }
     let preciosSum = 0;
     let priceType = [];
+    let cantidadP = 0;
     p.forEach(e=>{
         let cantidad = parseInt($(`#cantidad-producto-${e}`).val());
         let precio = parseInt($(`input[name="precio-item-${e}"]:checked`).data("precio"));
         preciosSum += (precio * cantidad);
+        cantidadP += cantidad;
         priceType.push({
             product: parseInt(e),
             price: precio,
@@ -439,7 +441,9 @@ function agregarPedido(){
         }),
         notas: notas,
         metodoPago: metodoPago,
-        productos: productos
+        productos: productos,
+        precio: preciosSum,
+        cantidad: cantidadP
     }
     $.ajax({
         url: '/api/purchase/add',
@@ -662,7 +666,4 @@ function eliminarPedido(id){
 }
 
 
-function capitalisedFL(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
 document.addEventListener('DOMContentLoaded', init);

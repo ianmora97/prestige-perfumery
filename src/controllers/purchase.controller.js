@@ -1,5 +1,6 @@
 const Purchase = require('../models/purchase.model');
 const Product = require('../models/product.model');
+const Report = require('../models/report.model');
 const logger = require('../utils/logger');
 const jwt = require('jsonwebtoken');
 require("dotenv").config();
@@ -40,6 +41,7 @@ module.exports = {
                 }
             });
         });
+        Report.create(req.body, (result) => {});
         Purchase.create(req.body, (result) => {
             who(req).then((user) => {
                 logger.activity(`Orden Generada ${req.body.id} creada`, user);

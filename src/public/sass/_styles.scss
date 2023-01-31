@@ -228,6 +228,21 @@ button{
         }
     }
 }
+.bg-orange-light{
+    background-color: lighten($orange, 25%) !important;
+}
+.bg-pink-light{
+    background-color: lighten($pink, 25%) !important;
+}
+.bg-green-light{
+    background-color: lighten($green, 25%) !important;
+}
+.bg-blue-light{
+    background-color: lighten($blue, 25%) !important;
+}
+.bg-red-light{
+    background-color: lighten($red, 25%) !important;
+}
 .dropdown-toggle{
     &.b-pill{
         border:none !important;

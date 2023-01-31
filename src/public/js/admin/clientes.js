@@ -47,10 +47,7 @@ function fillClientes(data){
     datatables();
 }
 function addRow(e){
-    let color = "danger"; // verde - warning - danger
-    let level = e.level == 1 ? "Bajo" : e.level == 2 ? "Basico" : "Activo";
-    if(parseInt(e.level) == 2) color = "warning";
-    else if(parseInt(e.level) == 3) color = "green";
+    
     $("#tbody").append(`
         <tr>
             <td class="">
@@ -60,9 +57,6 @@ function addRow(e){
             <td class="">${e.cedula}</td>
             <td class="">
                 <a href="tel:${e.phone}" class="text-decoration-none text-blue">${e.phone}</a>
-            </td>
-            <td class="">
-                <span class="badge b-pill text-bg-${color}">${level}</span>
             </td>
             <td class="">
                 <div class="d-flex justify-content-center align-items-center">
