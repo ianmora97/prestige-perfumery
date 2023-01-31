@@ -119,6 +119,26 @@ exports.getProducts = async (resolve) => {
         });
     });
 };
+// get all products that are in stock (whene notification is greater than stock)
+exports.getProductsInStock = async (resolve) => {
+    Product.findAll({
+        where: {
+            notification: {
+                [Op.gte]: mysqlcon.literal('stock')
+            }
+        }
+    }).then((products) => {
+        resolve({
+            status: 200,
+            data: products
+        });
+    }).catch((error) => {
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+};
 
 /**
  * Creates a new product
@@ -184,6 +204,26 @@ exports.update = async (body, resolve) => {
 exports.remove1Stock = async (body, resolve) => {
     Product.update({
         stock: mysqlcon.literal(`stock - ${body.cantidad}`)
+    }, {
+        where: {
+            id: body.id
+        }
+    }).then((product) => {
+        resolve({
+            status: 200,
+            data: product
+        });
+    }).catch((error) => {
+        console.log(error);
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+}
+exports.add1Stock = async (body, resolve) => {
+    Product.update({
+        stock: mysqlcon.literal(`stock + ${body.cantidad}`)
     }, {
         where: {
             id: body.id

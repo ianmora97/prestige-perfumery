@@ -21,6 +21,11 @@ module.exports = {
             res.status(result.status).json(result.data);
         });
     },
+    getProductsInStock: (req, res) => {
+        Product.getProductsInStock((result) => {
+            res.status(result.status).json(result.data);
+        });
+    },
     create: (req, res) => {
         let code = uuidv4();
         req.body.code = code.split('-')[0];

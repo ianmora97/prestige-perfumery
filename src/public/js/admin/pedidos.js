@@ -16,7 +16,6 @@ function init(){
     brignData();
     brignClients();
     brignProducts();
-    onverPedidoModal();
     checkRatioFilter();
 }
 function createSwalAlertToast(type, text){
@@ -94,6 +93,7 @@ function fillPedidos(data){
         addRow(item);
     });
     datatables();
+    urlParamEventListener();
 }
 function addRow(e){
     try {
@@ -118,10 +118,10 @@ function addRow(e){
         $("#tbody").append(`
             <tr>
                 <td class="text-center" data-filter="${e.id}">
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#verPedidoModal" data-bs-id="${e.id}" class="link-primary text-decoration-none">#${e.id}</a>
+                    <a href="#" onclick="openverPedidoModal('${e.id}')" class="link-primary text-decoration-none">#${e.id}</a>
                 </td>
                 <td class="">
-                    ${e.nombre}
+                    ${e.nombre ? e.nombre : `<span class="text-muted">No Registrado</span>`}
                 </td>
                 <td class="">
                     <span>${items.total}
@@ -137,9 +137,10 @@ function addRow(e){
                         ${estado}
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item text-blue"  role="button" onclick="cambiarStatus('${e.id}','2')">Empacado</a></li>
-                            <li><a class="dropdown-item text-green"  role="button" onclick="cambiarStatus('${e.id}','3')">Entregado</a></li>
-                            <li><a class="dropdown-item text-red"  role="button" onclick="cambiarStatus('${e.id}','4')">Cancelado</a></li>
+                            <li><a class="dropdown-item text-orange"  role="button" onclick="cambiarStatus('${e.id}','1','dropdown-status')">Recibido</a></li>
+                            <li><a class="dropdown-item text-blue"  role="button" onclick="cambiarStatus('${e.id}','2','dropdown-status')">Empacado</a></li>
+                            <li><a class="dropdown-item text-green"  role="button" onclick="cambiarStatus('${e.id}','3','dropdown-status')">Entregado</a></li>
+                            <li><a class="dropdown-item text-red"  role="button" onclick="cambiarStatus('${e.id}','4','dropdown-status')">Cancelado</a></li>
                         </ul>
                     </div>
                 </td>
@@ -246,18 +247,34 @@ function datatables(){
     });
     
 }
-function cambiarStatus(id,status){
-    if(parseInt(status) == 2){
+function cambiarStatus(id,status, selector){
+    if(parseInt(status) == 1){
+        $("#dropdown-status-"+id).html(`Recibido`);
+        $("#dropdown-status-"+id).removeClass("btn-blue").removeClass("btn-orange").removeClass("btn-green")
+        .addClass("btn-orange");
+        $("#dropdown-status-modal-"+id).html(`Recibido`);
+        $("#dropdown-status-modal-"+id).removeClass("btn-blue").removeClass("btn-orange").removeClass("btn-green")
+        .addClass("btn-orange");
+    }else if(parseInt(status) == 2){
         $("#dropdown-status-"+id).html(`Empacado`);
         $("#dropdown-status-"+id).removeClass("btn-blue").removeClass("btn-orange").removeClass("btn-green")
+        .addClass("btn-blue");
+        $("#dropdown-status-modal-"+id).html(`Empacado`);
+        $("#dropdown-status-modal-"+id).removeClass("btn-blue").removeClass("btn-orange").removeClass("btn-green")
         .addClass("btn-blue");
     }else if(parseInt(status) == 3){
         $("#dropdown-status-"+id).html(`Entregado`);
         $("#dropdown-status-"+id).removeClass("btn-blue").removeClass("btn-orange").removeClass("btn-green")
         .addClass("btn-green");
+        $("#dropdown-status-modal-"+id).html(`Entregado`);
+        $("#dropdown-status-modal-"+id).removeClass("btn-blue").removeClass("btn-orange").removeClass("btn-green")
+        .addClass("btn-green");
     }else if(parseInt(status) == 4){
         $("#dropdown-status-"+id).html(`Cancelado`);
         $("#dropdown-status-"+id).removeClass("btn-blue").removeClass("btn-orange").removeClass("btn-green")
+        .addClass("btn-red");
+        $("#dropdown-status-modal-"+id).html(`Cancelado`);
+        $("#dropdown-status-modal-"+id).removeClass("btn-blue").removeClass("btn-orange").removeClass("btn-green")
         .addClass("btn-red");
     }
     $.ajax({
@@ -459,6 +476,14 @@ function clearInputs(){
 }
 
 // TODO: ============================== CHECK PEDIDO ==============================
+function urlParamEventListener(){
+    let url = new URL(window.location.href);
+    let id = url.searchParams.get("id");
+    if(id != null){
+        openverPedidoModal(id);
+    }
+    return;
+}
 function brignOneProduct(id){
     return new Promise((resolve, reject)=>{
         $.ajax({
@@ -473,27 +498,24 @@ function brignOneProduct(id){
         });
     });
 }
-function onverPedidoModal(){
-    modalverPedido.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
-        const id = button.getAttribute('data-bs-id');
+function openverPedidoModal(id){
+    let orden = g_dataMap.get(parseInt(id));
+    let items = JSON.parse(orden.items);
+    
+    clearModalData();
+    addClientData(orden);
 
-        let orden = g_dataMap.get(parseInt(id));
-        let items = JSON.parse(orden.items);
-        
-        clearModalData();
-        addClientData(orden);
-        let subtotal = 0;
-        let total = 0;
-        items.productos.forEach(e=>{
-            addProductotoModal(e);
-            subtotal += e.price * e.cantidad;
-        });
-        total = subtotal + 500;
-        $("#order-subtotal").html(`₡${subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`);
-        $("#order-total").html(`₡${total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`);
-
+    let subtotal = 0;
+    let total = 0;
+    items.productos.forEach(e=>{
+        addProductotoModal(e);
+        subtotal += e.price * e.cantidad;
     });
+    total = subtotal + 500;
+    $("#order-subtotal").html(`₡${subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`);
+    $("#order-total").html(`₡${total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`);
+
+    verPedidoModal.show();
 }
 function addProductotoModal(e){
     brignOneProduct(e.product)
@@ -554,20 +576,33 @@ function addClientData(e){
         estado = "Cancelado";
     }
 
-    $("#status-orden-modal").html(`<span class="badge bg-${color}">${estado}</span>`);
+    $("#status-orden-modal").html(`
+        <div class="dropdown">
+            <button class="btn btn-${color} dropdown-toggle b-pill" id="dropdown-status-modal-${e.id}" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            ${estado}
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item text-orange"  role="button" onclick="cambiarStatus('${e.id}','1','dropdown-status-modal')">Recibido</a></li>
+                <li><a class="dropdown-item text-blue"  role="button" onclick="cambiarStatus('${e.id}','2','dropdown-status-modal')">Empacado</a></li>
+                <li><a class="dropdown-item text-green"  role="button" onclick="cambiarStatus('${e.id}','3','dropdown-status-modal')">Entregado</a></li>
+                <li><a class="dropdown-item text-red"  role="button" onclick="cambiarStatus('${e.id}','4','dropdown-status-modal')">Cancelado</a></li>
+            </ul>
+        </div>
+    `);
     $("#orden-id-modal").html(`#${e.id}`);
 
-    $("#info-order-name").html(e.nombre);
-    $("#info-order-phone").html(`
-        <a href="tel:+506${e.phone}" class="text-decoration-none text-primary">${e.phone}</a>
-    `);
-    $("#info-order-email").html(`
-        <a href="mailto:${e.email}" class="text-decoration-none text-primary">${e.email}</a>
-    `);
-    $("#info-order-location").html(e.direction);
+    $("#info-order-name").html(e.nombre ? e.nombre : "No Registrado");
+    $("#info-order-phone").html(e.phone ? `<a href="tel:+506${e.phone}" class="text-decoration-none text-primary">${e.phone}</a>` : "No Registrado");
+    $("#info-order-email").html(e.email ? `<a href="mailto:${e.email}" class="text-decoration-none text-primary">${e.email}</a>`: "No Registrado");
+    $("#info-order-location").html(e.direction ? e.direction : "No Registrado");
     $("#info-order-metodopago").html(e.metodoPago);
 
     $("#order-notes").html(e.notas);
+
+    // fecha de la orden
+    $("#info-order-placed").html(`
+        Fecha: ${moment(e.createdAt).format("DD/MM/YYYY")} a las ${moment(e.createdAt).format("hh:mm a")}
+    `);
 }
 function clearModalData(){
     $("#product-list-group").empty();
@@ -584,6 +619,7 @@ function clearModalData(){
     $("#info-order-email").empty();
     $("#info-order-location").empty();
     $("#info-order-metodopago").empty();
+    $("#info-order-placed").empty();
 }
 // ! ==================== DELETE ====================
 
@@ -599,12 +635,15 @@ function eliminarPedido(id){
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
+            let p = g_dataMap.get(parseInt(id));
+            let productos = JSON.parse(p.items).productos;
             $.ajax({
                 url: '/api/purchase/delete',
                 method: 'DELETE',
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    id: id
+                    id: id,
+                    productos: productos
                 })
             }).then((result) => {
                 reloadData();

@@ -10,6 +10,11 @@ module.exports = {
             res.status(result.status).json(result.data);
         });
     },
+    betterClients: (req, res) => {
+        Purchase.betterClients((result) => {
+            res.status(result.status).json(result.data);
+        });
+    },
     findOne: (req, res) => {
         Purchase.findOne(req.params.id, (result) => {
             res.status(result.status).json(result.data);
@@ -17,6 +22,11 @@ module.exports = {
     },
     recibidos: (req, res) => {
         Purchase.recibidos((result) => {
+            res.status(result.status).json(result.data);
+        });
+    },
+    lastMonth: (req, res) => {
+        Purchase.lastMonth((result) => {
             res.status(result.status).json(result.data);
         });
     },
@@ -54,6 +64,15 @@ module.exports = {
         });
     },
     delete: (req, res) => {
+        req.body.productos.forEach((item) => {
+            Product.add1Stock({id: item.product, cantidad: item.cantidad}, (result) => {
+                if(result.status === 200){
+                    who(req).then((user) => {
+                        logger.activity(`Stock del producto "${item.product}" actualizado`, user);
+                    });
+                }
+            });
+        });
         Purchase.delete(req.body.id, (result) => {
             who(req).then((user) => {
                 logger.activity(`Compra ${req.body.id} eliminada`, user);

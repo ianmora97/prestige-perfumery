@@ -15,6 +15,7 @@ router.post('/api/user/add', isAuthenticated, USER.create);
 const PRODUCT = require('../controllers/product.controller');
 router.get('/api/product/all', PRODUCT.getAll); // No authentication required
 router.get('/api/product/all/selectize',isAuthenticated, PRODUCT.getProducts);
+router.get('/api/product/all/productslow',isAuthenticated, PRODUCT.getProductsInStock);
 router.get('/api/product/one/:id', isAuthenticated, PRODUCT.findOne);
 router.post('/api/product/add', isAuthenticated, PRODUCT.create);
 router.put('/api/product/update', isAuthenticated, PRODUCT.update);
@@ -34,6 +35,8 @@ router.delete('/api/bodega/delete', isAuthenticated, BODEGA.delete);
 const PURCHASE = require('../controllers/purchase.controller');
 router.get('/api/purchase/all', isAuthenticated, PURCHASE.getAll);
 router.get('/api/purchase/all/recibidos', isAuthenticated, PURCHASE.recibidos);
+router.get('/api/purchase/all/lastmonth', isAuthenticated, PURCHASE.lastMonth);
+router.get('/api/purchase/all/betterclients',isAuthenticated, PURCHASE.betterClients);
 router.get('/api/purchase/all/:id', isAuthenticated, PURCHASE.findOne);
 router.post('/api/purchase/add', isAuthenticated, PURCHASE.createAdmin);
 router.post('/api/purchase/add/client', PURCHASE.createAdmin);

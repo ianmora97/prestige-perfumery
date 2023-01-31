@@ -20,6 +20,10 @@ router.get('/admin/clientes', isAuthenticated, (req, res) => {
     res.render('dashboard/clientes', {layout: 'dashboard', title: 'Clientes', menuItem: 'clientes'});
 });
 
+router.get('/admin/reportes', isAuthenticated, (req, res) => {
+    res.render('dashboard/reportes', {layout: 'dashboard', title: 'Reportes', menuItem: 'reportes'});
+});
+
 function isAuthenticated(req, res, next) {
     let headers = req.headers['cookie'] || req.headers['authorization'];
     if(headers === undefined){

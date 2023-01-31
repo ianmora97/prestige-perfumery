@@ -167,13 +167,12 @@ function brignData(){
         let a = Math.ceil(totalTime / 1000);
         let t = a == 1 ? a + ' seg' : a + ' segs';
         $("#lastUpdated").html(t);
+        getDataBodega();
         fillStats(result);
-        
         fillProductos(result);
     }, (error) => {
         console.log(error);
     });
-    getDataBodega();
 }
 function getDataBodega(){
     $.ajax({
@@ -182,26 +181,30 @@ function getDataBodega(){
         contentType: 'application/json'
     }).then((result) => {
         g_bodegas = result;
-        fillBodegas(result);
-
+        fillBodegas(result).then(() => {
+            urlListener();
+        });
     }, (error) => {
         console.log(error);
     });
 }
 
 function fillBodegas(data){
-    $("#card-bodegas-items").empty();
-    data.forEach((item) => {
-        addBodegaCard(item);
-        g_bodegasMap.set(item.id, item);
-    });
-    $("#card-bodegas-items").append(`
-        <div class="col-md-2">
-            <div class="card-bodega" onclick="addNewBodega()">
-                <i class="fa-solid fa-plus fa-2x text-white"></i>
+    return new Promise((resolve, reject) => {
+        $("#card-bodegas-items").empty();
+        data.forEach((item) => {
+            addBodegaCard(item);
+            g_bodegasMap.set(item.id, item);
+        });
+        $("#card-bodegas-items").append(`
+            <div class="col-md-2">
+                <div class="card-bodega" onclick="addNewBodega()">
+                    <i class="fa-solid fa-plus fa-2x text-white"></i>
+                </div>
             </div>
-        </div>
-    `);
+        `);
+        resolve();
+    });
 }
 function addBodegaCard(e){
     $("#card-bodegas-items").append(`
@@ -481,6 +484,14 @@ function eliminarProducto(uuid){
     })
 
     
+}
+function urlListener(){
+    let url = new URL(window.location.href);
+    let uuid = url.searchParams.get("uuid");
+    if(uuid != null){
+        openEditModal(uuid);
+    }
+    return;
 }
 function fillProductos(data){
     $("#tbody").html("");

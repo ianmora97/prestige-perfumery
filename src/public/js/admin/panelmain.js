@@ -6,16 +6,78 @@ function init(){
 }
 function getData(){
     $.ajax({
-        url: '/api/purchase/all',
+        url: '/api/purchase/all/lastmonth',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
-        g_dataPedidos = result;
-        fillPedidos(result);
-        createPedidosChart(result);
+        g_dataPedidos = result.lastMonth;
+        fillPedidos(result.lastMonth);
+        createPedidosChart(result.lastMonth);
+        statsPedidosMonth(result);
     }, (error) => {
         console.log(error);
     });
+    $.ajax({
+        url: '/api/product/all/productslow',
+        method: 'GET',
+        contentType: 'application/json'
+    }).then((result) => {
+        fillProductsLowStock(result);
+    }, (error) => {
+        console.log(error);
+    });
+}
+function fillProductsLowStock(data){
+    $("#low-products-inventory").empty();
+    data.forEach((e) => {
+        let color = "success";
+        if(e.stock <= e.notification + 5){
+            color = "warning";
+        }if(e.stock <= e.notification){
+            color = "danger";
+        }
+        $("#low-products-inventory").append(`
+            <a href="/admin/productos?uuid=${e.uuid}" class="list-group-item list-group-item-action" style="--bs-list-group-action-hover-bg:#f2f1ff;">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-start align-items-start">
+                        <img src="${e.image}" width="60px" height="60px" class="img-round">
+                        <div class="ps-2 mt-1">
+                            <p class="fw-bold mb-0 text-dark">${e.name} ${e.brand}</p>
+                            <small class="d-block text-dark">${capitalisedFL(e.category)} - ${e.cantidad}</small>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-start align-items-center">
+                        <h3 class="text-dark mb-0">${e.stock}</h3>
+                        <i class="fa-solid fa-circle fa-2xs text-${color} ps-2"></i>
+                    </div>
+                </div>
+            </a>
+        `);
+    });
+}
+function statsPedidosMonth(result){
+    $("#stats-pedidos-cant").html(result.lastMonth.length);
+
+    let direference = result.lastMonth.length - result.pastMonth.length;
+    let percentage = (direference / result.pastMonth.length) * 100;
+    let percentageStr = percentage.toFixed(0);
+
+    if(direference > 0){
+        $("#stats-pedidos-metrics").html(`
+            <span class="badge b-pill badge-green">
+                ${percentageStr}%
+                <i class="fa-solid fa-arrow-trend-up"></i>
+            </span>
+        `);
+    }else{
+        $("#stats-pedidos-metrics").html(`
+            <span class="badge b-pill badge-red">
+                ${percentageStr}%
+                <i class="fa-solid fa-arrow-trend-down"></i>
+            </span>
+        `);
+    }
+
 }
 function createPedidosChart(data){
     let result = [0, 0, 0];
@@ -34,26 +96,50 @@ function showPedidosGraph(data){
         data: {
             labels: ['Recibidos', 'Empacados', 'Entregados'],
             datasets: [{
-                label: 'Pedidos',
+                label: 'Cantidad',
                 data: data,
-                backgroundColor: [
-                    'rgba(79,70,229, 0.5)',
-                    'rgba(255, 99, 132, 0.5)',
-                    'rgba(255, 206, 86, 0.5)'
-                ],
                 borderColor: [
-                    'rgba(79,70,229, 1)',
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(255, 206, 86, 1)'
+                    'rgba(79, 70, 229, 0.5)',
+                    'rgba(143, 138, 239, 0.5)',
+                    'rgba(205, 202, 255, 0.5)'
                 ],
-                borderWidth: 1
+                backgroundColor: [
+                    'rgba(79, 70, 229, 1)',
+                    'rgba(143, 138, 239, 1)',
+                    'rgba(205, 202, 255, 1)'
+                ],
+                borderWidth: 0,
+                borderRadius: 3,
+                spacing: 5,
+                hoverOffset: 10
+
             }]
+            
         },
         options: {
+            cutout: '70%',
             responsive: true,
             maintainAspectRatio: false,
-            legend: {
-                display: false
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        boxWidth: 20,
+                        boxHeight: 10,
+                        padding: 30,
+                        usePointStyle: true,
+                        pointStyle:'rectRounded',
+                        font: {
+                            size: 14
+                        }
+                    },
+                }
+            },
+            layout:{
+                autoPadding: true,
+                padding: {
+                    left: 20
+                }
             },
             tooltips: {
                 callbacks: {
@@ -84,12 +170,17 @@ function fillPedidos(data){
 function addRowPedido(e){
     let items = JSON.parse(e.items);
     $("#list-group-pedidos-recibido").append(`
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <a href="#" class="text-decoration-none text-primary">#${e.id}</a>
-            <p class="mb-0 text-dark">${e.nombre}</p>
-            <p class="mb-0 text-dark">${items.total} ${items.total >= 2 ? "productos":"producto"}</p>
-            <p class="mb-0 text-primary">₡ ${items.precio.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-        </li>
+        <tr>
+            <td class="text-center">
+                <a href="/admin/pedidos?id=${e.id}" class="text-decoration-none text-primary">#${e.id}</a>
+            </td>
+            <td class="mb-0 text-dark">${e.nombre}</td>
+            <td class="mb-0 text-dark">${items.total} ${items.total >= 2 ? "productos":"producto"}</td>
+            <td class="mb-0 text-primary">₡ ${items.precio.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
+            <td class="mb-0">
+                <span class="badge b-pill badge-orange">Recibido</span>
+            </td>
+        </tr>
     `);
 }
 
@@ -97,7 +188,6 @@ function createCharts(){
     let months = [];
     let min, max = 0;
     for(let i = 0; i < 6; i++){
-        
         months.push(moment().subtract(i, 'months').format('MMM YYYY'));
         min = moment().subtract(i, 'months').format('1 MMM YYYY');
         max = moment().format('D MMM YYYY');
@@ -115,7 +205,6 @@ function createCharts(){
             y: y[i]
         })
     }
-    console.log(data);
     
     createIncomeChart(labels, data);
 }
@@ -127,8 +216,6 @@ function createIncomeChart(labels, data){
     var gradient = ctx.createLinearGradient(0, 0, 0, 400);
     gradient.addColorStop(0, 'rgba(79,70,229, 0.5)');
     gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-
-    console.log(gradient);
 
     incomeChartJS = new Chart(incomeChart, {
         type: 'line',
@@ -241,5 +328,10 @@ var customChartTooltip = (context) => {
     tooltipEl.style.font = bodyFont.string;
     tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px';
     tooltipEl.style.pointerEvents = 'none';
+}
+
+
+function capitalisedFL(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 document.addEventListener("DOMContentLoaded", init);

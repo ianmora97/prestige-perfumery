@@ -67,7 +67,7 @@ function addRow(e){
             <td class="">
                 <div class="d-flex justify-content-center align-items-center">
                     <button type="button" class="btn btn-outline-primary me-2" style="width: max-content; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="openEditModal('${e.id}')"><i class="fa-solid fa-pen"></i> Editar</button>
-                    <button type="button" class="btn btn-danger" style="width: max-content; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="eliminarProducto('${e.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                    <button type="button" class="btn btn-danger" style="width: max-content; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="eliminarCliente('${e.id}')"><i class="fa-solid fa-trash-can"></i></button>
                 </div>
             </td>
         </tr>
@@ -216,5 +216,39 @@ function clearInputs(){
     $("#add-direccion").val("");
     $("#add-email").val("");
 }
-
+// ! ====================  ELIMINAR CLIENTE ==================== ! //
+function eliminarCliente(id){
+    Swal.fire({
+        title: '¿Desea eliminar el cliente?',
+        text: "Esta acción no se puede deshacer",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#96d7f4',
+        cancelButtonColor: '#f26262',
+        confirmButtonText: 'Si, Eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/api/cliente/delete',
+                method: 'DELETE',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    id: id
+                })
+            }).then((result) => {
+                reloadData();
+                Swal.fire({
+                    title: 'Cliente eliminado',
+                    text: 'El Cliente ha sido eliminado correctamente',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }, (error) => {
+                console.log(error);
+            });
+        }
+    })
+}
 document.addEventListener('DOMContentLoaded', init);

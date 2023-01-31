@@ -38,9 +38,9 @@ module.exports = {
         });
     },
     delete: (req, res) => {
-        Cliente.delete(req.params.id, (result) => {
+        Cliente.delete(req.body.id, (result) => {
             who(req).then((user) => {
-                logger.activity(`Cliente "${req.params.id}" eliminado`, user);
+                logger.activity(`Cliente "${req.body.id}" eliminado`, user);
             })
             res.status(result.status).json(result);
         });

@@ -98,7 +98,10 @@
                 <div class="row mx-0 mt-3 g-3">
                     <div class="col-md">
                         <div class="shadow rounded-3 p-3">
-                            <h4 class="fw-bold">Productos en la orden <span id="status-orden-modal">Recibido</span></h4>
+                            <div class="d-flex justify-content-start align-items-center">
+                                <h4 class="fw-bold pe-3 mb-0">Productos en la orden</h4>
+                                <div id="status-orden-modal"></div>
+                            </div>
                             <hr>
                             <div style="height: 328px; overflow-y:auto;">
                                 <ul class="list-group list-group-flush" id="product-list-group"></ul>
@@ -107,8 +110,8 @@
                             <div class="row mx-0">
                                 <div class="col-md-8">
                                     <div class="d-flex justify-content-start align-items-start">
-                                        <h6 class="fw-bold text-dark">Notas:</h6>
-                                        <p id="order-notes" class="text-muted"></p>
+                                        <h6 class="fw-bold text-dark me-3 mb-0">Notas:</h6>
+                                        <p id="order-notes" class="mb-0 text-muted"></p>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -162,8 +165,9 @@
                     </div>
                     <div style="width: 350px;">
                         <div class="shadow rounded-3 p-3 h-100">
-                            <h4 class="fw-bold">Historial de la Orden</h4>
-                            <hr>
+                            <h4 class="fw-bold mb-0">Historial de la Orden</h4>
+                            <small class="text-muted" id="info-order-placed"></small>
+                            <hr class="mt-2">
                             <div class="d-flex flex-column align-items-start px-3">
                                 <div class="d-flex justify-content-center icon-order-history mt-4">
                                     <div>

@@ -146,6 +146,7 @@ exports.delete = (id, callback) => {
             data: result
         });
     }).catch((err) => {
+        console.log(err);
         callback({
             status: 500,
             data: err

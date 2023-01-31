@@ -1,11 +1,14 @@
 <div class="position-relative">
-    <div class="bg-dark-900 text-white header-continue-back w-100 p-3">
-        <h2>Hola ianmora</h2>
+    <div class="bg-dark-900 text-white header-continue-back w-100 py-3 px-4">
+        <h2 id="globalDashboardUsername"></h2>
+        <script>
+            $('#globalDashboardUsername').html(`Hola! ${global_userName} 👋`);
+        </script>
     </div>
-    <div class="px-3 position-absolute w-100" style="top: 115px; margin-bottom:100px;">
-        <div class="row mx-0 align-content-stretch">
+    <div class="px-3 position-absolute w-100" style="top: 115px; padding-bottom:50px;">
+        <div class="row mx-0 align-content-stretch g-3">
             <div class="col-md-6">
-                <div class="h-100 bg-white rounded-15 shadow-sm py-4 px-3 animate__animated animate__fadeInUp animate__slow">
+                <div class="h-100 bg-white rounded-15 shadow-sm py-4 px-3 animate__animated animate__fadeInUp ">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <h6 class="text-dark-100">Ingresos</h6>
@@ -20,40 +23,49 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="h-100 bg-white rounded-15 shadow-sm py-4 px-3 animate__animated animate__fadeInUp animate__slow">
-                    <h6 class="text-dark-100">Pedidos</h6>
-                </div>
-            </div>
-        </div>
-        <div class="row mx-0 mt-4">
-            <div class="col-12">
-                <div class="bg-white rounded-15 shadow-sm py-4 px-3 animate__animated animate__fadeInUp animate__slow">
-                    <h6 class="text-dark-100">Últimos pedidos</h6>
-                    <div class="row mx-0">
-                        <div class="col-md-7 ps-0">
-                            <ul class="list-group list-group-flush" id="list-group-pedidos-recibido">
-                                
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <a href="#" class="text-decoration-none text-primary">#4345</a>
-                                    <p class="mb-0 text-dark">Ambar Sancho</p>
-                                    <p class="mb-0 text-dark">2 productos</p>
-                                    <p class="mb-0 text-primary">₡ 270,000</p>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <a href="#" class="text-decoration-none text-primary">#4345</a>
-                                    <p class="mb-0 text-dark">Ambar Sancho</p>
-                                    <p class="mb-0 text-dark">2 productos</p>
-                                    <p class="mb-0 text-primary">₡ 270,000</p>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-md-5">
-                            <canvas id="pedidosChart"></canvas>
-                        </div>
+                <div class="h-100 bg-white rounded-15 shadow-sm py-4 px-3 animate__animated animate__fadeInUp ">
+                    <h6 class="text-dark-100">Productos con poco Inventario</h6>
+                    <div class="mt-3">
+                        <div class="list-group list-group-flush" id="low-products-inventory" style="height: calc(43rem - 300px); overflow-y:auto;"></div>
                     </div>
                 </div>
             </div>
-            
+        </div>
+        <div class="row mx-0 mt-1 g-3">
+            <div class="col-lg-7">
+                <div class="bg-white rounded-15 shadow-sm py-4 animate__animated animate__fadeInUp h-100">
+                    <h6 class="text-dark-100 px-3">Pedidos Recibidos</h6>
+                    <div class="table-wrapper" style="height: 400px; overflow-y:auto;">
+                        <table class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" data-priority="1" class="text-center">ID</th>
+                                    <th scope="col" data-priority="2">Cliente</th>
+                                    <th scope="col">Productos</th>
+                                    <th scope="col">Precio</th>
+                                    <th scope="col" data-priority="3">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="list-group-pedidos-recibido"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="bg-white rounded-15 shadow-sm py-4 animate__animated animate__fadeInUp h-100">
+                    <div class="px-3">
+                        <h6 class="text-dark-100 ">Pedidos</h6>
+                        <div class="d-flex justify-content-start align-items-center">
+                            <h2 class="text-dark fw-bold mb-1 display-6 pe-3" id="stats-pedidos-cant">320</h2>
+                            <div id="stats-pedidos-metrics"></div>
+                        </div>
+                        {{!-- <p class="text-muted">Todos los pedidos de este mes en comparación con el mes anterior se muestran en este gráfico.</p> --}}
+                    </div>
+                    <div class="" style="height: 350px; width:450px; margin:0 auto;">
+                        <canvas id="pedidosChart"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
