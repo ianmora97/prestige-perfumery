@@ -1,7 +1,7 @@
 <div id="sidebar" class="bg-dark">
     <div class="d-flex justify-content-center align-items-center mb-2 bg-primary" id="logo">
         <div style="height:45px;" class="align-items-center d-flex">
-            <i class="fa-solid fa-truck-ramp-box text-white"></i>
+            <img src="/img/icons/perfume.svg" alt="Logo" style="height: 100%;" class="invert-1">
         </div>
     </div>
     <div class="d-flex flex-column mt-2 align-items-center p-2" style="height: calc(100vh - 55px); overflow-y:auto;">
@@ -33,6 +33,16 @@
             <i class="fa-solid fa-user fa-2x text-white"></i>
             <small class="mt-1 mb-0">Clientes</small>
         </a>
+        {{!-- if rol is 5 show --}}
+        {{#ifCond rol '>=' 4}}
+            <a type="button" class="btn btn-dark btn-sidebar mb-4" id="btn-administrador" 
+            data-type="menu-btn" 
+            style="animation-delay: .4s;" 
+            href="/admin/administrador">
+                <i class="fa-solid fa-user-shield fa-2x text-white"></i>
+                <small class="mt-1 mb-0">Administrador</small>
+            </a>
+        {{/ifCond}}
         <a type="button" class="btn btn-dark btn-sidebar mb-4" id="btn-reportes" 
         data-type="menu-btn" 
         style="animation-delay: .4s;" 

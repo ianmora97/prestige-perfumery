@@ -5,23 +5,33 @@ require("dotenv").config();
 
 
 router.get('/admin/main', isAuthenticated, (req, res) => {
-    res.render('dashboard/index', {layout: 'dashboard', title: 'Panel', menuItem: 'panel'});
+    getRole(req).then((rol) => {
+        res.render('dashboard/index', {layout: 'dashboard', title: 'Panel', menuItem: 'panel', rol: rol});
+    });
 });
 
 router.get('/admin/productos', isAuthenticated, (req, res) => {
-    res.render('dashboard/productos', {layout: 'dashboard', title: 'Productos', menuItem: 'productos'});
+    getRole(req).then((rol) => {
+        res.render('dashboard/productos', {layout: 'dashboard', title: 'Productos', menuItem: 'productos', rol: rol});
+    });
 });
 
 router.get('/admin/pedidos', isAuthenticated, (req, res) => {
-    res.render('dashboard/pedidos', {layout: 'dashboard', title: 'Pedidos', menuItem: 'pedidos'});
+    getRole(req).then((rol) => {
+        res.render('dashboard/pedidos', {layout: 'dashboard', title: 'Pedidos', menuItem: 'pedidos', rol:rol});
+    });
 });
 
 router.get('/admin/clientes', isAuthenticated, (req, res) => {
-    res.render('dashboard/clientes', {layout: 'dashboard', title: 'Clientes', menuItem: 'clientes'});
+    getRole(req).then((rol) => {
+        res.render('dashboard/clientes', {layout: 'dashboard', title: 'Clientes', menuItem: 'clientes', rol:rol});
+    });
 });
 
 router.get('/admin/reportes', isAuthenticated, (req, res) => {
-    res.render('dashboard/reportes', {layout: 'dashboard', title: 'Reportes', menuItem: 'reportes'});
+    getRole(req).then((rol) => {
+        res.render('dashboard/reportes', {layout: 'dashboard', title: 'Reportes', menuItem: 'reportes', rol:rol});
+    });
 });
 
 function isAuthenticated(req, res, next) {
@@ -44,6 +54,29 @@ function isAuthenticated(req, res, next) {
             });
         }
     }
+}
+function getRole(req){
+    return new Promise((resolve, reject) => {
+        let headers = req.headers['cookie'] || req.headers['authorization'];
+        if(headers === undefined){
+            resolve("noRole")
+        }else{
+            let tokenName = headers.split(";").filter((item) => item.includes("token="))[0];
+            if(tokenName === undefined) resolve("noRole")
+            else tokenName = tokenName.split("=")[1];
+            if(tokenName === undefined){
+                resolve("noRole")
+            }else{
+                jwt.verify(tokenName, process.env.SECRET_KEY, (err, decoded) => {
+                    if (err) {
+                        resolve("noRole")
+                    } else {
+                        resolve(decoded.rol);
+                    }
+                });
+            }
+        }
+    });
 }
 
 module.exports = router;

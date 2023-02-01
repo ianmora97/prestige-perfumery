@@ -57,8 +57,8 @@ router.delete('/api/cliente/delete', isAuthenticated, CLIENTE.delete);
 */
 const REPORT = require('../controllers/report.controller');
 router.get('/api/report/all', isAuthenticated, REPORT.getAll);
-router.get('/api/report/allclient', REPORT.getAllJoin);
-router.get('/api/report/allthisyear', REPORT.getAllFromThisYear);
+router.get('/api/report/allclient', isAuthenticated, REPORT.getAllJoin);
+router.get('/api/report/allthisyear', isAuthenticated, REPORT.getAllFromThisYear);
 router.get('/api/report/getallsixmonths', REPORT.getAll6Months);
 router.get('/api/report/all/:id', isAuthenticated, REPORT.findOne);
 router.post('/api/report/add', isAuthenticated, REPORT.create);
@@ -78,7 +78,11 @@ function isAuthenticated(req, res, next) {
                 console.log(err);
                 res.redirect('/');
             } else {
-                next();
+                if(decoded.rol >= 3 ){
+                    next();
+                }else{
+                    res.redirect('/');
+                }
             }
         });
     }

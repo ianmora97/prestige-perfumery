@@ -10,12 +10,40 @@ require("dotenv").config();
 app.set('port', process.env.PORT);
 app.set('host', process.env.HOST || '');
 app.set('views', path.join(__dirname, 'views'));
-app.engine('.hbs', exphbs.engine({
+
+let hbs = exphbs.create({
+    helpers: {
+        ifCond: function (v1, operator, v2, options) {
+            switch (operator) {
+                case '==':
+                    return (v1 == v2) ? options.fn(this) : options.inverse(this);
+                case '===':
+                    return (v1 === v2) ? options.fn(this) : options.inverse(this);
+                case '<':
+                    return (v1 < v2) ? options.fn(this) : options.inverse(this);
+                case '<=':
+                    return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+                case '>':
+                    return (v1 > v2) ? options.fn(this) : options.inverse(this);
+                case '>=':
+                    return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+                case '&&':
+                    return (v1 && v2) ? options.fn(this) : options.inverse(this);
+                case '||':
+                    return (v1 || v2) ? options.fn(this) : options.inverse(this);
+                default:
+                    return options.inverse(this);
+            }
+        }
+    },
     defaultLayout: 'main',
     layoutsDir: path.join(app.get('views'), 'layouts'),
     partialsDir: path.join(app.get('views'), 'partials'),
     extname: '.hbs',
-}));
+});
+app.engine('.hbs', hbs.engine);
+// set helpers
+
 app.set('view engine', '.hbs');
 
 // Middlewares
