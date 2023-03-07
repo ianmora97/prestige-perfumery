@@ -122,6 +122,26 @@ img {
 }
 
 /**
+ * NAV
+*/
+.nav-tabs {
+  border-color: #c7c7c7 !important;
+}
+
+.nav-link {
+  color: #495057 !important;
+}
+.nav-link.active {
+  border-color: transparent transparent #4f46e5 transparent !important;
+  border-width: 2px !important;
+  color: #ffffff !important;
+}
+.nav-link:not(.active):hover {
+  border-color: transparent transparent #c7c7c7 transparent !important;
+  color: #111827 !important;
+}
+
+/**
  * Links and Buttons
 */
 a, button {
@@ -718,7 +738,6 @@ ul.pagination {
 
 #table-container {
   overflow-x: hidden;
-  min-height: 430px;
 }
 
 .slides-custom {

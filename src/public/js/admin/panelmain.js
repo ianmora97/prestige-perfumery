@@ -11,7 +11,6 @@ function getData(){
     }).then((result) => {
         g_dataPedidos = result.lastMonth;
         fillPedidos(result.lastMonth);
-        createPedidosChart(result.lastMonth);
         statsPedidosMonth(result);
     }, (error) => {
         console.log(error);
@@ -26,12 +25,43 @@ function getData(){
         console.log(error);
     });
     $.ajax({
+        url: '/api/proveedor/all?type=onlyActive',
+        method: 'GET',
+        contentType: 'application/json'
+    }).then((result) => {
+        fillProveedores(result);
+    }, (error) => {
+        console.log(error);
+    });
+    $.ajax({
         url: '/api/report/getallsixmonths',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
+        console.log(result);
         fillStats(result);
-        createCharts(result);
+        if(result.length > 0){
+            createCharts(result);
+        }
+    });
+}
+function fillProveedores(data){
+    data.forEach((e,i) => {
+        $("#pedidosproveedor").append(`
+        <div class="bg-gray rounded-15 shadow-custom p-3 animate__animated animate__zoomIn border-4 border-bottom border-primary" style="min-width: 100%; animation-delay:${i * 100}ms;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-start align-items-center">
+                    <span class="fa-stack">
+                        <i class="fa-solid fa-circle fa-stack-2x text-gray-light"></i>
+                        <i class="fa-solid fa-truck-fast fa-stack-1x text-primary"></i>
+                    </span>
+                    <p class="my-3 text-dark fw-bold">${e.nombre}</p>
+                </div>
+                <span class="badge badge-blue b-pill"><i class="fa-solid fa-box"></i> ${e.cantidad} productos</span>
+            </div>
+            
+        </div>
+        `);
     });
 }
 function fillStats(data){
@@ -73,7 +103,6 @@ function fillProductsLowStock(data){
     });
 }
 function statsPedidosMonth(result){
-    $("#stats-pedidos-cant").html(result.lastMonth.length);
 
     let direference = result.lastMonth.length - result.pastMonth.length;
     let percentage = (direference / result.pastMonth.length) * 100;
@@ -96,84 +125,7 @@ function statsPedidosMonth(result){
     }
 
 }
-function createPedidosChart(data){
-    let result = [0, 0, 0];
-    data.forEach((item) => {
-        result[item.state - 1] += 1;
-    });
-    
-    showPedidosGraph(result);
-}
-function showPedidosGraph(data){
-    var pedidosChart = document.getElementById("pedidosChart");
-    var ctx = pedidosChart.getContext("2d");
 
-    var pedidosChartJS = new Chart(pedidosChart, {
-        type: 'doughnut',
-        data: {
-            labels: ['Recibidos', 'Empacados', 'Entregados'],
-            datasets: [{
-                label: 'Cantidad',
-                data: data,
-                borderColor: [
-                    'rgba(79, 70, 229, 0.5)',
-                    'rgba(143, 138, 239, 0.5)',
-                    'rgba(205, 202, 255, 0.5)'
-                ],
-                backgroundColor: [
-                    'rgba(79, 70, 229, 1)',
-                    'rgba(143, 138, 239, 1)',
-                    'rgba(205, 202, 255, 1)'
-                ],
-                borderWidth: 0,
-                borderRadius: 3,
-                spacing: 5,
-                hoverOffset: 10
-
-            }]
-            
-        },
-        options: {
-            cutout: '70%',
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'right',
-                    labels: {
-                        boxWidth: 20,
-                        boxHeight: 10,
-                        padding: 30,
-                        usePointStyle: true,
-                        pointStyle:'rectRounded',
-                        font: {
-                            size: 14
-                        }
-                    },
-                }
-            },
-            layout:{
-                autoPadding: true,
-                padding: {
-                    left: 20
-                }
-            },
-            tooltips: {
-                callbacks: {
-                    label: function(tooltipItem, data) {
-                        var dataset = data.datasets[tooltipItem.datasetIndex];
-                        var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
-                            return previousValue + currentValue;
-                        });
-                        var currentValue = dataset.data[tooltipItem.index];
-                        var percentage = Math.floor(((currentValue/total) * 100)+0.5);         
-                        return data.labels[tooltipItem.index] + ": " + currentValue + " (" + percentage + "%)";
-                    }
-                }
-            }
-        }
-    });
-}
 function fillPedidos(data){
     $("#list-group-pedidos-recibido").html("");
     data

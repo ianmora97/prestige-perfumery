@@ -66,16 +66,56 @@ const Product = mysqlcon.define('t_product',{
     timestamps: false
 });
 
-/**
- * Select all products
- */
 exports.getAll = async (resolve) => {
-    Product.findAll().then((products) => {
+    Product.findAll()
+    .then((products) => {
         resolve({
             status: 200,
             data: products
         });
+    }, (error) => {
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+}
+exports.count = async (resolve) => {
+    Product.count()
+    .then((count) => {
+        resolve({
+            status: 200,
+            data: count
+        });
+
     }).catch((error) => {
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+}
+exports.getProductsPagination = async (data, resolve) => {
+    Product.findAll({
+        offset: data.offset,
+        limit: data.limit,
+    }).then((products) => {
+        Product.count()
+        .then((count) => {
+            resolve({
+                status: 200,
+                data: {
+                    products: products,
+                    count: count
+                },
+            });
+        }).catch((error) => {
+            resolve({
+                status: 500,
+                data: error
+            });
+        });
+    }, (error) => {
         resolve({
             status: 500,
             data: error

@@ -1,0 +1,164 @@
+<div id="alert" style="position: absolute; top:10px; left:4%; z-index:9999999;" class="w-90 d-block">
+
+</div>
+<div class="bg-white shadow-custom p-3 animate__animated animate__fadeIn animate__slower">
+    <div>
+        <nav class="animate__animated animate__fadeIn" style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="/admin/main">Panel</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Administración</li>
+            </ol>
+        </nav>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="fw-bold mb-0 animate__animated animate__fadeIn">Administración</h2>
+            <div class="d-flex justify-content-end align-items-center">
+            </div>
+        </div>
+        <div class="d-flex justify-content-start align-items-center animate__animated animate__fadeIn">
+            <p class="text-muted small mt-1 mb-0 me-3"><i class="fa-solid fa-clock"></i> Actualizado hace: <span id="lastUpdated" class="text-primary">2 seg</span></p>
+            <p class="text-muted small mt-1 mb-0"><i class="fa-solid fa-users"></i> Administradores: <span id="totalitems" class="text-primary">20</span></p>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4 mb-2">
+    <div class="bg-white rounded-15 shadow-custom py-3 mx-3 animate__animated animate__fadeIn mb-5">
+        <div class="row mx-0 px-3 mb-3">
+            <div class="col px-1">
+                <div class="d-flex justify-content-start align-items-center">
+                    <div class="form-icon" style="width: 300px;">
+                        <i class="fa-solid fa-search"></i>
+                        <input class="form-control" type="text" placeholder="Buscar..." 
+                        id="barraBuscar" aria-label="Buscar un producto">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 px-1 d-md-flex d-none justify-content-md-end align-items-center mt-3 mt-md-0" id="button-group">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarAdminModal"><i class="fa-solid fa-plus"></i> Agregar Administrador</button>
+            </div>
+        </div>
+
+        <div class="table-container mt-2" id="table-container">
+            <table class="table table-custom table-borderless table-striped table-responsive" id="table">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center">ID</th>
+                        <th scope="col" data-priority="1">Nombre</th>
+                        <th scope="col" data-priority="4">Username</th>
+                        <th scope="col" data-priority="5">Correo</th>
+                        <th scope="col" data-priority="3">Rol</th>
+                        <th scope="col" data-priority="2">Editar</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+            </table>
+        </div>
+        <div class="d-flex justify-content-end px-3 pagination-tables" id="pagination">
+            
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="agregarAdminModal" tabindex="-1" aria-labelledby="agregarAdminModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xxl">
+        <div class="modal-content">
+            <div class="modal-header text-bg-dark">
+                <p class="modal-title" id="agregarAdminModalLabel"><i class="fa-solid fa-user text-secondary"></i> Agregar Usuario</p>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mx-0">
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <label for="add-name" class="form-label fw-bold">Nombre</label>
+                            <input type="text" class="form-control" id="add-name" placeholder="Nombre...">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <label for="add-username" class="form-label fw-bold">Nombre de Usuario</label>
+                            <input type="text" class="form-control" id="add-username" placeholder="Nombre de Usuario...">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <label for="add-email" class="form-label fw-bold">Correo <span class="text-muted small">(Opcional)</span></label>
+                            <input type="text" class="form-control" id="add-email" placeholder="Correo...">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <label for="add-rol" class="form-label fw-bold">Rol</label>
+                            <select class="form-select" id="add-rol">
+                                <option value="3">Administrador</option>
+                                <option value="4">Administrador con Derechos</option>
+                                {{#ifCond rol '==' 5}}
+                                    <option value="5">Super Administrador</option>
+                                {{/ifCond}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white btn-lg" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="agregarUsuario()">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editarAdminModal" tabindex="-1" aria-labelledby="editarAdminModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xxl">
+        <div class="modal-content">
+            <div class="modal-header text-bg-dark">
+                <div id="editarAdminModalLabel">Editar</div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mx-0">
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <label for="edit-name" class="form-label fw-bold">Nombre</label>
+                            <input type="text" class="form-control" id="edit-name" placeholder="Nombre...">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <label for="edit-username" class="form-label fw-bold">Nombre de Usuario</label>
+                            <input type="text" class="form-control" id="edit-username" placeholder="Nombre de Usuario...">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <label for="edit-email" class="form-label fw-bold">Correo <span class="text-muted small">(Opcional)</span></label>
+                            <input type="text" class="form-control" id="edit-email" placeholder="Correo...">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <label for="edit-rol" class="form-label fw-bold">Rol</label>
+                            <select class="form-select" id="edit-rol">
+                                <option value="3">Administrador</option>
+                                <option value="4">Administrador con Derechos</option>
+                                {{#ifCond rol '==' 5}}
+                                    <option value="5">Super Administrador</option>
+                                {{/ifCond}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white btn-lg" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="actualizarUsuario()">Actualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/js/admin/administrador.js"></script>

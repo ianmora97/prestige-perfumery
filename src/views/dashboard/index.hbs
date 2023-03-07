@@ -53,16 +53,11 @@
             </div>
             <div class="col-lg-5">
                 <div class="bg-white rounded-15 shadow-sm py-4 animate__animated animate__fadeInUp h-100">
-                    <div class="px-3">
-                        <h6 class="text-dark-100 ">Pedidos</h6>
-                        <div class="d-flex justify-content-start align-items-center">
-                            <h2 class="text-dark fw-bold mb-1 display-6 pe-3" id="stats-pedidos-cant">320</h2>
-                            <div id="stats-pedidos-metrics"></div>
-                        </div>
-                        {{!-- <p class="text-muted">Todos los pedidos de este mes en comparación con el mes anterior se muestran en este gráfico.</p> --}}
+                    <div class="px-3 mb-3">
+                        <h6 class="text-dark-100">Pedidos a Proveedores</h6>
                     </div>
-                    <div class="" style="height: 350px; width:450px; margin:0 auto;">
-                        <canvas id="pedidosChart"></canvas>
+                    <div style="overflow-x: auto; max-height:400px;">
+                        <div id="pedidosproveedor" class="d-flex justify-content-start align-items-start align-content-start flex-wrap gap-4 px-3"></div>
                     </div>
                 </div>
             </div>

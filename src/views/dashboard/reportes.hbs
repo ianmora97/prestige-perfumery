@@ -20,122 +20,182 @@
         </div>
     </div>
 </div>
+<nav class="mx-3 mb-3">
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link me-3 active" id="nav-main-tab" data-bs-toggle="tab" data-bs-target="#nav-main" 
+        type="button" role="tab" aria-controls="nav-main" aria-selected="true">Ventas</button>
+        <button class="nav-link me-3" id="nav-audiencia-tab" data-bs-toggle="tab" data-bs-target="#nav-audiencia" 
+        type="button" role="tab" aria-controls="nav-audiencia" aria-selected="false">Audiencia</button>
+    </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-main" role="tabpanel" aria-labelledby="nav-main-tab" tabindex="0">
+        <div class="mx-2 mb-3 row mx-0 g-3">
+            <div class="col-md-4">
+                <div class="bg-white px-4 py-3 shadow-sm rounded-3 animate__animated animate__fadeIn h-100" style="height:155px;animation-delay: 300ms;">
+                    <div class="d-flex justify-content-start align-items-center h-100">
+                        <div class="me-3">
+                            <div class="rounded-circle p-3 bg-orange-light">
+                                <i class="fa-solid fa-sack-dollar fa-2x text-orange"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="text-muted">Total Ingresos</h6>
+                            <h1 class="display-5 fw-bold mb-0" id="stat-total-ingreso">30</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="bg-white px-4 py-3 shadow-sm rounded-3 animate__animated animate__fadeIn h-100" style="height:155px;animation-delay: 500ms;">
+                    <div class="d-flex justify-content-start align-items-center h-100">
+                        <div class="me-3">
+                            <div class="rounded-circle p-3 bg-green-light">
+                                <i class="fa-solid fa-money-bill-1 fa-2x text-green"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-0">AVG. Ingresos Mensuales</h6>
+                            <h1 class="display-5 fw-bold mb-0" id="stat-ingreso-mensual">30</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="bg-white px-4 py-3 shadow-sm rounded-3 animate__animated animate__fadeIn h-100" style="height:155px;animation-delay: 700ms;">
+                    <div class="d-flex justify-content-start align-items-center h-100">
+                        <div class="me-3">
+                            <div class="rounded-circle p-3 bg-blue-light">
+                                <i class="fa-solid fa-boxes-stacked fa-2x text-blue"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="text-muted">Productos Vendidos</h6>
+                            <div class="d-flex justify-content-start align-items-center">
+                                <h1 class="display-5 fw-bold mb-1 me-3" id="stat-producto-vendido"></h1>
+                                <p class="text-muted small mb-0" id="stat-producto-mensual">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mx-2 mb-3">
+            <div class="row mx-0 g-3">
+                <div class="col-md-8">
+                    <div class="bg-white rounded-15 shadow-custom py-3 animate__animated animate__fadeInDown h-100">
+                        <div class="px-3">
+                            <h6 class="mb-0">Ingresos Totales Por mes</h6>
+                        </div>
+                        <div style="max-height:350px;" class="px-3">
+                            <canvas id="incomeChart" style="width:90%; height:350px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="bg-white rounded-15 shadow-custom py-3 animate__animated animate__fadeInDown h-100">
+                        <div class="px-3">
+                            <h6 class="mb-0">Pedidos</h6>
+                            <div class="d-flex justify-content-start align-items-center">
+                                <h2 class="text-dark fw-bold mb-1 display-6 pe-3" id="stats-pedidos-cant">320</h2>
+                                <div id="stats-pedidos-metrics"></div>
+                            </div>
+                        </div>
+                        <div class="" style="height: 350px; width:450px; margin:0 auto;">
+                            <canvas id="pedidosChart"></canvas>
+                        </div>
+                    </div>
+                </div>
 
-<div class="mx-2 mb-3 row mx-0 g-3">
-    <div class="col-md-4">
-        <div class="bg-white px-4 py-3 shadow-sm rounded-3 animate__animated animate__fadeIn h-100" style="height:155px;animation-delay: 300ms;">
-            <div class="d-flex justify-content-start align-items-center h-100">
-                <div class="me-3">
-                    <div class="rounded-circle p-3 bg-orange-light">
-                        <i class="fa-solid fa-sack-dollar fa-2x text-orange"></i>
+            </div>
+        </div>
+        <div class="mx-3 mb-3 pb-5">
+            <div class="bg-white rounded-15 shadow-custom py-3 animate__animated animate__fadeInDown">
+                <div class="px-3 d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">Top 10 Clientes</h6>
+                    <div class="dropdown">
+                        <button class="btn btn-white btn-lg dropdown-toggle" id="dropdown-filtro-fecha-table" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-clock-rotate-left"></i> Todo el tiempo
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" role="button" onclick="cambiarFechaTabla('alltime')">Todo el tiempo</a></li>
+                            <li><a class="dropdown-item" role="button" onclick="cambiarFechaTabla('currentmonth')">Último Mes</a></li>
+                            <li><a class="dropdown-item" role="button" onclick="cambiarFechaTabla('currentyear')">Último Año</a></li>
+                        </ul>
                     </div>
                 </div>
-                <div>
-                    <h6 class="text-muted">Total Ingresos</h6>
-                    <h1 class="display-5 fw-bold mb-0" id="stat-total-ingreso">30</h1>
+                <div class="table-container mt-2" id="table-container">
+                    <table class="table table-custom table-borderless table-striped table-responsive" id="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center" style="width: 40px;">#</th>
+                                <th scope="col" class="ps-4" data-priority="1">Nombre</th>
+                                <th scope="col" data-priority="4">Cédula</th>
+                                <th scope="col" data-priority="6">Nivel</th>
+                                <th scope="col" data-priority="5">Productos Adquiridos</th>
+                                <th scope="col" data-priority="3">Invertido</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody"></tbody>
+                    </table>
+                </div>
+                <div class="col px-3 d-md-flex justify-content-start align-items-center d-none">
+                    <small class="text-muted" id="info"></small>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="bg-white px-4 py-3 shadow-sm rounded-3 animate__animated animate__fadeIn h-100" style="height:155px;animation-delay: 500ms;">
-            <div class="d-flex justify-content-start align-items-center h-100">
-                <div class="me-3">
-                    <div class="rounded-circle p-3 bg-green-light">
-                        <i class="fa-solid fa-money-bill-1 fa-2x text-green"></i>
+    <div class="tab-pane fade " id="nav-audiencia" role="tabpanel" aria-labelledby="nav-audiencia-tab" tabindex="0">
+        <div class="mx-2 mb-3 row g-3">
+            <div class="col-md-4">
+                <div class="bg-white px-4 py-3 shadow-sm rounded-3 animate__animated animate__fadeIn h-100" style="height:155px;animation-delay: 100ms;">
+                    <h6 class="mb-3">Visitas por Dispositivo</h6>
+                    <div class="d-flex justify-content-between mb-2">
+                        <div>
+                            <p class="border-4 border-primary border-start ps-2">Movil</p>
+                            <h3 class="fw-bold display-4" id="stats-devide-mobile-data"></h3>
+                        </div>
+                        <div class="text-end">
+                            <p class="border-4 border-secondary border-end pe-2">Computadora</p>
+                            <h3 class="fw-bold display-4" id="stats-devide-desktop-data"></h3>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div class="progress me-1" style="height:20px;" id="stats-device-mobile-progress">
+                            <div class="progress-bar" role="progressbar" id="stats-device-mobile" style="width: 100%"></div>
+                        </div>
+                        <div class="progress" style="height:20px;" id="stats-device-desktop-progress">
+                            <div class="progress-bar bg-secondary" role="progressbar" id="stats-device-desktop" style="width: 100%"></div>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <h6 class="text-muted mb-0">AVG. Ingresos Mensuales</h6>
-                    <h1 class="display-5 fw-bold mb-0" id="stat-ingreso-mensual">30</h1>
+            </div>
+            <div class="col-md-4">
+                <div class="bg-white py-3 shadow-sm rounded-3 animate__animated animate__fadeIn h-100" style="height:155px;animation-delay: 300ms;">
+                    <h6 class="mb-3 px-4">Visitas por Sistema Operativo</h6>
+                    <div style="max-height:250px; width:100%;" class="px-3">
+                        <canvas id="osChart" style="width:100%;"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="bg-white py-3 shadow-sm rounded-3 animate__animated animate__fadeIn h-100" style="height:155px;animation-delay: 300ms;">
+                    <h6 class="mb-3 px-4">Visitas por Navegador</h6>
+                    <div style="max-height:250px; width:100%;" class="px-3">
+                        <canvas id="browserChart" style="width:100%;"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="bg-white px-4 py-3 shadow-sm rounded-3 animate__animated animate__fadeIn h-100" style="height:155px;animation-delay: 700ms;">
-            <div class="d-flex justify-content-start align-items-center h-100">
-                <div class="me-3">
-                    <div class="rounded-circle p-3 bg-blue-light">
-                        <i class="fa-solid fa-boxes-stacked fa-2x text-blue"></i>
-                    </div>
-                </div>
-                <div>
-                    <h6 class="text-muted">Productos Vendidos</h6>
-                    <div class="d-flex justify-content-start align-items-center">
-                        <h1 class="display-5 fw-bold mb-1 me-3" id="stat-producto-vendido"></h1>
-                        <p class="text-muted small mb-0" id="stat-producto-mensual">0</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    {{!-- <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
+        
     </div>
+    <div class="tab-pane fade" id="nav-disabled" role="tabpanel" aria-labelledby="nav-disabled-tab" tabindex="0">
+        
+    </div> --}}
 </div>
-<div class="mx-2 mb-3">
-    <div class="row mx-0 g-3">
-        <div class="col-md-8">
-            <div class="bg-white rounded-15 shadow-custom py-3 animate__animated animate__fadeInDown h-100">
-                <div class="px-3">
-                    <h6 class="mb-0">Ingresos Totales Por mes</h6>
-                </div>
-                <div style="max-height:350px;" class="px-3">
-                    <canvas id="incomeChart" style="width:90%; height:350px;"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="bg-white rounded-15 shadow-custom py-3 animate__animated animate__fadeInDown h-100">
-                <div class="px-3">
-                    <h6 class="mb-0">Pedidos</h6>
-                    <div class="d-flex justify-content-start align-items-center">
-                        <h2 class="text-dark fw-bold mb-1 display-6 pe-3" id="stats-pedidos-cant">320</h2>
-                        <div id="stats-pedidos-metrics"></div>
-                    </div>
-                </div>
-                <div class="" style="height: 350px; width:450px; margin:0 auto;">
-                    <canvas id="pedidosChart"></canvas>
-                </div>
-            </div>
-        </div>
 
-    </div>
-</div>
-<div class="mx-3 mb-3 pb-5">
-    <div class="bg-white rounded-15 shadow-custom py-3 animate__animated animate__fadeInDown">
-        <div class="px-3 d-flex justify-content-between align-items-center">
-            <h6 class="mb-0">Top 10 Clientes</h6>
-            <div class="dropdown">
-                <button class="btn btn-white btn-lg dropdown-toggle" id="dropdown-filtro-fecha-table" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa-solid fa-clock-rotate-left"></i> Todo el tiempo
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" role="button" onclick="cambiarFechaTabla('alltime')">Todo el tiempo</a></li>
-                    <li><a class="dropdown-item" role="button" onclick="cambiarFechaTabla('currentmonth')">Último Mes</a></li>
-                    <li><a class="dropdown-item" role="button" onclick="cambiarFechaTabla('currentyear')">Último Año</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="table-container mt-2" id="table-container">
-            <table class="table table-custom table-borderless table-striped table-responsive" id="table">
-                <thead>
-                    <tr>
-                        <th scope="col" class="text-center" style="width: 40px;">#</th>
-                        <th scope="col" class="ps-4" data-priority="1">Nombre</th>
-                        <th scope="col" data-priority="4">Cédula</th>
-                        <th scope="col" data-priority="6">Nivel</th>
-                        <th scope="col" data-priority="5">Productos Adquiridos</th>
-                        <th scope="col" data-priority="3">Invertido</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody"></tbody>
-            </table>
-        </div>
-        <div class="col px-3 d-md-flex justify-content-start align-items-center d-none">
-            <small class="text-muted" id="info"></small>
-        </div>
-    </div>
-    
-</div>
 
 
 <script src="/js/admin/reportes.js"></script>

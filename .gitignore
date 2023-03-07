@@ -31,6 +31,9 @@ webpack/package-lock.json
 #node modules
 node_modules/
 
+#package-lock
+package-lock.json
+
 #log files
 *.log
 

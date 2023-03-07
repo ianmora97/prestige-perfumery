@@ -15,9 +15,9 @@ const mysqlcon = new Sequelize(
     },
 );
 mysqlcon.authenticate().then(() => {
-    console.log('Connection has been established successfully.');
+    console.log('[OK] MySQL DB connected');
 }).catch((error) => {
-    console.error('Unable to connect to the database: ', error);
+    console.error('[ERR] Unable to connect to the database: ', error);
 });
 
 module.exports = mysqlcon;

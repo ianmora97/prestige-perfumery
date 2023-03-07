@@ -11,6 +11,25 @@ module.exports = {
             res.status(result.status).json(result.data);
         });
     },
+    getProductsPagination: (req, res) => {
+        let data = {
+            offset: parseInt(req.query.start),
+            limit: parseInt(req.query.length)
+        };
+        Product.getProductsPagination(data,(result) => {
+            res.status(result.status).json({
+                draw: req.query.draw,
+                recordsTotal: result.data.count,
+                recordsFiltered: result.data.count,
+                data: result.data.products
+            });
+        });
+    },
+    count: (req, res) => {
+        Product.count((result) => {
+            res.status(result.status).json(result.data);
+        });
+    },
     findOne: (req, res) => {
         Product.findOne(req.params.id, (result) => {
             res.status(result.status).json(result.data);

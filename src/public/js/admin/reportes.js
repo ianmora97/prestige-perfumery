@@ -25,9 +25,8 @@ function brignData(time){
         let a = Math.ceil(totalTime / 1000);
         let t = a == 1 ? a + ' seg' : a + ' segs';
         $("#lastUpdated").html(t);
-        console.log(result);
         fillTable(result);
-        $("#totalitems").html(data.length);
+        $("#totalitems").html(result.length);
     });
     $.ajax({
         url: '/api/report/getallsixmonths',
@@ -47,6 +46,199 @@ function brignData(time){
         createPedidosChart(result.lastMonth);
     }, (error) => {
         console.log(error);
+    });
+    // TODO: get all data from analytics
+    $.ajax({
+        url: '/api/analytics/all',
+        method: 'GET',
+        contentType: 'application/json'
+    }).then((result) => {
+        iterateAnalytics(result);
+    }, (error) => {
+        console.log(error);
+    });
+}
+function iterateAnalytics(data){
+    let byDevice = [];
+    let byOS = [];
+    let byBrowser = [];
+    let byPlace = [];
+
+    data.forEach((item) => {
+        let device = item.device;
+        let os = item.os;
+        let browser = item.browser;
+        let ip = JSON.parse(item.ip);
+
+        byDevice.push(device);
+        byOS.push(os);
+        byBrowser.push(browser);
+        byPlace.push(ip.region);
+    });
+    buildAnalytics(byDevice, byOS, byBrowser, byPlace);
+}
+function buildAnalytics(devices, os, browsers, places){
+    let mobile = 0;
+    let desktop = 0;
+
+    devices.forEach((item) => {
+        if(item == 'Mobile'){
+            mobile++;
+        }else{
+            desktop++;
+        }
+    });
+    let mobilePercentage = (mobile / devices.length) * 100;
+    let desktopPercentage = (desktop / devices.length) * 100;
+
+    let mobileStr = mobilePercentage.toFixed(0);
+    let desktopStr = desktopPercentage.toFixed(0);
+
+    $("#stats-device-mobile-progress").css('width', mobileStr + '%');
+    $("#stats-device-desktop-progress").css('width', desktopStr + '%');
+
+    $("#stats-devide-mobile-data").html(mobileStr + '%');
+    $("#stats-devide-desktop-data").html(desktopStr + '%');
+
+    buildChartOSBrowser(os, browsers);
+}
+function buildChartOSBrowser(os, browsers){
+    let osData = [];
+    let browserData = [];
+    // COUNT OS AND BROWSER items and push to array no repeat
+    let osMap = new Map();
+    let browserMap = new Map();
+
+    os.forEach((item) => {
+        if(osMap.has(item)){
+            let value = osMap.get(item);
+            value++;
+            osMap.set(item, value);
+        }else{
+            osMap.set(item, 1);
+        }
+    });
+    browsers.forEach((item) => {
+        if(browserMap.has(item)){
+            let value = browserMap.get(item);
+            value++;
+            browserMap.set(item, value);
+        }else{
+            browserMap.set(item, 1);
+        }
+    });
+    // convert map to array
+    osMap.forEach((value, key) => {
+        osData.push({
+            x: key,
+            y: value
+        });
+    });
+    browserMap.forEach((value, key) => {
+        browserData.push({
+            x: key,
+            y: value
+        });
+    });
+
+    var osChart = document.getElementById("osChart");
+    var ctxOs = osChart.getContext("2d");
+    var osChartJS = new Chart(osChart, {
+        type: 'bar',
+        data: {
+            datasets: [
+                {
+                    label: 'Dispositivos',
+                    data: osData,
+                    backgroundColor: 'rgba(79, 70, 229, 0.8)',
+                    borderColor: 'rgba(79, 70, 229, 1)',
+                    hoverBackgroundColor: 'rgba(79, 70, 229, 1)',
+                    borderWidth: 1,
+                    borderRadius: {
+                        topRight: 8,
+                        topLeft: 8,
+                        bottomRight: 0,
+                        bottomLeft: 0
+                    },
+                    barThickness: 30
+                }                
+            ]
+        },
+        options: {
+            plugins:{
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        display: false,
+                    },
+                },
+                y: {
+                    grid: {
+                        display: true,
+                    },
+                    border:{
+                        display: false
+                    },
+                    ticks:{
+                        display: false
+                    }
+                }
+            }
+        }
+
+    });
+    var browserChart = document.getElementById("browserChart");
+    var ctxBrowser = browserChart.getContext("2d");
+    var browserChartJS = new Chart(browserChart, {
+        type: 'bar',
+        data: {
+            datasets:[
+                {
+                    label: 'Dispositivos',
+                    data: browserData,
+                    backgroundColor: 'rgba(150, 215, 244, 0.8)',
+                    borderColor: 'rgba(150, 215, 244, 1)',
+                    hoverBackgroundColor: 'rgba(150, 215, 244, 1)',
+                    borderWidth: 1,
+                    borderRadius: {
+                        topRight: 8,
+                        topLeft: 8,
+                        bottomRight: 0,
+                        bottomLeft: 0
+                    },
+                    barThickness: 30
+                }
+            ]
+        },
+        options: {
+            plugins:{
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        display: false
+                    }
+                },
+                y: {
+                    grid: {
+                        display: true
+                    },
+                    border:{
+                        display: false
+                    },
+                    ticks:{
+                        display: false
+                    }
+                }
+            }
+        }
     });
 }
 
@@ -75,7 +267,6 @@ function statsPedidosMonth(result){
 
 }
 function createPedidosChart(data){
-    console.log(data);
     let result = [0, 0, 0];
     data.forEach((item) => {
         result[item.state - 1] += 1;
@@ -162,6 +353,7 @@ function fillStats(data){
     });
 
     let mediaTotal = total / 6;
+    mediaTotal = mediaTotal.toFixed(0);
 
     $("#stat-producto-vendido").html(cantidad);
     $("#stat-total-ingreso").html(`₡ ${total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`);
@@ -286,10 +478,6 @@ function cambiarFechaTabla(time){
 
 // ***************+++++*************** CHARTS ***************+++++***************
 // ***************+++++*************** CHARTS ***************+++++***************
-// ***************+++++*************** CHARTS ***************+++++***************
-// ***************+++++*************** CHARTS ***************+++++***************
-
-
 
 function createCharts(result){
     let months = [];
@@ -308,7 +496,7 @@ function createCharts(result){
     let labels = months;
     $("#dateIncomeRange").html(`
         ${min} - ${max}
-    `)
+    `);
 
     let y = [1200, 1009, 100, 500, 2000, 530, 1400];
     let data = [];

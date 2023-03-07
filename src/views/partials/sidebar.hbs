@@ -1,7 +1,7 @@
 <div id="sidebar" class="bg-dark">
     <div class="d-flex justify-content-center align-items-center mb-2 bg-primary" id="logo">
         <div style="height:45px;" class="align-items-center d-flex">
-            <img src="/img/icons/perfume.svg" alt="Logo" style="height: 100%;" class="invert-1">
+            <img src="/img/icons/perfume.svg" alt="Logo" style="height: 60%;" class="invert-1">
         </div>
     </div>
     <div class="d-flex flex-column mt-2 align-items-center p-2" style="height: calc(100vh - 55px); overflow-y:auto;">
@@ -9,48 +9,53 @@
         data-type="menu-btn"
         style="animation-delay: .1s;"
         href="/admin/main">
-            <i class="fa-solid fa-house fa-2x text-white"></i>
+            <i class="fa-solid fa-house text-white"></i>
             <small class="mt-1 mb-0">Panel</small>
         </a>
         <a type="button" class="btn btn-dark btn-sidebar mb-4" id="btn-productos" 
         data-type="menu-btn"
         style="animation-delay: .2s;"
         href="/admin/productos">
-            <i class="fa-solid fa-spray-can-sparkles fa-2x text-white"></i>
+            <i class="fa-solid fa-spray-can-sparkles text-white"></i>
             <small class="mt-1 mb-0">Productos</small>
         </a>
         <a type="button" class="btn btn-dark btn-sidebar mb-4" id="btn-pedidos" 
         data-type="menu-btn"
         style="animation-delay: .3s;"
         href="/admin/pedidos">
-            <i class="fa-solid fa-basket-shopping fa-2x text-white"></i>
+            <i class="fa-solid fa-basket-shopping text-white"></i>
             <small class="mt-1 mb-0">Pedidos</small>
         </a>
         <a type="button" class="btn btn-dark btn-sidebar mb-4" id="btn-clientes" 
         data-type="menu-btn" 
         style="animation-delay: .4s;" 
         href="/admin/clientes">
-            <i class="fa-solid fa-user fa-2x text-white"></i>
+            <i class="fa-solid fa-user text-white"></i>
             <small class="mt-1 mb-0">Clientes</small>
         </a>
-        {{!-- if rol is 5 show --}}
+        <a type="button" class="btn btn-dark btn-sidebar mb-4" id="btn-proveedores" 
+        data-type="menu-btn" 
+        style="animation-delay: .5s;" 
+        href="/admin/proveedores">
+            <i class="fa-solid fa-truck text-white"></i>
+            <small class="mt-1 mb-0">Proveedores</small>
+        </a>
         {{#ifCond rol '>=' 4}}
             <a type="button" class="btn btn-dark btn-sidebar mb-4" id="btn-administrador" 
             data-type="menu-btn" 
-            style="animation-delay: .4s;" 
+            style="animation-delay: .6s;" 
             href="/admin/administrador">
-                <i class="fa-solid fa-user-shield fa-2x text-white"></i>
-                <small class="mt-1 mb-0">Administrador</small>
+                <i class="fa-solid fa-user-shield text-white"></i>
+                <small class="mt-1 mb-0">Admin</small>
             </a>
         {{/ifCond}}
         <a type="button" class="btn btn-dark btn-sidebar mb-4" id="btn-reportes" 
         data-type="menu-btn" 
-        style="animation-delay: .4s;" 
+        style="animation-delay: .7s;" 
         href="/admin/reportes">
-            <i class="fa-solid fa-chart-simple fa-2x text-white"></i>
+            <i class="fa-solid fa-chart-simple text-white"></i>
             <small class="mt-1 mb-0">Reportes</small>
         </a>
-
         <div class="mt-auto mb-3">
             <button type="button" class="btn btn-transparent" id="logoutbutton">
                 <i class="fa-solid fa-arrow-right-from-bracket text-light"></i> <span class="text-light">Salir</span>

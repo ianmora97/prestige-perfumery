@@ -516,7 +516,7 @@ function addRow(e){
             <tr>
                 <td class="">
                     <div class="d-flex justify-content-center align-items-center" role="button">
-                        <img src="${e.image}" height="70px" alt="" class="hover-img img-round">
+                        <img src="${e.image}" width="50px" height="50px" alt="" class="hover-img img-round">
                     </div>
                 </td>
                 <td><span class="text-primary">${e.barcode}</span></td>
@@ -772,12 +772,15 @@ function moveToList(){
 }
 function clearInputs(){
     $("#add-name").val('');
-    $("#add-stock").val('');
-    $("#add-precio").val('');
-    $("#add-categoria").val('');
-    $("#add-aviso").val('');
     $("#add-marca").val('');
-    $("#add-q").val('');
+    $("#add-stock").val('');
+    $("#add-precio1").val('');
+    $("#add-precio2").val('');
+    $("#add-precio3").val('');
+    $("#add-categoria").val('');
+    $("#add-stock").val('');
+    $("#add-aviso").val('');
+    $("#add-cantidad").val('');
 }
 function runTooltips(){
     tippy('.aviso-tooltip', {
@@ -850,7 +853,7 @@ function datatables(){
             },
         ],
         order: [[ 2, "asc" ]],
-        "scrollY": "600px",
+        "scrollY": "700px",
         "scrollCollapse": true,
         "language": {
             "decimal":        "",

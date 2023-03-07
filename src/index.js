@@ -42,8 +42,6 @@ let hbs = exphbs.create({
     extname: '.hbs',
 });
 app.engine('.hbs', hbs.engine);
-// set helpers
-
 app.set('view engine', '.hbs');
 
 // Middlewares
@@ -58,10 +56,11 @@ app.use(require('./routes/api.routes'));
 app.use(require('./routes/auth.routes'));
 app.use(require('./routes/dashboard.routes'));
 
+
 // Static Files
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Server list ener
 app.listen(app.get('port'), app.get('host'), () => {
-    console.log(`Server on port ${app.get('port')}`);
+    console.log(`[OK] Server on port ${app.get('port')}`);
 });

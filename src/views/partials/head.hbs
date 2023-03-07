@@ -2,7 +2,7 @@
     <div class="d-flex justify-content-end align-items-center py-2 me-3">
         
         <div class="d-flex justify-content-end align-items-center">
-            <img src="/upload/profile/default.png" id="thumbnail-pic" width="35px" height="35px" alt="Thumnail" style="filter: invert(1) brightness(2);">
+            <img src="" id="thumbnail-pic" class="img-circle me-2" width="25px" height="25px" alt="Thumnail" style="filter: invert(1) brightness(2);">
         </div>
         <p class="text-light text-center mb-0" id="global_userName">user</p>
     </div>
@@ -10,7 +10,7 @@
 <script>
     //get cookie
     var thumbnail = document.cookie.split('; ').find(row => row.startsWith('photo')).split('=')[1];
-    $('#thumbnail-pic').attr('src', `/upload/profile/${thumbnail}`);
+    $('#thumbnail-pic').attr('src', `${thumbnail}`);
 
     var global_userName = document.cookie.split('; ').find(row => row.startsWith('username')).split('=')[1];
     $('#global_userName').text(global_userName);

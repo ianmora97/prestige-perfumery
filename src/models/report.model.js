@@ -70,7 +70,7 @@ exports.getAllFromThisYear = (callback) => {
     });
 }
 exports.getAll6Months = (callback) => {
-    mysqlcon.query('SELECT SUM(precio) AS total, SUM(cantidad) as cantidad, MONTH(createdAt) AS month FROM t_report WHERE createdAt >= DATE_SUB(NOW(), INTERVAL 6 MONTH) GROUP BY MONTH(createdAt)',
+    mysqlcon.query('SELECT SUM(precio) AS total, SUM(cantidad) as cantidad, MONTH(createdAt) AS month FROM t_report WHERE createdAt >= DATE_SUB(NOW(), INTERVAL 5 MONTH) GROUP BY MONTH(createdAt)',
     { type: QueryTypes.SELECT })
     .then((result) => {
         callback({

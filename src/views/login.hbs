@@ -1,0 +1,27 @@
+{{!-- Login --}}
+<div class="container vh-100">
+    <div class="row h-100 align-items-center">
+        <div class="col-md-4 offset-md-4 align-items-center">
+            <div class="card border-0 mt-auto bg-gray">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center my-3">
+                        <img src="/img/iconlogo.svg" width="50px" alt="3 Bubbles" srcset="/img/iconlogo.svg">
+                    </div>
+
+                    <h2 class="text-center fw-bold mb-4">Sign in</h2>
+                    <div class="form-stack mb-2">
+                        <input type="text" placeholder="Username" name="username" id="username" class="form-control bg-white">
+                        <input type="password" placeholder="Password" name="password" id="password" class="form-control bg-white">
+                    </div>
+
+                    <div class="small text-danger" id="feedback"></div>
+
+                    <a href="/forgot-password" class="text-primary my-2 text-center d-block">Forgot password?</a>
+
+                    <button type="submit" class="btn btn-primary w-100 mt-1" id="login-btn" name="Login button"><i class="fa-solid fa-lock op"></i> Sign in</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="module" src="/js/login.js"></script>

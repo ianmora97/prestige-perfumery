@@ -1,12 +1,19 @@
+const { Sequelize } = require('sequelize');
 const path = require('path');
 
-const sqlite3 = require('sqlite3').verbose();
-
-const db = new sqlite3.Database( path.join(__dirname, 'tables.db') , (err)=>{
-    if(err){
-        return console.error(err.message);
-    }
-    console.log('Connected to SQLite DB database');
+const sqlite = new Sequelize({
+    dialect: 'sqlite',
+    storage: path.join(__dirname, '/sqlitedb.db'),
+    logging: false
 });
 
-module.exports = db;
+// authenticate database and avoid logging
+sqlite.authenticate().then(() => {
+    console.log('[OK] SQLite DB connected');
+}).catch((error) => {
+    console.error('[ERR] Unable to connect to the database: ', error);
+});
+
+
+
+module.exports = sqlite;

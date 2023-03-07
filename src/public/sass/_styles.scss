@@ -144,6 +144,24 @@ $input-btn-focus-box-shadow: 0 0 0 0 none;
     }
 }
 
+/**
+ * NAV
+*/
+.nav-tabs{
+    border-color: #c7c7c7 !important;
+}
+.nav-link{
+    color: #495057 !important;
+    &.active{
+        border-color: transparent transparent $primary transparent !important;
+        border-width: 2px !important;
+        color: $light !important;
+    }
+    &:not(.active):hover{
+        border-color: transparent transparent #c7c7c7 transparent !important;
+        color: $dark-900 !important;
+    }
+}
 
 /**
  * Links and Buttons
@@ -716,7 +734,6 @@ $modal-fade-transform: scale(.8);
 }
 #table-container{
     overflow-x: hidden;
-    min-height: 430px;
 }
 
 
