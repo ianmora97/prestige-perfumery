@@ -12,5 +12,9 @@ router.get('/admin/login', (req, res) => {
     res.render('login');
 });
 
+router.get('/login', (req, res) => {
+    res.render('loginClient');
+});
+
 
 module.exports = router;

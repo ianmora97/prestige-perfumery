@@ -1,0 +1,19 @@
+<nav class="bg-white menu">
+    <a href="#" class="item" id="btn-home">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+    </a>
+    <a href="#" class="item" id="btn-pedidos">
+        <i class="fa-solid fa-truck"></i>
+        <span>Pedidos</span>
+    </a>
+    <a href="#" class="item" id="btn-perfil">
+        <i class="fa-solid fa-user"></i>
+        <span>Perfil</span>
+    </a>
+</nav>
+
+<script>
+    var windowButton = "{{ menuItem }}";
+    $(`#btn-${windowButton}`).addClass("active");
+</script>

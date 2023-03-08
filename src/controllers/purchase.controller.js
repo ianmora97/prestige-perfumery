@@ -35,6 +35,7 @@ module.exports = {
         req.body.productos.forEach((item) => {
             Product.remove1Stock({id: item.product, cantidad: item.cantidad}, (result) => {
                 if(result.status === 200){
+                    checkProducto(item.product);
                     who(req).then((user) => {
                         logger.activity(`Stock del producto "${item.product}" actualizado`, user);
                     });
@@ -69,6 +70,7 @@ module.exports = {
         req.body.productos.forEach((item) => {
             Product.add1Stock({id: item.product, cantidad: item.cantidad}, (result) => {
                 if(result.status === 200){
+                    checkProducto(item.product);
                     who(req).then((user) => {
                         logger.activity(`Stock del producto "${item.product}" actualizado`, user);
                     });

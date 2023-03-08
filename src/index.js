@@ -54,6 +54,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(require('./routes/index.routes'));
 app.use(require('./routes/api.routes'));
 app.use(require('./routes/auth.routes'));
+app.use(require('./routes/client.routes'));
 app.use(require('./routes/dashboard.routes'));
 
 

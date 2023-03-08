@@ -1,6 +1,8 @@
 $primary: #4f46e5;
 $primary-light: lighten($primary, 10%);
 
+$primary-client: #EA5C5F;
+
 $secondary: #96d7f4;
 $success: #38c172;
 $danger: #f26262;
@@ -22,6 +24,7 @@ $red: #f57979;
 
 $theme-colors: (
     "primary": $primary,
+    "primary-client": $primary-client,
     "secondary": $secondary,
     "success": $success,
     "danger": $danger,
@@ -139,7 +142,7 @@ $input-btn-focus-box-shadow: 0 0 0 0 none;
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        right: 10px;
+        right: 20px;
         color: $gray-900;
     }
 }
@@ -147,19 +150,34 @@ $input-btn-focus-box-shadow: 0 0 0 0 none;
 /**
  * NAV
 */
-.nav-tabs{
+.nav-tabs:not(.nav-lines){
     border-color: #c7c7c7 !important;
-}
-.nav-link{
-    color: #495057 !important;
-    &.active{
-        border-color: transparent transparent $primary transparent !important;
-        border-width: 2px !important;
-        color: $light !important;
+    .nav-link{
+        color: #495057 !important;
+        &.active{
+            border-color: transparent transparent $primary transparent !important;
+            border-width: 2px !important;
+            color: $light !important;
+        }
+        &:not(.active):hover{
+            border-color: transparent transparent #c7c7c7 transparent !important;
+            color: $dark-900 !important;
+        }
     }
-    &:not(.active):hover{
-        border-color: transparent transparent #c7c7c7 transparent !important;
-        color: $dark-900 !important;
+}
+.nav-tabs.nav-lines{
+    border-color: #c7c7c7 !important;
+    .nav-link{
+        color: #495057 !important;
+        &.active{
+            border-color: transparent transparent $primary transparent !important;
+            border-width: 2px !important;
+            color: $primary !important;
+        }
+        &:not(.active):hover{
+            border-color: transparent transparent #c7c7c7 transparent !important;
+            color: $dark-900 !important;
+        }
     }
 }
 
@@ -605,7 +623,7 @@ button{
  * Borders
 */
 .rounded-15{
-    border-radius: 0.7rem;
+    border-radius: 0.7rem !important;
 }
 /**
  * Lists
@@ -927,4 +945,98 @@ table.dataTable>tbody>tr.selected>*{
 }
 table.dataTable>tbody>tr.child{
     background-color: #f0f3ff !important;
+}
+
+// ? ======================================== CLIENT CUSTOM CSS ========================================
+
+body.client-styles{
+    font-family: 'Lexend', sans-serif !important;
+    font-weight: 400 !important;
+    background: linear-gradient(180deg, #ea5c5f 0%, rgba(255,255,255,0) 100%);
+    background-repeat: no-repeat;
+    background-size: 100% 400px;
+
+    .main-client{
+        padding-bottom: 70px;
+    }
+    nav.menu{
+        z-index: 10;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        height: 65px;
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 0.5rem;
+        border-top-right-radius: 20px;
+        border-top-left-radius: 20px;
+        box-shadow: 0 -10px 10px -5px rgba(113, 113, 113, 0.1);
+    
+        a.item{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            align-content: center;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+    
+            span,i{
+                color: $gray-900;
+            }
+            i{
+                font-size: 1.2rem;
+                margin-bottom: 5px;
+            }
+            span{
+                font-weight: 500;
+                font-size: 0.75rem;
+            }
+            &:active, &:focus{
+                background-color: rgba(0,0,0,0.1);
+            }
+            &.active{
+                span,i{
+                    color: $primary-client;
+                }
+            }
+        }
+    }
+}
+input::placeholder {
+    font-weight: 300;
+    color: #c7c7c7 !important;
+}
+.card.producto{
+    border-radius: 20px;
+    box-shadow: 0 5px 10px rgba(126, 126, 126, 0.1);
+    background-color: #fff;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border:none;
+    img{
+        height: 100px;
+        object-fit: cover;
+        object-position: top;
+    }
+    .card-body{
+        padding: 10px;
+    }
+}
+.horizontal-scroll{
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    .card{
+        display: inline-block;
+        margin-right: 0.5rem;
+        white-space: normal;
+        &:last-child{
+            margin-right: 0;
+        }
+    }
 }

@@ -2,10 +2,11 @@ var g_filter = new Map();
 var g_dataMap = new Map();
 var g_data = [];
 
-
 var modalAgregarCliente = document.getElementById('agregarClienteModal');
 const agregarClienteModal = new bootstrap.Modal('#agregarClienteModal');
 
+var modaleditCliente = document.getElementById('editClienteModal');
+const editClienteModal = new bootstrap.Modal('#editClienteModal');
 
 function init(){
     brignData();
@@ -47,7 +48,18 @@ function fillClientes(data){
     datatables();
 }
 function addRow(e){
-    
+    let level = "Cliente C";
+    let color = "blue";
+    if(e.level == 1){
+        level = "Cliente A 🔥";
+        color = "green";
+    }else if(e.level == 2){
+        level = "Cliente B";
+        color = "orange";
+    }else if(e.level == 3){
+        level = "Cliente C";
+        color = "blue";
+    }
     $("#tbody").append(`
         <tr>
             <td class="">
@@ -57,6 +69,9 @@ function addRow(e){
             <td class="">${e.cedula}</td>
             <td class="">
                 <a href="tel:${e.phone}" class="text-decoration-none text-blue">${e.phone}</a>
+            </td>
+            <td class="">
+                <span class="badge badge-${color} b-pill">${level}</span>
             </td>
             <td class="">
                 <div class="d-flex justify-content-center align-items-center">
@@ -149,6 +164,73 @@ function datatables(){
     });
     
 }
+function openEditModal(id){
+    let data = g_dataMap.get(parseInt(id));
+    $("#edit-nombre").val(data.nombre);
+    $("#edit-cedula").val(data.cedula);
+    $("#edit-numero").val(data.phone);
+    $("#edit-direccion").val(data.direction);
+    $("#edit-email").val(data.email);
+    $("#edit-nivel").val(data.level);
+    $("#edit-id").val(data.id);
+    editClienteModal.show();
+}
+function actualizarCliente(){
+    let nombre = $("#edit-nombre").val();
+    let cedula = $("#edit-cedula").val();
+    let phone = $("#edit-numero").val();
+    let direction = $("#edit-direccion").val();
+    let email = $("#edit-email").val();
+    let level = parseInt($("#edit-nivel").val());
+    let id = parseInt($("#edit-id").val());
+
+    let data = {
+        nombre: nombre,
+        cedula: cedula,
+        phone: phone,
+        direction: direction,
+        email: email,
+        level: level,
+        id: id
+    };
+    if(nombre == "" || cedula == "" || phone == "" || email == ""){
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Debe llenar los campos obligatorios',
+        });
+        return;
+    }else{
+        $.ajax({
+            url: '/api/cliente/update',
+            method: 'PUT',
+            data: JSON.stringify(data),
+            contentType: "application/json",
+        }).then((res) => {
+            if(res.status == 200){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Exito',
+                    text: 'Cliente actualizado con exito',
+                });
+                editClienteModal.hide();
+                reloadData();
+            }else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ocurrio un error al actualizar el cliente',
+                });
+            }
+        }).catch((err) => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: `Ocurrio un error al actualizar el cliente: ${err}`,
+            });
+        });
+    }
+}
 
 function agregarCliente(){
     let nombre = $("#add-nombre").val();
@@ -156,15 +238,17 @@ function agregarCliente(){
     let phone = $("#add-numero").val();
     let direction = $("#add-direccion").val();
     let email = $("#add-email").val();
+    let level = parseInt($("#add-nivel").val());
 
     let data = {
         nombre: nombre,
         cedula: cedula,
         phone: phone,
         direction: direction,
-        email: email
+        email: email,
+        level: level
     };
-    if(nombre == "" || cedula == ""){
+    if(nombre == "" || cedula == "" || phone == "" || email == ""){
         Swal.fire({
             icon: 'error',
             title: 'Oops...',

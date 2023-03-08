@@ -80,6 +80,31 @@ exports.getAll = async (resolve) => {
         });
     });
 }
+exports.getAllQuery = async (data, resolve) => {
+    Product.findAll({
+        where: {
+            category: {
+                [Op.like]: '%' + data.category + '%'
+            },
+            brand: {
+                [Op.like]: '%' + data.brand + '%'
+            }
+        },
+        offset: data.offset,
+        limit: data.limit,
+    }).then((products) => {
+        resolve({
+            status: 200,
+            data: products
+        });
+    }).catch((error) => {
+        console.log(error);
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+}
 exports.count = async (resolve) => {
     Product.count()
     .then((count) => {
@@ -87,7 +112,6 @@ exports.count = async (resolve) => {
             status: 200,
             data: count
         });
-
     }).catch((error) => {
         resolve({
             status: 500,
@@ -126,6 +150,23 @@ exports.findOne = async (id, resolve) => {
     Product.findOne({
         where: {
             id: parseInt(id)
+        }
+    }).then((product) => {
+        resolve({
+            status: 200,
+            data: product
+        });
+    }).catch((error) => {
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+};
+exports.findOneuuid = async (uuid, resolve) => {
+    Product.findOne({
+        where: {
+            uuid: uuid
         }
     }).then((product) => {
         resolve({

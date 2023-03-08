@@ -48,7 +48,7 @@ function fillProveedors(data){
 }
 function addRow(e,i){
     $("#proveedoresList").append(`
-        <div class="bg-white rounded-15 shadow-custom p-3 animate__animated animate__zoomIn border-4 border-bottom border-primary" style="min-width: 350px; animation-delay:${i * 100}ms;">
+        <div class="bg-white rounded-15 shadow-custom p-3 animate__animated animate__zoomIn border-4 border-bottom border-primary overflow-hidden" style="min-width: 350px; animation-delay:${i * 50}ms;">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex justify-content-start align-items-center">
                     <span class="fa-stack">
@@ -60,11 +60,10 @@ function addRow(e,i){
                 <small class="text-end text-muted">${moment(e.createdAt).format('D [de] MMMM')}</small>
             </div>
             <p class="my-3 text-muted">${e.nombre}</p>
-            <hr>
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-center mb-2">
                 <span class="badge badge-blue b-pill"><i class="fa-solid fa-box"></i> ${e.cantidad} productos</span>
                 <div class="" role="group" aria-label="Basic example">
-                    <button class="btn btn-sm btn-white" type="button" onclick="actualizarEstado('${e.id}', '0')">
+                    <button class="btn btn-sm bg-green-light" type="button" onclick="actualizarEstado('${e.id}', '0')">
                         <i class="fa-solid fa-check-circle text-success"></i> Completado
                     </button>
                     <button class="btn btn-sm btn-transparent" type="button" onclick="eliminarProveedor('${e.id}')">
@@ -72,6 +71,7 @@ function addRow(e,i){
                     </button>
                 </div>
             </div>
+            <img src="/img/camion.png" class="img-fluid d-block mx-auto animate__animated animate__fadeInRight animate__slow" style="width:70%; object-fit: cover; object-position: center; animation-delay:${(i * 50) + 500}ms;"">
         </div>
     `);
 }

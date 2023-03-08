@@ -400,7 +400,6 @@ function updateProduct(){
         barcode: barcode
     };
     verifyEditInputs().then(() => {
-        // ajax
         $.ajax({
             url: '/api/product/update',
             method: 'PUT',
@@ -564,6 +563,8 @@ function avoidEditablecontents(element){
         event.preventDefault();
         let uuid = element.id.split("_")[1];
         let stock = element.innerText;
+        let item = g_dataMap.get(uuid);
+        let notification = item.notification;
 
         if(isNaN(stock)){
             createSwalAlertToast("error", "El valor ingresado no es un número");
@@ -574,7 +575,8 @@ function avoidEditablecontents(element){
             type: "PUT",
             data: {
                 uuid,
-                stock
+                stock,
+                notification
             },
         }).then((data) => {
             if(data.status == "200"){

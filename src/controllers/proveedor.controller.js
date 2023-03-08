@@ -39,9 +39,9 @@ module.exports = {
         });
     },
     delete: (req, res) => {
-        Proveedor.delete(req.body.id, (result) => {
+        Proveedor.delete(req.body, (result) => {
             who(req).then((user) => {
-                logger.activity(`Proveedor "${req.body.id}" eliminado`, user);
+                logger.activity(`Pedido "${req.body.id}" eliminado`, user);
             });
             res.status(result.status).json(result);
         });

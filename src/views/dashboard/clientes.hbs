@@ -54,6 +54,7 @@
                         <th scope="col" data-priority="1">Nombre</th>
                         <th scope="col" data-priority="4">Cédula</th>
                         <th scope="col" data-priority="5">Número</th>
+                        <th scope="col" data-priority="3">Nivel</th>
                         <th scope="col" data-priority="2">Editar</th>
                     </tr>
                 </thead>
@@ -67,9 +68,9 @@
 </div>
 
 <div class="modal fade" id="agregarClienteModal" tabindex="-1" aria-labelledby="agregarClienteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xxl">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header text-bg-dark pb-2">
+            <div class="modal-header text-bg-dark">
                 <p class="modal-title" id="agregarClienteModalLabel"><i class="fa-solid fa-user text-secondary"></i> Agregar Cliente</p>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -91,7 +92,7 @@
                 <div class="row mx-0">
                     <div class="col-md-6">
                         <div class="mb-2">
-                            <label for="add-numero" class="form-label fw-bold">Número <span class="text-muted small">(Opcional)</span></label>
+                            <label for="add-numero" class="form-label fw-bold">Número</label>
                             <input type="text" class="form-control" id="add-numero" placeholder="Número de telefono...">
                         </div>
                     </div>
@@ -105,8 +106,18 @@
                 <div class="row mx-0">
                     <div class="col-md">
                         <div class="mb-2">
-                            <label for="add-email" class="form-label fw-bold">Correo <span class="text-muted small">(Opcional)</span></label>
+                            <label for="add-email" class="form-label fw-bold">Correo</label>
                             <input type="text" class="form-control" id="add-email" placeholder="Correo...">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <label for="add-nivel" class="form-label fw-bold">Nivel</label>
+                            <select class="form-select" id="add-nivel" placeholder="Nivel">
+                                <option value="1">Cliente A</option>
+                                <option value="2">Cliente B</option>
+                                <option value="3">Cliente C</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -114,6 +125,69 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-white btn-lg" data-bs-dismiss="modal">Cerrar</button>
                 <button type="button" class="btn btn-primary" onclick="agregarCliente()">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editClienteModal" tabindex="-1" aria-labelledby="editClienteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-bg-dark">
+                <p class="modal-title" id="editClienteModalLabel"><i class="fa-solid fa-user text-secondary"></i> Agregar Cliente</p>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mx-0">
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <label for="edit-nombre" class="form-label fw-bold">Nombre</label>
+                            <input type="text" class="form-control" id="edit-nombre" placeholder="Nombre...">
+                            <input type="text" class="form-control" id="edit-id" hidden>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <label for="edit-cedula" class="form-label fw-bold">Cédula</label>
+                            <input type="text" class="form-control" id="edit-cedula" placeholder="Cédula...">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <label for="edit-numero" class="form-label fw-bold">Número</label>
+                            <input type="text" class="form-control" id="edit-numero" placeholder="Número de telefono...">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <label for="edit-direccion" class="form-label fw-bold">Direccion <span class="text-muted small">(Opcional)</span></label>
+                            <input type="text" class="form-control" id="edit-direccion" placeholder="Direccion de Casa...">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-md">
+                        <div class="mb-2">
+                            <label for="edit-email" class="form-label fw-bold">Correo</label>
+                            <input type="text" class="form-control" id="edit-email" placeholder="Correo...">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <label for="edit-nivel" class="form-label fw-bold">Nivel</label>
+                            <select class="form-select" id="edit-nivel" placeholder="Nivel">
+                                <option value="1">Cliente A</option>
+                                <option value="2">Cliente B</option>
+                                <option value="3">Cliente C</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white btn-lg" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="actualizarCliente()">Actualizar</button>
             </div>
         </div>
     </div>

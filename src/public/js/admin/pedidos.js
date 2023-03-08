@@ -2,6 +2,8 @@ var g_filter = new Map();
 var g_dataMap = new Map();
 var g_data = [];
 
+var g_clientData = new Map();
+
 var g_productosData = new Map();
 
 
@@ -299,6 +301,9 @@ function brignClients(){
         contentType: 'application/json'
     }).then((result) => {
         selectizeItems(result);
+        result.forEach(e=>{
+            g_clientData.set(e.id, e);
+        });
     }, (error) => {
         console.log(error);
     });
@@ -324,9 +329,17 @@ function selectizeItems(data){
         labelField: "nombre",
         searchField: ["nombre", "id"],
         options: data.map(e=>{
+            let level = "";
+            if(e.level == 1){
+                level = "A";
+            }else if(e.level == 2){
+                level = "B";
+            }else if(e.level == 3){
+                level = "C";
+            }
             return {
                 id: e.id,
-                nombre: e.nombre + " - " + e.cedula
+                nombre: e.nombre + " - " + e.cedula + " | " + level
             }
         })
     });
@@ -368,6 +381,9 @@ function selectizeProducts(data){
     });
 }
 function addProdctItem(e){
+    let clienteSelected = g_clientData.get(parseInt($("#add-client").val()));
+    let level = clienteSelected.level;
+
     let precios = JSON.parse(e.price);
     $("#products-list").append(`
         <li class="list-group-item bg-gray border-blue" id="product-item-${e.id}">
@@ -377,13 +393,13 @@ function addProdctItem(e){
                     <span class="text-muted">${e.brand}</span>
                 </div>
                 <div style="width:360px;">
-                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-1" data-precio="${precios.price1}">
+                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-1" data-precio="${precios.price1}" ${level == 1 ? "checked":""}>
                     <label class="btn btn-outline-green me-2" style="width:100px;" for="precio-item-${e.id}-1">A ${precios.price1}</label>
 
-                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-2" data-precio="${precios.price2}">
+                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-2" data-precio="${precios.price2}" ${level == 2 ? "checked":""}>
                     <label class="btn btn-outline-orange me-2" style="width:100px;" for="precio-item-${e.id}-2">B ${precios.price2}</label>
 
-                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-3" data-precio="${precios.price3}">
+                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-3" data-precio="${precios.price3}" ${level == 3 ? "checked":""}>
                     <label class="btn btn-outline-blue" style="width:100px;" for="precio-item-${e.id}-3">C ${precios.price3}</label>
                 </div>
                 <div class="col-md d-flex justify-content-start align-items-start flex-column">

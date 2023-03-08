@@ -1,0 +1,145 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.css" integrity="sha512-UTNP5BXLIptsaj5WdKFrkFov94lDx+eBvbKyoe1YAfjeRPC+gT5kyZ10kOHCfNZqEui1sxmqvodNUx3KbuYI/A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.css" integrity="sha512-OTcub78R3msOCtY3Tc6FzeDJ8N9qvQn1Ph49ou13xgA9VsH9+LRxoFU6EqLhW4+PKRfU+/HReXmSZXHEkpYoOA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+    html,body{
+        overflow-x: hidden;
+    }
+</style>
+
+<div class="position-relative">
+    <div class="vh-100 w-100">
+        <img src="/img/rec.svg" class="animate__animated animate__fadeInDown" style="width: 100%; height:80%;object-fit:cover;object-position:bottom;">
+        <div class="d-flex justify-content-center w-100" style="position:absolute; top:100px;opacity:0.1;">
+            <div class="owl-carousel" style="width: 80%;">
+                <img src="https://siman.vtexassets.com/arquivos/ids/1496199-800-800" style="width:200px;height:200px;object-fit:cover;" class="rounded-15">
+                <img src="https://cdn.shopify.com/s/files/1/1161/3498/products/lacoste-perfume-eau-de-blanc-100-ml_large.jpg" style="width:200px;height:200px;object-fit:cover;" class="rounded-15">
+                <img src="https://essenzaperfumes.cr/wp-content/uploads/2021/10/212-MEN-200ML-by-Carolina-Herrera-2.jpg" style="width:200px;height:200px;object-fit:cover;" class="rounded-15">
+                <img src="https://facescr.vteximg.com.br/arquivos/ids/171086-1000-1000/3145891255300_1.jpg" style="width:200px;height:200px;object-fit:cover;" class="rounded-15">
+                <img src="https://perfumeriaonlinecr.com/wp-content/uploads/2021/06/CH-BAD-BOY-BOTELLA.jpg" style="width:200px;height:200px;object-fit:cover;" class="rounded-15">
+                <img src="https://cdn.shopify.com/s/files/1/1161/3498/products/issey-miyake-leau-dissey-pour-homme-para-hombre-200-ml_1.jpg" style="width:200px;height:200px;object-fit:cover;" class="rounded-15">
+                <img src="https://cdn.shopify.com/s/files/1/1161/3498/products/christian-dior-sauvage-para-hombre-100-ml_1_8a4c31b6-027a-4f60-9eaf-528c2efda380_large.jpg" style="width:200px;height:200px;object-fit:cover;" class="rounded-15">
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function(){
+            $(".owl-carousel").owlCarousel({
+                items:5,
+                loop:true,
+                margin:10,
+                animateOut: 'fadeOut',
+                autoplay:true,
+                center: true,
+                autoplayTimeout:3000,
+                smartSpeed:450,
+                autoplayHoverPause:true
+            });
+        });
+    </script>
+    <div class="position-absolute w-100" style="top:0;left:0;">
+        <div class="vh-100">
+            <div class="d-flex justify-content-center h-100 align-items-center">
+                <div class="card border-0 bg-white animate__animated animate__fadeInDown" style="width:450px;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center my-3">
+                            <i class="fa-solid fa-spray-can-sparkles text-primary fa-2x"></i>
+                        </div>
+
+                        <h2 class="text-center fw-bold mb-4">Perfumes & Body Splash</h2>
+
+                        <label for="username" class="form-label text-muted small">Email</label>
+                        <input type="text" placeholder="Email" name="username" id="username" class="form-control bg-white mb-2">
+                        
+                        <label for="password" class="form-label text-muted small">Clave</label>
+                        <input type="password" placeholder="Clave" name="password" id="password" class="form-control bg-white">
+
+                        <div class="small text-danger" id="feedback"></div>
+
+                        <a href="/forgot-password" class="text-primary my-2 text-center d-block">Recuperar Contraseña</a>
+
+                        <button type="submit" class="btn btn-primary w-100 mt-1" onclick="sendForm()"><i class="fa-solid fa-lock op"></i> Sign in</button>
+                        <hr>
+                        <div class="w-75 mx-auto">
+                            <button type="submit" class="btn btn-outline-primary w-100">Registrarse</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function sendForm(){
+        buttonLoader(1);
+        var username = $("#username").val();
+        var password = $("#password").val();
+        if(!validateForm(username, password)){
+            showError(username, password);
+            buttonLoader(0);
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/cliente/login",
+            data: JSON.stringify({
+                username: username,
+                password: password
+            }),
+            contentType: "application/json",
+        }).then((res) =>{
+            authenticate(res)
+            .then((e)=>{
+                setTimeout(() => {
+                    buttonLoader(2);
+                    window.location.href = "/client/productos";
+                }, 1000);
+            });
+        }, (err) =>{
+            buttonLoader(0);
+            if(err.status === 401){
+                $("#feedback").html("Invalid username or password.");
+            }
+        });
+    }
+    function buttonLoader(put){
+        if(put == 1){
+            $("#login-btn").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+        }else if(put == 0){
+            $("#login-btn").html(`<i class="fa-solid fa-lock op"></i> Sign in`);
+        }else{
+            $("#login-btn").html(`<i class="fa-solid fa-lock-open op"></i> Validated`);
+        }
+    }
+    function showError(u,p){
+        if(u === ""){
+            $("#username").addClass("is-invalid");
+            $("#feedback").append("Please enter a valid username.<br>");
+        }
+        else if(p === ""){
+            $("#password").addClass("is-invalid");
+            $("#feedback").append("Please enter a valid password.");
+        }
+    }
+    function validateForm(u, p){
+        if(u === "" || p === ""){
+            return false;
+        }
+        return true;
+    }
+    function authenticate(res){
+        return new Promise((resolve, reject) => {
+            localStorage.setItem('data',JSON.stringify(res.data));
+
+            const d = new Date();
+            d.setTime(d.getTime() + (30*24*60*60*1000));
+            let expires = "expires="+ d.toUTCString();
+            var token = ['token=', res.token,';',expires ,'; path=/;'].join('');
+            document.cookie = token;
+            resolve();
+        });
+    }
+</script>

@@ -1,15 +1,30 @@
 const Product = require('../models/product.model');
 const logger = require('../utils/logger');
 const jwt = require('jsonwebtoken');
+const { checkProducto, checkProductoUUID } = require('../helpers/checkStock');
 require("dotenv").config();
 
 const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
     getAll: (req, res) => {
-        Product.getAll((result) => {
-            res.status(result.status).json(result.data);
-        });
+        let queryLen = Object.keys(req.query).length;
+
+        if(queryLen > 0){
+            let data = {
+                offset: parseInt(req.query.offset) || 0,
+                limit: parseInt(req.query.limit) || 10,
+                category: req.query.category || "",
+                brand: req.query.brand || "" 
+            };
+            Product.getAllQuery(data,(result) => {
+                res.status(result.status).json(result);
+            });
+        }else{
+            Product.getAll((result) => {
+                res.status(result.status).json(result.data);
+            });
+        }
     },
     getProductsPagination: (req, res) => {
         let data = {
@@ -32,6 +47,11 @@ module.exports = {
     },
     findOne: (req, res) => {
         Product.findOne(req.params.id, (result) => {
+            res.status(result.status).json(result.data);
+        });
+    },
+    findOneuuid: (req, res) => {
+        Product.findOneuuid(req.body.uuid, (result) => {
             res.status(result.status).json(result.data);
         });
     },
@@ -61,6 +81,7 @@ module.exports = {
             who(req).then((user) => {
                 logger.activity(`Producto "${req.body.name}" actualizado`, user);
             });
+            checkProductoUUID(req.body.uuid);
             res.status(result.status).json(result);
         });
     },
@@ -69,6 +90,7 @@ module.exports = {
             who(req).then((user) => {
                 logger.activity(`Cantidad de Producto "${req.body.name}" actualizado`, user);
             });
+            checkProductoUUID(req.body.uuid);
             res.status(result.status).json(result);
         });
     },

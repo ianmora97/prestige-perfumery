@@ -26,7 +26,51 @@ router.post('/login', (req, res) => {
     });
 });
 
+const Cliente = require('../models/cliente.model');
+
+router.post('/cliente/login', (req, res) => {
+    const { username, password } = req.body;
+    Cliente.authenticate(username, password, (result) => {
+        if(result.status === 200 && result.data !== null && result.data.verified == 'true'){
+            jwt.sign({
+                cedula: username,
+                nombre: result.data.nombre,
+                id: result.data.id,
+            }, process.env.SECRET_KEY, 
+            {expiresIn: '30d'}, (err, token) => {
+                if(err){
+                    res.status(500).json({error: err});
+                }else{
+                    res.status(result.status).json({
+                        token: token, 
+                        data: {
+                            id: result.data.data.id,
+                            nombre: result.data.data.nombre,
+                            cedula: result.data.data.cedula,
+                            telefono: result.data.data.phone,
+                            email: result.data.data.email,
+                            direccion: result.data.data.direction,
+                            createdAt: result.data.data.createdAt
+                        },
+                    });
+                }
+            });
+        }else{
+            res.status(result.status).json({
+                status: result.status,
+                message: "Usuario o contraseña incorrectos",
+                error: "Unauthorized"
+            });
+        }
+    });
+});
+
 router.get('/admin/logout', (req, res) => {
+    res.clearCookie('token');
+    res.redirect('/');
+})
+
+router.get('/cliente/logout', (req, res) => {
     res.clearCookie('token');
     res.redirect('/');
 })

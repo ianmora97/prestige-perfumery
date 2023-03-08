@@ -6,6 +6,7 @@
  * body
 */
 @import url("https://rsms.me/inter/inter.css");
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100;300;400;500;700;900&display=swap");
 body {
   background-color: #f3f4f6 !important;
   color: #111827 !important;
@@ -117,26 +118,41 @@ img {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  right: 10px;
+  right: 20px;
   color: #777777;
 }
 
 /**
  * NAV
 */
-.nav-tabs {
+.nav-tabs:not(.nav-lines) {
   border-color: #c7c7c7 !important;
 }
-
-.nav-link {
+.nav-tabs:not(.nav-lines) .nav-link {
   color: #495057 !important;
 }
-.nav-link.active {
+.nav-tabs:not(.nav-lines) .nav-link.active {
   border-color: transparent transparent #4f46e5 transparent !important;
   border-width: 2px !important;
   color: #ffffff !important;
 }
-.nav-link:not(.active):hover {
+.nav-tabs:not(.nav-lines) .nav-link:not(.active):hover {
+  border-color: transparent transparent #c7c7c7 transparent !important;
+  color: #111827 !important;
+}
+
+.nav-tabs.nav-lines {
+  border-color: #c7c7c7 !important;
+}
+.nav-tabs.nav-lines .nav-link {
+  color: #495057 !important;
+}
+.nav-tabs.nav-lines .nav-link.active {
+  border-color: transparent transparent #4f46e5 transparent !important;
+  border-width: 2px !important;
+  color: #4f46e5 !important;
+}
+.nav-tabs.nav-lines .nav-link:not(.active):hover {
   border-color: transparent transparent #c7c7c7 transparent !important;
   color: #111827 !important;
 }
@@ -596,7 +612,7 @@ button {
  * Borders
 */
 .rounded-15 {
-  border-radius: 0.7rem;
+  border-radius: 0.7rem !important;
 }
 
 /**
@@ -932,6 +948,96 @@ table.dataTable > tbody > tr.child {
   background-color: #f0f3ff !important;
 }
 
+body.client-styles {
+  font-family: "Lexend", sans-serif !important;
+  font-weight: 400 !important;
+  background: linear-gradient(180deg, #ea5c5f 0%, rgba(255, 255, 255, 0) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 400px;
+}
+body.client-styles .main-client {
+  padding-bottom: 70px;
+}
+body.client-styles nav.menu {
+  z-index: 10;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 65px;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 0.5rem;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+  box-shadow: 0 -10px 10px -5px rgba(113, 113, 113, 0.1);
+}
+body.client-styles nav.menu a.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+body.client-styles nav.menu a.item span, body.client-styles nav.menu a.item i {
+  color: #777777;
+}
+body.client-styles nav.menu a.item i {
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+body.client-styles nav.menu a.item span {
+  font-weight: 500;
+  font-size: 0.75rem;
+}
+body.client-styles nav.menu a.item:active, body.client-styles nav.menu a.item:focus {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+body.client-styles nav.menu a.item.active span, body.client-styles nav.menu a.item.active i {
+  color: #EA5C5F;
+}
+
+input::placeholder {
+  font-weight: 300;
+  color: #c7c7c7 !important;
+}
+
+.card.producto {
+  border-radius: 20px;
+  box-shadow: 0 5px 10px rgba(126, 126, 126, 0.1);
+  background-color: #fff;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: none;
+}
+.card.producto img {
+  height: 100px;
+  object-fit: cover;
+  object-position: top;
+}
+.card.producto .card-body {
+  padding: 10px;
+}
+
+.horizontal-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+.horizontal-scroll .card {
+  display: inline-block;
+  margin-right: 0.5rem;
+  white-space: normal;
+}
+.horizontal-scroll .card:last-child {
+  margin-right: 0;
+}
+
 /*!
  * Bootstrap  v5.2.3 (https://getbootstrap.com/)
  * Copyright 2011-2022 The Bootstrap Authors
@@ -963,6 +1069,7 @@ table.dataTable > tbody > tr.child {
   --bs-gray-800: #343a40;
   --bs-gray-900: #777777;
   --bs-primary: #4f46e5;
+  --bs-primary-client: #EA5C5F;
   --bs-secondary: #96d7f4;
   --bs-success: #38c172;
   --bs-danger: #f26262;
@@ -981,6 +1088,7 @@ table.dataTable > tbody > tr.child {
   --bs-blue: #879ce1;
   --bs-red: #f57979;
   --bs-primary-rgb: 79, 70, 229;
+  --bs-primary-client-rgb: 234, 92, 95;
   --bs-secondary-rgb: 150, 215, 244;
   --bs-success-rgb: 56, 193, 114;
   --bs-danger-rgb: 242, 98, 98;
@@ -3771,6 +3879,23 @@ textarea.form-control-lg {
   --bs-btn-disabled-border-color: #4f46e5;
 }
 
+.btn-primary-client {
+  --bs-btn-color: #000;
+  --bs-btn-bg: #EA5C5F;
+  --bs-btn-border-color: #EA5C5F;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #ed7477;
+  --bs-btn-hover-border-color: #ec6c6f;
+  --bs-btn-focus-shadow-rgb: 199, 78, 81;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: #ee7d7f;
+  --bs-btn-active-border-color: #ec6c6f;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #000;
+  --bs-btn-disabled-bg: #EA5C5F;
+  --bs-btn-disabled-border-color: #EA5C5F;
+}
+
 .btn-secondary {
   --bs-btn-color: #000;
   --bs-btn-bg: #96d7f4;
@@ -4074,6 +4199,23 @@ textarea.form-control-lg {
   --bs-btn-disabled-color: #4f46e5;
   --bs-btn-disabled-bg: transparent;
   --bs-btn-disabled-border-color: #4f46e5;
+  --bs-gradient: none;
+}
+
+.btn-outline-primary-client {
+  --bs-btn-color: #EA5C5F;
+  --bs-btn-border-color: #EA5C5F;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #EA5C5F;
+  --bs-btn-hover-border-color: #EA5C5F;
+  --bs-btn-focus-shadow-rgb: 234, 92, 95;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: #EA5C5F;
+  --bs-btn-active-border-color: #EA5C5F;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #EA5C5F;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #EA5C5F;
   --bs-gradient: none;
 }
 
@@ -5915,6 +6057,15 @@ textarea.form-control-lg {
   color: #26226e;
 }
 
+.alert-primary-client {
+  --bs-alert-color: #8c3739;
+  --bs-alert-bg: #fbdedf;
+  --bs-alert-border-color: #f9cecf;
+}
+.alert-primary-client .alert-link {
+  color: #702c2e;
+}
+
 .alert-secondary {
   --bs-alert-color: #3c5662;
   --bs-alert-bg: #eaf7fd;
@@ -6372,6 +6523,20 @@ textarea.form-control-lg {
   color: #fff;
   background-color: #2f2a89;
   border-color: #2f2a89;
+}
+
+.list-group-item-primary-client {
+  color: #8c3739;
+  background-color: #fbdedf;
+}
+.list-group-item-primary-client.list-group-item-action:hover, .list-group-item-primary-client.list-group-item-action:focus {
+  color: #8c3739;
+  background-color: #e2c8c9;
+}
+.list-group-item-primary-client.list-group-item-action.active {
+  color: #fff;
+  background-color: #8c3739;
+  border-color: #8c3739;
 }
 
 .list-group-item-secondary {
@@ -8133,6 +8298,11 @@ textarea.form-control-lg {
   background-color: RGBA(79, 70, 229, var(--bs-bg-opacity, 1)) !important;
 }
 
+.text-bg-primary-client {
+  color: #000 !important;
+  background-color: RGBA(234, 92, 95, var(--bs-bg-opacity, 1)) !important;
+}
+
 .text-bg-secondary {
   color: #000 !important;
   background-color: RGBA(150, 215, 244, var(--bs-bg-opacity, 1)) !important;
@@ -8223,6 +8393,13 @@ textarea.form-control-lg {
 }
 .link-primary:hover, .link-primary:focus {
   color: #3f38b7 !important;
+}
+
+.link-primary-client {
+  color: #EA5C5F !important;
+}
+.link-primary-client:hover, .link-primary-client:focus {
+  color: #ee7d7f !important;
 }
 
 .link-secondary {
@@ -8768,6 +8945,11 @@ textarea.form-control-lg {
 .border-primary {
   --bs-border-opacity: 1;
   border-color: rgba(var(--bs-primary-rgb), var(--bs-border-opacity)) !important;
+}
+
+.border-primary-client {
+  --bs-border-opacity: 1;
+  border-color: rgba(var(--bs-primary-client-rgb), var(--bs-border-opacity)) !important;
 }
 
 .border-secondary {
@@ -9682,6 +9864,11 @@ textarea.form-control-lg {
   color: rgba(var(--bs-primary-rgb), var(--bs-text-opacity)) !important;
 }
 
+.text-primary-client {
+  --bs-text-opacity: 1;
+  color: rgba(var(--bs-primary-client-rgb), var(--bs-text-opacity)) !important;
+}
+
 .text-secondary {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-secondary-rgb), var(--bs-text-opacity)) !important;
@@ -9821,6 +10008,11 @@ textarea.form-control-lg {
 .bg-primary {
   --bs-bg-opacity: 1;
   background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
+}
+
+.bg-primary-client {
+  --bs-bg-opacity: 1;
+  background-color: rgba(var(--bs-primary-client-rgb), var(--bs-bg-opacity)) !important;
 }
 
 .bg-secondary {

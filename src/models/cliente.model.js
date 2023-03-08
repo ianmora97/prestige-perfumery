@@ -1,5 +1,7 @@
 const mysqlcon = require('../database/mysqlcon');
 const { DataTypes, Sequelize, QueryTypes } = require('sequelize');
+var CryptoJS = require("crypto-js");
+var SHA1 = require("crypto-js/sha1");
 
 const Cliente = mysqlcon.define('t_client',{
     id:{
@@ -55,7 +57,7 @@ exports.getAll = (callback) => {
 }
 exports.getAllSelectize = (callback) => {
     Cliente.findAll({
-        attributes: ['id', 'nombre', 'cedula']
+        attributes: ['id', 'nombre', 'cedula', 'level']
     }).then((result) => {
         callback({
             status: 200,
@@ -68,7 +70,30 @@ exports.getAllSelectize = (callback) => {
         });
     });
 }
-
+/**
+ * todo: authenticate the client based on the username and password
+ * @param {Callback} resolve function to return the result
+ */
+exports.authenticate = async (username, password, resolve) => {
+    mysqlcon.query(
+        'CALL authClient(:username, :password)',
+        {
+            replacements: {
+                username: username,
+                password: encrypt(password)
+            },
+            type: QueryTypes.SELECT
+        }
+    ).then((result) =>{
+        resolve({
+            status: result[0]['0'].verified == 'true' ? 200 : 401,
+            data: {
+                verified: result[0]['0'].verified,
+                data: result[1]['0']
+            }
+        });
+    })
+}
 exports.findOne = (id, callback) => {
     Cliente.findOne({
         where: {
@@ -95,7 +120,7 @@ exports.create = (data, callback) => {
         phone: data.phone,
         direction: data.direction,
         email: data.email,
-        password: data.password
+        password: encrypt("123456789")
     }).then((result) => {
         callback({
             status: 200,
@@ -116,9 +141,8 @@ exports.update = (data, callback) => {
         cedula: data.cedula,
         phone: data.phone,
         direction: data.direction,
-        email: data.email,
-        password: data.password
-    },{
+        email: data.email
+        },{
         where: {
             id: data.id
         }
@@ -128,6 +152,7 @@ exports.update = (data, callback) => {
             data: result
         });
     }).catch((err) => {
+        console.err(err);
         callback({
             status: 500,
             data: err
@@ -152,4 +177,15 @@ exports.delete = (id, callback) => {
             data: err
         });
     });
+}
+// Encrypt
+function encrypt(string) {
+    var hash = SHA1(string);
+    return hash.toString();
+}
+// Decrypt
+function decrypt(string) {
+    var bytes  = CryptoJS.AES.decrypt(string, process.env.SECRET_KEY);
+    var originalText = bytes.toString(CryptoJS.enc.Utf8);
+    return originalText;
 }
