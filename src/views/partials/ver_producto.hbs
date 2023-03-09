@@ -1,0 +1,71 @@
+<div class="modal fade" id="verProductoModal" tabindex="-1" aria-labelledby="verProductoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="d-flex justify-content-between align-items-center p-3">
+                <button type="button" class="btn btn-transparent" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-arrow-left fa-2x"></i></button>
+                <h4 class="text-dark fw-light">Detalle de Producto</h4>
+                <button type="button" class="btn btn-transparent invisible"><i class="fa-solid fa-arrow-left fa-2x"></i></button>
+            </div>
+            <div class="d-flex flex-column h-100" id="verProductoBodyModal">
+                <div class="p-3 w-100">
+                    <img src="https://dev-to-uploads.s3.amazonaws.com/i/mrvsmk2pl3l8fwocbfhy.gif" alt="Imagen del producto" 
+                    id="modalimageProduct" class="d-block mx-auto w-80">
+                </div>
+                <div class="mt-2 border-top p-3">
+                    <h2 id="modalNombreProduct" class="fw-bold mb-0 display-6"></h2>
+                    <p class="mb-1" id="modalBrandProduct"></p>
+                    <div class="d-flex justify-content-start align-items-center gap-2 my-2">
+                        <h3 class="badge bg-primary-client text-white" id="modalCantidadProducto"></h3>
+                        <h3 class="badge bg-primary-client text-white" id="modalCategoriaProducto"></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const verProductoModal = document.getElementById('verProductoModal');
+    const verProductoModalBS = new bootstrap.Modal('#verProductoModal');
+
+    verProductoModal.addEventListener('show.bs.modal', event => {
+        clearModalverProducto();
+        showModalPlaceholders();
+
+        const button = event.relatedTarget;
+        const id = button.getAttribute('data-bs-id');
+
+        getProducto(id)
+        .then((result) => {
+            showProductoModal(result);
+        }).catch((err) => {
+            console.log(err);
+        });
+
+    });
+    var getProducto = (id) => {
+        return new Promise((resolve, reject)=>{
+            $.ajax({
+                url: `/api/product/one/${id}`,
+                method: 'GET',
+                contentType: 'application/json'
+            }).then((result) => {
+                resolve(result);
+            }).catch((err) => {
+                reject(err);
+            });
+        });
+    };
+    function clearModalverProducto(){
+        //$('#verProductoModalLabel').text('');
+    }
+    function showModalPlaceholders(){
+
+    }
+    function showProductoModal(data){
+        $("#modalimageProduct").attr("src", data.image);
+        $("#modalNombreProduct").text(data.name);
+        $("#modalBrandProduct").text(data.brand);
+        $("#modalCantidadProducto").text(data.cantidad);
+        $("#modalCategoriaProducto").text(data.category);
+    }
+</script>

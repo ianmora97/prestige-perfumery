@@ -1,6 +1,3 @@
-// /api/product/all?offset=0&limit=4&category=hombre
-
-
 function init(event){
     bringData();
 }
@@ -38,8 +35,24 @@ function getMujeres(){
 
 function fillHombres(data){
     data.forEach((e,i)=>{
+        let {price1, price2, price3} = JSON.parse(e.price);
+        let precio;
+        if(client_data.nivel == 1){
+            precio = price3;
+        }else if(client_data.nivel == 2){
+            precio = price2;
+        }else if(client_data.nivel == 3){
+            precio = price1;
+        }
+        precio = parseInt(precio) * (100 - parseInt(e.promotion)) / 100;
+        precio = "₡ "+precio.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+        let desc = "";
+        if(e.promotion > 0){
+            desc = `<small class="text-muted small fw-light">${e.promotion}% off</small>`;
+        }
         $("#horizontal-hombres").append(`
-            <div class="card producto animate__animated animate__fadeIn" style="width: 250px;">
+            <div class="card producto animate__animated animate__fadeIn" style="width: 250px;" data-bs-toggle="modal" data-bs-target="#verProductoModal" data-bs-id="${e.id}">
                 <img src="${e.image}" class="card-img-top" alt="Perfume">
                 <div class="card-body">
                     <h5 class="card-title">
@@ -53,7 +66,10 @@ function fillHombres(data){
                         <small class="badge bg-gray text-muted">${capitalisedFL(e.category)}</small>
                     </div>
                     <small class="text-${e.stock > 0 ? "success" : "danger"} d-block">${e.stock > 0 ? "Disponible": "Out of Stock"}</small>
-                    <p class="text-primary-client lead fw-bold m-0">9900</p>
+                    <div class="d-flex justify-content-start align-items-center gap-2">
+                        <p class="text-primary-client lead fw-bold m-0">${precio} </p> 
+                        ${desc}
+                    </div>
                 </div>
             </div>
         `);
@@ -61,6 +77,17 @@ function fillHombres(data){
 }
 function fillMujeres(data){
     data.forEach((e,i)=>{
+        let {price1, price2, price3} = JSON.parse(e.price);
+        let precio;
+        if(client_data.nivel == 1){
+            precio = price3;
+        }else if(client_data.nivel == 2){
+            precio = price2;
+        }else if(client_data.nivel == 3){
+            precio = price1;
+        }
+        precio = parseInt(precio) * (100 - parseInt(e.promotion)) / 100;
+        precio = "₡ "+precio.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         $("#horizontal-mujeres").append(`
             <div class="card producto animate__animated animate__fadeIn" style="width: 250px;">
                 <img src="${e.image}" class="card-img-top" alt="Perfume">
@@ -76,7 +103,7 @@ function fillMujeres(data){
                         <small class="badge bg-gray text-muted">${capitalisedFL(e.category)}</small>
                     </div>
                     <small class="text-${e.stock > 0 ? "success" : "danger"} d-block">${e.stock > 0 ? "Disponible": "Out of Stock"}</small>
-                    <p class="text-primary-client lead fw-bold m-0">9900</p>
+                    <p class="text-primary-client lead fw-bold m-0">${precio}</p>
                 </div>
             </div>
         `);

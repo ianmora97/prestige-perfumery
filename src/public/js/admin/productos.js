@@ -536,14 +536,12 @@ function addRow(e){
                     </div>
                 </td>
                 <td class="" data-search="${price1} - ${price2} - ${price3}">
-                    <div class="d-flex flex-column align-items-start justify-content-center">
-                        <span class=""> 
-                            <span class="badge b-pill badge-green">₡ ${price1}</span>
-                            <span class="badge b-pill badge-orange">₡ ${price2}</span>
-                            <span class="badge b-pill badge-blue">₡ ${price3}</span>
-                        </span>
-                        <small class="text-muted">${e.promotion == 0 ? "Sin Descuento":`${e.promotion}%`}</small>
+                    <div class="d-flex align-items-center justify-content-start gap-2">
+                        <span class="badge b-pill badge-green">₡ ${price3}</span>
+                        <span class="badge b-pill badge-orange">₡ ${price2}</span>
+                        <span class="badge b-pill badge-blue">₡ ${price1}</span>
                     </div>
+                    <small class="text-muted">${e.promotion == 0 ? "Sin Descuento":`<span class="text-dark">${e.promotion}% de descuento</span>`}</small>
                 </td>
                 
                 <td class="">

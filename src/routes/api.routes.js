@@ -20,7 +20,7 @@ router.get('/api/product/count', PRODUCT.count); // No authentication required
 router.get('/api/product/allpagination', PRODUCT.getProductsPagination); // No authentication required
 router.get('/api/product/all/selectize',isAuthenticated, PRODUCT.getProducts);
 router.get('/api/product/all/productslow',isAuthenticated, PRODUCT.getProductsInStock);
-router.get('/api/product/one/:id', isAuthenticated, PRODUCT.findOne);
+router.get('/api/product/one/:id', PRODUCT.findOne);
 router.post('/api/product/add', isAuthenticated, PRODUCT.create);
 router.put('/api/product/update', isAuthenticated, PRODUCT.update);
 router.put('/api/product/stock', isAuthenticated, PRODUCT.updateStock);

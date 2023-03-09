@@ -62,6 +62,7 @@
         function capitalisedFL(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
+        var client_data = JSON.parse(localStorage.getItem('data'));
     </script>
 </head>
 <body class="client-styles">
@@ -69,5 +70,6 @@
         {{{ body }}}
         {{> menu_client }}
     </div>
+    {{> ver_producto }}
 </body>
 </html>

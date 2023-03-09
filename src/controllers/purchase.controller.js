@@ -3,6 +3,7 @@ const Product = require('../models/product.model');
 const Report = require('../models/report.model');
 const logger = require('../utils/logger');
 const jwt = require('jsonwebtoken');
+const { checkProducto, checkProductoUUID } = require('../helpers/checkStock');
 require("dotenv").config();
 
 module.exports = {

@@ -36,6 +36,7 @@ router.post('/cliente/login', (req, res) => {
                 cedula: username,
                 nombre: result.data.nombre,
                 id: result.data.id,
+                nivel: result.data.level,
             }, process.env.SECRET_KEY, 
             {expiresIn: '30d'}, (err, token) => {
                 if(err){
@@ -49,6 +50,7 @@ router.post('/cliente/login', (req, res) => {
                             cedula: result.data.data.cedula,
                             telefono: result.data.data.phone,
                             email: result.data.data.email,
+                            nivel: result.data.data.level,
                             direccion: result.data.data.direction,
                             createdAt: result.data.data.createdAt
                         },

@@ -1017,8 +1017,7 @@ input::placeholder {
 }
 .card.producto img {
   height: 100px;
-  object-fit: cover;
-  object-position: top;
+  object-fit: contain;
 }
 .card.producto .card-body {
   padding: 10px;

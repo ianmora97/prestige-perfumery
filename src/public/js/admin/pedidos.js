@@ -133,18 +133,8 @@ function addRow(e){
                 <td class="">
                     <span class="text-primary">${precio}</span>
                 </td>
-                <td class="" data-filter="${estado}" data-order="${e.state}" data-search="${estado}">
-                    <div class="dropdown">
-                        <button class="btn btn-${color} dropdown-toggle b-pill" id="dropdown-status-${e.id}" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        ${estado}
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item text-orange"  role="button" onclick="cambiarStatus('${e.id}','1','dropdown-status')">Recibido</a></li>
-                            <li><a class="dropdown-item text-blue"  role="button" onclick="cambiarStatus('${e.id}','2','dropdown-status')">Empacado</a></li>
-                            <li><a class="dropdown-item text-green"  role="button" onclick="cambiarStatus('${e.id}','3','dropdown-status')">Entregado</a></li>
-                            <li><a class="dropdown-item text-red"  role="button" onclick="cambiarStatus('${e.id}','4','dropdown-status')">Cancelado</a></li>
-                        </ul>
-                    </div>
+                <td class="">
+                    <span class="badge badge-${color} b-pill">${estado}</span>
                 </td>
                 <td class="">
                     <div class="d-flex justify-content-center align-items-center">
@@ -288,7 +278,10 @@ function cambiarStatus(id,status, selector){
             status: parseInt(status)
         })
     }).then((result) => {
-        createSwalAlertToast("success", `Estado del pedido #${id} actualizado`);
+        createSwalAlertToast("success", `Pedido #${id} actualizado`);
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
     }, (error) => {
         console.log(error);
     });
@@ -467,11 +460,12 @@ function agregarPedido(){
         contentType: 'application/json',
         data: JSON.stringify(data)
     }).then((result) => {
+        agregarPedidoModal.hide();
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
-            timer: 3000,
+            timer: 1000,
             timerProgressBar: true,
             didOpen: (toast) => {
               toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -482,10 +476,10 @@ function agregarPedido(){
             icon: 'success',
             title: 'Orden agregada!'
         })
-        clearInputs();
-        reloadData();
-        // close modal
-        agregarPedidoModal.hide();
+        setTimeout(() => {
+            window.location.href = "/admin/pedidos?id="+result.data.id;
+        }, 1000);
+        
     }, (error) => {
         console.log(error);
     });
