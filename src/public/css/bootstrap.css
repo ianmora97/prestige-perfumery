@@ -1089,7 +1089,7 @@ body.client-styles nav.menu a.item.active span, body.client-styles nav.menu a.it
   justify-content: center;
   flex-direction: column;
 }
-.carritoitem:hover, .carritoitem:focus {
+.carritoitem:hover, .carritoitem:focus, .carritoitem:active {
   background-color: #e74549;
   color: #ffffff !important;
 }
@@ -1208,6 +1208,21 @@ input::placeholder {
 .card.carrito {
   border: none !important;
   border-radius: 15px;
+  position: relative;
+}
+.card.carrito .card-delete {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 30px;
+  height: 30px;
+  color: #ffffff;
+  background-color: #EA5C5F;
+  border-radius: 15px;
+  box-shadow: 0 0px 10px -5px rgba(23, 23, 23, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /*!

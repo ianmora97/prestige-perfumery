@@ -1096,7 +1096,7 @@ body.client-styles{
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    &:hover, &:focus{
+    &:hover, &:focus, &:active{
         background-color: darken($primary-client, 5%);
         color: $light !important;
     }
@@ -1206,5 +1206,19 @@ $modal-fade-transform: scale3d(0,0,0);
 .card.carrito{
     border: none !important;
     border-radius: 15px;
-    
+    position: relative;
+    .card-delete{
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        width: 30px;
+        height: 30px;
+        color: $light;
+        background-color: $primary-client;
+        border-radius: 15px;
+        box-shadow: 0 0px 10px -5px rgba(23, 23, 23, 0.2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 }

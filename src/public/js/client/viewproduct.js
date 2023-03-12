@@ -1,11 +1,10 @@
 const Cart = {
     get: function(){
-        return JSON.parse(localStorage.getItem("cart"));
+        return JSON.parse(localStorage.getItem("cart")) || [];
     },
     set: function(data){
         let existing = localStorage.getItem('cart');
         existing = existing ? JSON.parse(existing) : [];
-        // check if item already exists in cart
         let itemExists = false;
         existing.forEach(e => {
             if(e.id == data.id){
@@ -50,13 +49,15 @@ const Cart = {
         return existing;
     }
 }
+function init(){
+    addLabelCarrito();
+}
 
 const verProductoModal = document.getElementById('verProductoModal');
 const verProductoModalBS = new bootstrap.Modal('#verProductoModal');
 
 const verCarritoModal = document.getElementById('verCarritoModal');
 const verCarritoModalBS = new bootstrap.Modal('#verCarritoModal');
-
 
 verProductoModal.addEventListener('hide.bs.modal', function (event) {
     verProductoModal.classList.add('animate__animated', 'animate__slideOutDown');
@@ -152,7 +153,7 @@ function agregarCarrito(id){
         toast: true,
         position: 'top',
         showConfirmButton: false,
-        timer: 2000,
+        timer: 1000,
         timerProgressBar: true,
         didOpen: (toast) => {
             toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -166,8 +167,12 @@ function agregarCarrito(id){
 }
 function addLabelCarrito(){
     let cart = Cart.get();
-    if(cart){
-        $(".labelCarrito").html(cart.length);
+    let sum = 0;
+    cart.forEach(e => {
+        sum += e.cantidad;
+    });
+    if(cart.length > 0){
+        $(".labelCarrito").html(sum);
         $(".labelCarrito").removeClass("d-none");
     }else{
         $(".labelCarrito").html(0);
@@ -175,15 +180,12 @@ function addLabelCarrito(){
     }
 }
 document.addEventListener("DOMContentLoaded", init());
-function init(){
-    addLabelCarrito();
-}
+
 
 verCarritoModal.addEventListener('show.bs.modal', function (event) {
     $("#verCarritoBodyModal").html("");
-
     let cart = Cart.get();
-    if(cart){
+    if(cart.length > 0){
         cart.forEach((e, i) => {
             getProducto(e.id)
             .then((result) => {
@@ -192,6 +194,15 @@ verCarritoModal.addEventListener('show.bs.modal', function (event) {
                 console.log(err);
             });
         });
+        $("#modalCarritoConfirmarPedido").attr("disabled", false);
+    }else{
+        $("#verCarritoBodyModal").html(`
+            <div class="d-flex justify-content-center align-items-center flex-column">
+                <i class="fa-solid fa-cart-shopping fa-2x text-muted"></i>
+                <h5 class="text-muted mt-3">No hay productos en el carrito</h5>
+            </div>
+        `);
+        $("#modalCarritoConfirmarPedido").attr("disabled", true);
     }
 });
 function showProductoCarrito(e, cant, i){
@@ -208,7 +219,10 @@ function showProductoCarrito(e, cant, i){
     precio = "₡ "+precio.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
     $("#verCarritoBodyModal").append(`
-        <div class="card carrito mb-2">
+        <div class="card carrito mb-2 animate__animated animate__fadeInLeft" id="card-carrito-${e.id}">
+            <div class="card-delete" onclick="eliminardelcarrito('${e.id}')">
+                <i class="fa-solid fa-trash"></i>
+            </div>
             <div class="d-flex justify-content-start">
                 <img src="${e.image}" alt="Imagen del producto" 
                 class="img-fluid bg-white rounded-15 p-2" style="mix-blend-mode: multiply; height:135px; width:100px; object-fit:contain;">
@@ -219,9 +233,9 @@ function showProductoCarrito(e, cant, i){
                         <small class="text-muted mb-1">${e.type}</small>
                         <div class="d-flex justify-content-between align-items-center align-content-center">
                             <h5 class="mb-0 text-primary-client me-5">${precio}</h5>
-                            <div class="d-flex justify-content-end align-items-end align-content-center gap-3">
+                            <div class="d-flex justify-content-end align-items-end align-content-center gap-1">
                                 <button type="button" class="btn btn-transparent text-primary-client btn-sm"><i class="fa-solid fa-minus"></i></button>
-                                <h4 class="mb-0">${cant}</h4>
+                                <input type="number" class="form-control form-control-sm text-center bg-white border-0" value="${cant}" style="width: 50px;">
                                 <button type="button" class="btn btn-transparent text-primary-client btn-sm"><i class="fa-solid fa-plus"></i></button>
                             </div>
                         </div>  
@@ -230,4 +244,11 @@ function showProductoCarrito(e, cant, i){
             </div>
         </div>
     `);
+}
+function eliminardelcarrito(id){
+    Cart.delete(id);
+    $("#card-carrito-"+id).removeClass("animate__fadeInLeft");
+    animateCSS(`#card-carrito-${id}`, 'fadeOutLeft').then((message) => {
+        $(`#card-carrito-${id}`).remove();
+    });
 }
