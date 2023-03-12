@@ -25,6 +25,10 @@ const Product = mysqlcon.define('t_product',{
         type: DataTypes.STRING,
         allowNull: false
     },
+    type:{
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     category:{
         type: DataTypes.STRING,
         allowNull: false
@@ -60,6 +64,11 @@ const Product = mysqlcon.define('t_product',{
     bodega:{
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    rating:{
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 5
     }
 }, {
     freezeTableName: true,
@@ -88,7 +97,10 @@ exports.getAllQuery = async (data, resolve) => {
             },
             brand: {
                 [Op.like]: '%' + data.brand + '%'
-            }
+            },
+            [Op.and]: [
+                { stock: { [Op.gt]: 0 } },
+            ]
         },
         offset: data.offset,
         limit: data.limit,
@@ -230,6 +242,7 @@ exports.create = async (body, resolve) => {
         uuid: body.uuid,
         name: body.name,
         brand: body.brand,
+        type: body.type,
         category: body.category,
         price: body.price,
         image: body.filename,
@@ -257,6 +270,7 @@ exports.update = async (body, resolve) => {
     Product.update({
         name: body.name,
         brand: body.brand,
+        type: body.type,
         category: body.category,
         price: body.price,
         image: body.filename,
@@ -266,6 +280,43 @@ exports.update = async (body, resolve) => {
         cantidad: body.cantidad,
         barcode: body.barcode,
         bodega: body.bodega
+    }, {
+        where: {
+            id: body.id
+        }
+    }).then((product) => {
+        resolve({
+            status: 200,
+            data: product
+        });
+    }).catch((error) => {
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+}
+exports.getRating = async (id, resolve) => {
+    Product.findOne({
+        where: {
+            id: id
+        },
+        attributes: ['rating']
+    }).then((product) => {
+        resolve({
+            status: 200,
+            data: product
+        });
+    }).catch((error) => {
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+}
+exports.updateRating = async (body, resolve) => {
+    Product.update({
+        rating: body.rating
     }, {
         where: {
             id: body.id

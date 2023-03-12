@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const { logAnalytics } = require('../helpers/analytics');
 require("dotenv").config();
 
-router.get('/', logAnalytics, (req, res) => {
+router.get('/', (req, res) => {
     res.render('index');
 });
 

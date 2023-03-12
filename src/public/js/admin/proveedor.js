@@ -48,7 +48,7 @@ function fillProveedors(data){
 }
 function addRow(e,i){
     $("#proveedoresList").append(`
-        <div class="bg-white rounded-15 shadow-custom p-3 animate__animated animate__zoomIn border-4 border-bottom border-primary overflow-hidden" style="min-width: 350px; animation-delay:${i * 50}ms;">
+        <div class="bg-white rounded-15 shadow-custom p-3 animate__animated animate__zoomIn border-4 border-bottom border-primary overflow-hidden" style="min-width: 300px; animation-delay:${i * 50}ms;">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex justify-content-start align-items-center">
                     <span class="fa-stack">

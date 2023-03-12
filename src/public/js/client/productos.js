@@ -10,7 +10,7 @@ function bringData(){
 
 function getHombres(){
     $.ajax({
-        url: '/api/product/all?offset=0&limit=5&category=hombre',
+        url: '/api/product/all?offset=0&limit=8&category=hombre',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -23,7 +23,7 @@ function getHombres(){
 
 function getMujeres(){
     $.ajax({
-        url: '/api/product/all?offset=0&limit=5&category=mujer',
+        url: '/api/product/all?offset=0&limit=8&category=mujer',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -52,19 +52,13 @@ function fillHombres(data){
             desc = `<small class="text-muted small fw-light">${e.promotion}% off</small>`;
         }
         $("#horizontal-hombres").append(`
-            <div class="card producto animate__animated animate__fadeIn" style="width: 250px;" data-bs-toggle="modal" data-bs-target="#verProductoModal" data-bs-id="${e.id}">
+            <div class="card producto bg-gray animate__animated animate__fadeInLeft" style="width: 250px; animation-delay:${(i * 50)+400}ms;" data-event="${e.id}">
                 <img src="${e.image}" class="card-img-top" alt="Perfume">
                 <div class="card-body">
                     <h5 class="card-title">
                         <span class="fw-bold">${e.name}</span> 
                         <small class="d-block fw-light">by ${e.brand}</small>
                     </h5>
-                    <small class="text-muted d-block">${e.barcode}</small>
-                    
-                    <div class="d-flex justify-content-start align-items-center gap-2 my-2">
-                        <small class="badge bg-gray text-muted">${e.cantidad}</small>
-                        <small class="badge bg-gray text-muted">${capitalisedFL(e.category)}</small>
-                    </div>
                     <small class="text-${e.stock > 0 ? "success" : "danger"} d-block">${e.stock > 0 ? "Disponible": "Out of Stock"}</small>
                     <div class="d-flex justify-content-start align-items-center gap-2">
                         <p class="text-primary-client lead fw-bold m-0">${precio} </p> 
@@ -73,6 +67,10 @@ function fillHombres(data){
                 </div>
             </div>
         `);
+        $(`.producto[data-event="${e.id}"]`).on('click',(event)=>{
+            let id = $(event.currentTarget).attr("data-event");
+            openModalViewProductos(id, event);
+        });
     });
 }
 function fillMujeres(data){
@@ -89,24 +87,22 @@ function fillMujeres(data){
         precio = parseInt(precio) * (100 - parseInt(e.promotion)) / 100;
         precio = "₡ "+precio.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         $("#horizontal-mujeres").append(`
-            <div class="card producto animate__animated animate__fadeIn" style="width: 250px;">
+            <div class="card producto bg-gray animate__animated animate__fadeInLeft" style="width: 250px; animation-delay:${(i * 50)+700}ms;" data-event="${e.id}">
                 <img src="${e.image}" class="card-img-top" alt="Perfume">
                 <div class="card-body">
                     <h5 class="card-title">
                         <span class="fw-bold">${e.name}</span> 
                         <small class="d-block fw-light">by ${e.brand}</small>
                     </h5>
-                    <small class="text-muted d-block">${e.barcode}</small>
-                    
-                    <div class="d-flex justify-content-start align-items-center gap-2 my-2">
-                        <small class="badge bg-gray text-muted">${e.cantidad}</small>
-                        <small class="badge bg-gray text-muted">${capitalisedFL(e.category)}</small>
-                    </div>
                     <small class="text-${e.stock > 0 ? "success" : "danger"} d-block">${e.stock > 0 ? "Disponible": "Out of Stock"}</small>
                     <p class="text-primary-client lead fw-bold m-0">${precio}</p>
                 </div>
             </div>
         `);
+        $(`.producto[data-event="${e.id}"]`).on('click',(event)=>{
+            let id = $(event.currentTarget).attr("data-event");
+            openModalViewProductos(id, event);
+        });
     });
 }
 

@@ -136,6 +136,9 @@ function addRow(e){
                 <td class="">
                     <span class="badge badge-${color} b-pill">${estado}</span>
                 </td>
+                <td class="" data-search="${moment(e.createdAt).format('DD/MM/YYYY HH:mm')}">
+                    ${moment(e.createdAt).format('D MMMM, YYYY - hh:mm a')}
+                </td>
                 <td class="">
                     <div class="d-flex justify-content-center align-items-center">
                         <button type="button" class="btn btn-danger" style="width: max-content; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="eliminarPedido('${e.id}')"><i class="fa-solid fa-trash-can"></i></button>
@@ -158,6 +161,7 @@ function datatables(){
             {data: "productos"},
             {data: "precio"},
             {data: "estado"},
+            {data: "fecha"},
             {data: "acciones"},
         ],
         order: [[ 4, "desc" ]],
@@ -199,8 +203,8 @@ function datatables(){
             }
         },
         lengthMenu: [
-            [ 10, 50, 100, -1 ],
-            [ '10', '50', '100', 'Todos' ]
+            [ 30, 50, 100, -1 ],
+            [ '30', '50', '100', 'Todos' ]
         ],
         responsive: {
             details: {

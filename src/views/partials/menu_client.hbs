@@ -1,13 +1,13 @@
 <nav class="bg-white menu">
-    <a href="#" class="item" id="btn-home">
+    <a href="/ordenes" class="item" id="btn-mobile-ordenes">
+        <i class="fa-solid fa-truck"></i>
+        <span>Ordenes</span>
+    </a>
+    <a href="/inicio" class="item" id="btn-mobile-home">
         <i class="fa-solid fa-house"></i>
         <span>Home</span>
     </a>
-    <a href="#" class="item" id="btn-pedidos">
-        <i class="fa-solid fa-truck"></i>
-        <span>Pedidos</span>
-    </a>
-    <a href="#" class="item" id="btn-perfil">
+    <a href="/perfil" class="item" id="btn-mobile-perfil">
         <i class="fa-solid fa-user"></i>
         <span>Perfil</span>
     </a>
@@ -15,5 +15,13 @@
 
 <script>
     var windowButton = "{{ menuItem }}";
-    $(`#btn-${windowButton}`).addClass("active");
+    $(`#btn-mobile-${windowButton}`).addClass("active");
+    $(`#btn-desk-${windowButton}`).addClass("active");
+
+    $("[id^='btn-mobile-']").each(function () {
+        if(!$(this).hasClass("active")) {
+            let id = $(this).attr("id");
+            animateCSS("#"+id, "slideInUp");
+        }
+    });
 </script>

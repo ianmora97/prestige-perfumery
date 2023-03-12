@@ -119,7 +119,7 @@ img {
   top: 50%;
   transform: translateY(-50%);
   right: 20px;
-  color: #777777;
+  color: #c0c0c0;
 }
 
 /**
@@ -951,9 +951,15 @@ table.dataTable > tbody > tr.child {
 body.client-styles {
   font-family: "Lexend", sans-serif !important;
   font-weight: 400 !important;
-  background: linear-gradient(180deg, #ea5c5f 0%, rgba(255, 255, 255, 0) 100%);
-  background-repeat: no-repeat;
-  background-size: 100% 400px;
+  background-color: #ffffff !important;
+}
+body.client-styles a {
+  text-decoration: none !important;
+  transition: all 0.3s ease-in-out;
+}
+body.client-styles a:hover {
+  color: #EA5C5F !important;
+  text-decoration: none !important;
 }
 body.client-styles .main-client {
   padding-bottom: 70px;
@@ -966,12 +972,11 @@ body.client-styles nav.menu {
   height: 65px;
   width: 100%;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
   align-items: center;
-  gap: 0.5rem;
   border-top-right-radius: 20px;
   border-top-left-radius: 20px;
-  box-shadow: 0 -10px 10px -5px rgba(113, 113, 113, 0.1);
+  box-shadow: 0 -10px 10px -8px rgba(113, 113, 113, 0.2);
 }
 body.client-styles nav.menu a.item {
   display: flex;
@@ -983,13 +988,14 @@ body.client-styles nav.menu a.item {
   height: 40px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+  position: relative;
 }
 body.client-styles nav.menu a.item span, body.client-styles nav.menu a.item i {
-  color: #777777;
+  color: #c0c0c0;
 }
 body.client-styles nav.menu a.item i {
   font-size: 1.2rem;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
 }
 body.client-styles nav.menu a.item span {
   font-weight: 500;
@@ -998,43 +1004,210 @@ body.client-styles nav.menu a.item span {
 body.client-styles nav.menu a.item:active, body.client-styles nav.menu a.item:focus {
   background-color: rgba(0, 0, 0, 0.1);
 }
+body.client-styles nav.menu a.item.active {
+  background-color: #EA5C5F;
+  border-radius: 50%;
+  padding: 30px;
+  transform: translate(0, -15px);
+  animation: active-menu 1s ease-in-out;
+}
 body.client-styles nav.menu a.item.active span, body.client-styles nav.menu a.item.active i {
+  color: #ffffff;
+}
+
+.menuDesktop {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  body.client-styles .searchTopMobile {
+    display: none !important;
+  }
+  body.client-styles nav.menu {
+    display: none !important;
+  }
+  body.client-styles nav.menuDesktop {
+    display: flex !important;
+    padding: 10px 10%;
+    width: 100%;
+    justify-content: start;
+    align-items: center;
+    border-bottom: 1px #c0c0c0 solid;
+  }
+  body.client-styles nav.menuDesktop a.item {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    margin-right: 2rem;
+  }
+  body.client-styles nav.menuDesktop a.item i {
+    margin-right: 5px;
+  }
+  body.client-styles nav.menuDesktop a.item span, body.client-styles nav.menuDesktop a.item i {
+    color: #c0c0c0;
+  }
+  body.client-styles nav.menuDesktop a.item:active, body.client-styles nav.menuDesktop a.item:focus {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  body.client-styles nav.menuDesktop a.item.active span, body.client-styles nav.menuDesktop a.item.active i {
+    color: #EA5C5F !important;
+    font-weight: 600;
+  }
+  body.client-styles nav.menuDesktop .buscarBar {
+    margin-left: auto;
+    width: 400px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  body.client-styles nav.menuDesktop .logoMenu {
+    width: 40px;
+    height: 40px;
+    margin-right: 20px;
+  }
+}
+@keyframes active-menu {
+  0% {
+    transform: translate(0, 20px);
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, -15px);
+  }
+}
+.carritoitem {
+  position: relative;
+  background-color: #EA5C5F;
+  color: #ffffff;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.carritoitem:hover, .carritoitem:focus {
+  background-color: #e74549;
+  color: #ffffff !important;
+}
+.carritoitem .label {
+  position: absolute;
+  top: -8px;
+  right: -8px;
   color: #EA5C5F;
+  background-color: #f3f4f6 !important;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0px 10px -5px rgba(97, 97, 97, 0.2);
 }
 
 input::placeholder {
   font-weight: 300;
-  color: #c7c7c7 !important;
+  color: #c0c0c0 !important;
 }
 
 .card.producto {
   border-radius: 20px;
-  box-shadow: 0 5px 10px rgba(126, 126, 126, 0.1);
-  background-color: #fff;
   padding: 0.5rem;
   margin-bottom: 1rem;
   border: none;
 }
 .card.producto img {
-  height: 100px;
+  height: 150px;
   object-fit: contain;
+  background-color: white;
+  border-radius: inherit;
+  display: block;
+  margin: 0 auto;
 }
 .card.producto .card-body {
   padding: 10px;
+}
+.card.producto:hover, .card.producto:active {
+  transform: scale(1.02);
+  transition: all 0.3s ease;
 }
 
 .horizontal-scroll {
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
+  padding-left: 2px;
 }
 .horizontal-scroll .card {
   display: inline-block;
-  margin-right: 0.5rem;
+  margin-right: 1rem;
   white-space: normal;
 }
 .horizontal-scroll .card:last-child {
   margin-right: 0;
+}
+
+.btn-primary-client {
+  color: #ffffff !important;
+  background-color: #f0898b !important;
+  border-color: #f0898b !important;
+}
+.btn-primary-client:hover {
+  background-color: #EA5C5F !important;
+  border-color: #EA5C5F !important;
+}
+
+.rounded-top-25 {
+  border-top-left-radius: 25px !important;
+  border-top-right-radius: 25px !important;
+}
+
+.djcbaic {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.djcsaic {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.modal {
+  transform: scale3d(0, 0, 0);
+}
+
+.modal.show {
+  transform: scale3d(1, 1, 1);
+}
+
+#modalAgregarCarritoProduct {
+  width: 300px;
+}
+@media (max-width: 1000px) {
+  #modalAgregarCarritoProduct {
+    width: 100%;
+  }
+}
+
+.modal-footer-custom {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  padding: 10px;
+  z-index: 100;
+}
+
+.card.carrito {
+  border: none !important;
+  border-radius: 15px;
 }
 
 /*!
@@ -6916,7 +7089,7 @@ textarea.form-control-lg {
 }
 .modal.fade .modal-dialog {
   transition: transform 0.3s ease-out;
-  transform: scale(0.8);
+  transform: scale3d(0, 0, 0);
 }
 @media (prefers-reduced-motion: reduce) {
   .modal.fade .modal-dialog {

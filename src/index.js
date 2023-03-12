@@ -62,6 +62,6 @@ app.use(require('./routes/dashboard.routes'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Server list ener
-app.listen(app.get('port'), app.get('host'), () => {
+app.listen(app.get('port'), () => {
     console.log(`[OK] Server on port ${app.get('port')}`);
 });

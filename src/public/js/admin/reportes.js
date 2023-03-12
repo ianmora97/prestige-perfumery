@@ -373,21 +373,21 @@ function addRow(e,i){
     let precio = e.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     
     let color = "red";
-    let level = "Bajo"
+    let level = "Cliente C"
     if(i < 5){
         color = "green";
-        level = "Alto";
+        level = "Cliente A";
     }else if(i >= 5 && i < 8){
         color = "orange";
-        level = "Medio";
+        level = "Cliente B";
     }
     $("#tbody").append(`
         <tr>
             <td class="text-center">${i+1}</td>
-            <td class="ps-4">${e.nombre} ${i <= 5? "🔥":""}</td>
+            <td class="ps-4">${e.nombre}</td>
             <td class="">${e.cedula}</td>
             <td data-filter="${level}">
-                <span class="badge bg-${color}">${level}</span>
+                <span class="badge bg-${color}">${level} ${i <= 5? "🔥":""}</span>
             </td>
             <td class="">
                 <span class="text-primary">${e.cantidad} productos</span>
@@ -402,7 +402,7 @@ function datatables(){
     $("#table").DataTable({
         responsive: true,
         select: true,
-        keys: true,
+        keys: false,
         order: [[ 4, "asc" ]],
         "scrollY": "600px",
         "scrollCollapse": true,

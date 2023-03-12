@@ -301,6 +301,7 @@ function openEditModal(uuid){
 
     $("#edit-name").val(prod.name);
     $("#edit-marca").val(prod.brand);
+    $("#edit-type").val(prod.type);
     $("#edit-precio1").val(price1);
     $("#edit-precio2").val(price2);
     $("#edit-precio3").val(price3);
@@ -360,6 +361,7 @@ function updateProduct(){
     
     let nombre = $("#edit-name").val();
     let marca = $("#edit-marca").val();
+    let type = $("#edit-type").val();
     let category = $("#edit-categoria").val();
     let stock = parseInt($("#edit-stock").val());
     let aviso = parseInt($("#edit-aviso").val());
@@ -385,6 +387,7 @@ function updateProduct(){
         id: prod.id,
         name: nombre,
         brand: marca,
+        type: type,
         category: category,
         stock: stock,
         notification: aviso,
@@ -525,6 +528,7 @@ function addRow(e){
                         <span class="text-muted">${e.brand}</span>
                     </div>
                 </td>
+                <td class="">${e.type}</td>
                 <td class="">${e.cantidad}</td>
                 <td class=""><span class="badge b-pill badge-blue">${e.category}</span></td>
                 <td class="">
@@ -675,6 +679,7 @@ function agregarProducto(){
     let category = $("#add-categoria").val();
     let notification = parseInt($("#add-aviso").val());
     let brand = $("#add-marca").val();
+    let type = $("#add-type").val();
     let q = $("#add-q").val();
     let c = $("#add-cantidad").val();
     let cantidad =  c +" "+ q;
@@ -689,6 +694,7 @@ function agregarProducto(){
                 name: name,
                 stock: stock,
                 price: price,
+                type: type,
                 category: category,
                 notification: notification,
                 filename: image,
@@ -741,10 +747,11 @@ function verifyInputs(){
         let category = $("#add-categoria").val();
         let notification = parseInt($("#add-aviso").val());
         let brand = $("#add-marca").val();
+        let type = $("#add-type").val();
         let c = $("#add-cantidad").val();
         let image = $("#add-imagelink").val();
         let barcode = $("#barcodeResult").find("#barcodeResultText").text();
-        if(barcode === '' || image === '' || name === '' || stock === '' || price1 === '' || price2 === '' || price3 === '' || category === '' || notification === '' || brand === '' || c === ''){
+        if(barcode === '' || image === '' || name === '' || type === '' || stock === '' || price1 === '' || price2 === '' || price3 === '' || category === '' || notification === '' || brand === '' || c === ''){
             reject();
         }else{
             resolve();

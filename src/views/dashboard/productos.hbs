@@ -82,6 +82,7 @@
                                 <th scope="col" style="width: 70px;" data-priority="2">Imagen</th>
                                 <th scope="col" data-priority="7">Código</th>
                                 <th scope="col" data-priority="1">Nombre</th>
+                                <th scope="col" data-priority="2">Tipo</th>
                                 <th scope="col" data-priority="5">Tamaño</th>
                                 <th scope="col" data-priority="6">Categoria</th>
                                 <th scope="col" data-priority="4">Inventario</th>
@@ -117,6 +118,7 @@
                         <div class="input-group mb-4">
                             <input type="text" class="form-control" id="add-name" placeholder="Nombre">
                             <input type="text" class="form-control" id="add-marca" placeholder="Marca">
+                            <input type="text" class="form-control" id="add-type" placeholder="Tipo">
                         </div>
                         <div class="row mx-0 g-0">
                             <div class="col-sm-4 pe-2 mb-4">
@@ -308,17 +310,24 @@
                         </div>
                         <hr>
                         <div class="row mx-0 g-0">
-                            <div class="col-6">
+                            <div class="col-4">
                                 <div class="mb-2">
                                     <label for="edit-name" class="form-label fw-bold">Nombre</label>
                                     <input type="text" class="form-control" id="edit-name" placeholder="Nombre del producto...">
                                     <small class="text-muted">Máximo 100 caracteres.</small>
                                 </div>
                             </div>
-                            <div class="col-6 ps-3">
+                            <div class="col-4 ps-3">
                                 <div class="mb-2">
                                     <label for="edit-marca" class="form-label fw-bold">Marca</label>
                                     <input type="text" class="form-control" id="edit-marca" placeholder="Marca del producto...">
+                                    <small class="text-muted">Máximo 100 caracteres.</small>
+                                </div>
+                            </div>
+                            <div class="col-4 ps-3">
+                                <div class="mb-2">
+                                    <label for="edit-type" class="form-label fw-bold">Tipo</label>
+                                    <input type="text" class="form-control" id="edit-type" placeholder="Tipo de producto...">
                                     <small class="text-muted">Máximo 100 caracteres.</small>
                                 </div>
                             </div>

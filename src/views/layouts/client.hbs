@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#EA5C5F">
     
     {{!-- Styles --}}
     <link rel="stylesheet" href="/css/bootstrap.css">
@@ -67,8 +68,10 @@
 </head>
 <body class="client-styles">
     <div class="main-client">
+        {{> searchMobile }}
         {{{ body }}}
         {{> menu_client }}
+        {{> shopping_cart }}
     </div>
     {{> ver_producto }}
 </body>

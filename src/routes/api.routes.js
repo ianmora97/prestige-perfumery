@@ -1,82 +1,84 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const { isAuthenticatedAdmin, isAuthenticatedClient } = require('../helpers/auth');
 require("dotenv").config();
 
 /**
  * CRUD for User
  */
 const USER = require('../controllers/user.controller');
-router.get('/api/user/all', isAuthenticated, USER.getAll);
-router.post('/api/user/add', isAuthenticated, USER.create);
-router.put('/api/user/update', isAuthenticated, USER.update);
-router.delete('/api/user/delete', isAuthenticated, USER.delete);
+router.get('/api/user/all', isAuthenticatedAdmin, USER.getAll); // ! Authentication required for admin
+router.post('/api/user/add', isAuthenticatedAdmin, USER.create); // ! Authentication required for admin
+router.put('/api/user/update', isAuthenticatedAdmin, USER.update); // ! Authentication required for admin
+router.delete('/api/user/delete', isAuthenticatedAdmin, USER.delete); // ! Authentication required for admin
 /**
  * CRUD for Products
  */
 const PRODUCT = require('../controllers/product.controller');
-router.get('/api/product/all', PRODUCT.getAll); // No authentication required
-router.get('/api/product/count', PRODUCT.count); // No authentication required
-router.get('/api/product/allpagination', PRODUCT.getProductsPagination); // No authentication required
-router.get('/api/product/all/selectize',isAuthenticated, PRODUCT.getProducts);
-router.get('/api/product/all/productslow',isAuthenticated, PRODUCT.getProductsInStock);
-router.get('/api/product/one/:id', PRODUCT.findOne);
-router.post('/api/product/add', isAuthenticated, PRODUCT.create);
-router.put('/api/product/update', isAuthenticated, PRODUCT.update);
-router.put('/api/product/stock', isAuthenticated, PRODUCT.updateStock);
-router.delete('/api/product/delete', isAuthenticated, PRODUCT.delete);
+router.get('/api/product/all', PRODUCT.getAll); // * No authentication required
+router.get('/api/product/count', PRODUCT.count); // * No authentication required
+router.get('/api/product/allpagination', PRODUCT.getProductsPagination); // * No authentication required
+router.get('/api/product/one/:id', PRODUCT.findOne); // * No authentication required
+router.put('/api/product/rating', isAuthenticatedClient, PRODUCT.updateRating); // todo: Authentication required for clients
+router.get('/api/product/all/selectize',isAuthenticatedAdmin, PRODUCT.getProducts); // ! Authentication required for admin
+router.get('/api/product/all/productslow',isAuthenticatedAdmin, PRODUCT.getProductsInStock); // ! Authentication required for admin
+router.post('/api/product/add', isAuthenticatedAdmin, PRODUCT.create); // ! Authentication required for admin
+router.put('/api/product/update', isAuthenticatedAdmin, PRODUCT.update); // ! Authentication required for admin
+router.put('/api/product/stock', isAuthenticatedAdmin, PRODUCT.updateStock); // ! Authentication required for admin
+router.delete('/api/product/delete', isAuthenticatedAdmin, PRODUCT.delete); // ! Authentication required for admin
 /**
  * CRUD for Bodega
  */
 const BODEGA = require('../controllers/bodega.controller');
-router.get('/api/bodega/all', isAuthenticated, BODEGA.getAll);
-router.post('/api/bodega/add', isAuthenticated, BODEGA.create);
-router.put('/api/bodega/update', isAuthenticated, BODEGA.update);
-router.delete('/api/bodega/delete', isAuthenticated, BODEGA.delete);
+router.get('/api/bodega/all', isAuthenticatedAdmin, BODEGA.getAll); // ! Authentication required for admin
+router.post('/api/bodega/add', isAuthenticatedAdmin, BODEGA.create); // ! Authentication required for admin
+router.put('/api/bodega/update', isAuthenticatedAdmin, BODEGA.update); // ! Authentication required for admin
+router.delete('/api/bodega/delete', isAuthenticatedAdmin, BODEGA.delete); // ! Authentication required for admin
 /**
  * CRUD for Purchase
 */
 const PURCHASE = require('../controllers/purchase.controller');
-router.get('/api/purchase/all', isAuthenticated, PURCHASE.getAll);
-router.get('/api/purchase/all/recibidos', isAuthenticated, PURCHASE.recibidos);
-router.get('/api/purchase/all/lastmonth',isAuthenticated, PURCHASE.lastMonth);
-router.get('/api/purchase/all/betterclients',isAuthenticated, PURCHASE.betterClients);
-router.get('/api/purchase/all/:id', isAuthenticated, PURCHASE.findOne);
-router.post('/api/purchase/add', isAuthenticated, PURCHASE.createAdmin);
-router.post('/api/purchase/add/client', PURCHASE.createAdmin);
-router.put('/api/purchase/update', isAuthenticated, PURCHASE.update);
-router.post('/api/purchase/status/update', isAuthenticated, PURCHASE.updateStatus);
-router.delete('/api/purchase/delete', isAuthenticated, PURCHASE.delete);
+router.post('/api/purchase/add/client', PURCHASE.createAdmin); // * No authentication required
+router.get('/api/purchase/all', isAuthenticatedAdmin, PURCHASE.getAll); // ! Authentication required for admin
+router.get('/api/purchase/all/recibidos', isAuthenticatedAdmin, PURCHASE.recibidos); // ! Authentication required for admin
+router.get('/api/purchase/all/lastmonth',isAuthenticatedAdmin, PURCHASE.lastMonth); // ! Authentication required for admin
+router.get('/api/purchase/all/betterclients',isAuthenticatedAdmin, PURCHASE.betterClients); // ! Authentication required for admin
+router.get('/api/purchase/all/:id', isAuthenticatedAdmin, PURCHASE.findOne); // ! Authentication required for admin
+router.post('/api/purchase/add', isAuthenticatedAdmin, PURCHASE.createAdmin); // ! Authentication required for admin
+router.put('/api/purchase/update', isAuthenticatedAdmin, PURCHASE.update); // ! Authentication required for admin
+router.post('/api/purchase/status/update', isAuthenticatedAdmin, PURCHASE.updateStatus); // ! Authentication required for admin
+router.delete('/api/purchase/delete', isAuthenticatedAdmin, PURCHASE.delete); // ! Authentication required for admin
 /**
  * CRUD for Cliente
 */
 const CLIENTE = require('../controllers/cliente.controller');
-router.get('/api/cliente/all', isAuthenticated, CLIENTE.getAll);
-router.get('/api/cliente/all/:id', isAuthenticated, CLIENTE.findOne);
-router.post('/api/cliente/add', isAuthenticated, CLIENTE.create);
-router.put('/api/cliente/update', isAuthenticated, CLIENTE.update);
-router.delete('/api/cliente/delete', isAuthenticated, CLIENTE.delete);
+router.get('/api/cliente/all', isAuthenticatedAdmin, CLIENTE.getAll); // ! Authentication required for admin
+router.get('/api/cliente/all/:id', isAuthenticatedAdmin, CLIENTE.findOne); // ! Authentication required for admin
+router.post('/api/cliente/add', isAuthenticatedAdmin, CLIENTE.create); // ! Authentication required for admin
+router.put('/api/cliente/update', isAuthenticatedAdmin, CLIENTE.update); // ! Authentication required for admin
+router.delete('/api/cliente/delete', isAuthenticatedAdmin, CLIENTE.delete); // ! Authentication required for admin
 /**
  * CRUD for Report 
 */
 const REPORT = require('../controllers/report.controller');
-router.get('/api/report/all', isAuthenticated, REPORT.getAll);
-router.get('/api/report/allclient', isAuthenticated, REPORT.getAllJoin);
-router.get('/api/report/allthisyear', isAuthenticated, REPORT.getAllFromThisYear);
-router.get('/api/report/getallsixmonths',isAuthenticated, REPORT.getAll6Months);
-router.get('/api/report/all/:id', isAuthenticated, REPORT.findOne);
-router.post('/api/report/add', isAuthenticated, REPORT.create);
-router.put('/api/report/update', isAuthenticated, REPORT.update);
-router.delete('/api/report/delete', isAuthenticated, REPORT.delete);
-/**
+router.get('/api/report/all', isAuthenticatedAdmin, REPORT.getAll); // ! Authentication required for admin
+router.get('/api/report/allclient', isAuthenticatedAdmin, REPORT.getAllJoin); // ! Authentication required for admin
+router.get('/api/report/allthisyear', isAuthenticatedAdmin, REPORT.getAllFromThisYear); // ! Authentication required for admin
+router.get('/api/report/getallsixmonths',isAuthenticatedAdmin, REPORT.getAll6Months); // ! Authentication required for admin
+router.get('/api/report/all/:id', isAuthenticatedAdmin, REPORT.findOne); // ! Authentication required for admin
+router.post('/api/report/add', isAuthenticatedAdmin, REPORT.create); // ! Authentication required for admin
+router.put('/api/report/update', isAuthenticatedAdmin, REPORT.update); // ! Authentication required for admin
+router.delete('/api/report/delete', isAuthenticatedAdmin, REPORT.delete); // ! Authentication required for admin
+/** 
  * CRUD for Proveedor 
 */
 const PROVEEDOR = require('../controllers/proveedor.controller');
-router.get('/api/proveedor/all', isAuthenticated, PROVEEDOR.getAll);
-router.post('/api/proveedor/add', isAuthenticated, PROVEEDOR.create);
-router.put('/api/proveedor/updateestado', isAuthenticated, PROVEEDOR.estadoUpdate);
-router.put('/api/proveedor/update', isAuthenticated, PROVEEDOR.update);
-router.delete('/api/proveedor/delete', isAuthenticated, PROVEEDOR.delete);
+router.get('/api/proveedor/all', isAuthenticatedAdmin, PROVEEDOR.getAll); // ! Authentication required for admin
+router.post('/api/proveedor/add', isAuthenticatedAdmin, PROVEEDOR.create); // ! Authentication required for admin
+router.put('/api/proveedor/updateestado', isAuthenticatedAdmin, PROVEEDOR.estadoUpdate); // ! Authentication required for admin
+router.put('/api/proveedor/update', isAuthenticatedAdmin, PROVEEDOR.update); // ! Authentication required for admin
+router.delete('/api/proveedor/delete', isAuthenticatedAdmin, PROVEEDOR.delete); // ! Authentication required for admin
 /**
  * CRUD for Analytics 
 */
@@ -84,27 +86,5 @@ const ANALYTICS = require('../controllers/analytics.controller');
 router.get('/api/analytics/all', ANALYTICS.getAll);
 router.get('/api/analytics/getAnalytics', ANALYTICS.getAnalytics);
 
-function isAuthenticated(req, res, next) {
-    let headers = req.headers['cookie'] || req.headers['authorization'];
-    if(headers === undefined){
-        res.redirect('/');
-    }else{
-        let tokenName = headers.split(";").filter((item) => item.includes("token="))[0];
-        if(tokenName === undefined) res.redirect('/');
-        else tokenName = tokenName.split("=")[1];
-        jwt.verify(tokenName, process.env.SECRET_KEY, (err, decoded) => {
-            if (err) {
-                console.log(err);
-                res.redirect('/');
-            } else {
-                if(decoded.rol >= 3 ){
-                    next();
-                }else{
-                    res.redirect('/');
-                }
-            }
-        });
-    }
-}
 
 module.exports = router;

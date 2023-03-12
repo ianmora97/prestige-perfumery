@@ -85,6 +85,15 @@ module.exports = {
             res.status(result.status).json(result);
         });
     },
+    updateRating: (req, res) => {
+        Product.getRating(req.body, (result) => {
+            let rating = result.data.rating;
+            let newRating = (rating + req.body.rating) / 2;
+            Product.updateRating({id: req.body.id, rating: newRating}, (result) => {
+                res.status(result.status).json(result);
+            });
+        });
+    },
     updateStock: (req, res) => {
         Product.updateStock(req.body, (result) => {
             who(req).then((user) => {

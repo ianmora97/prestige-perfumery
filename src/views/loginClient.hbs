@@ -10,7 +10,7 @@
 
 <div class="position-relative">
     <div class="vh-100 w-100">
-        <img src="/img/rec.svg" class="animate__animated animate__fadeInDown" style="width: 100%; height:80%;object-fit:cover;object-position:bottom;">
+        <img src="/img/recclient.svg" class="animate__animated animate__fadeInDown" style="width: 100%; height:80%;object-fit:cover;object-position:bottom;">
         <div class="d-flex justify-content-center w-100" style="position:absolute; top:100px;opacity:0.1;">
             <div class="owl-carousel" style="width: 80%;">
                 <img src="https://siman.vtexassets.com/arquivos/ids/1496199-800-800" style="width:200px;height:200px;object-fit:cover;" class="rounded-15">
@@ -44,7 +44,7 @@
                 <div class="card border-0 bg-white animate__animated animate__fadeInDown" style="width:450px;">
                     <div class="card-body">
                         <div class="d-flex justify-content-center my-3">
-                            <i class="fa-solid fa-spray-can-sparkles text-primary fa-2x"></i>
+                            <i class="fa-solid fa-spray-can-sparkles text-primary-client fa-2x"></i>
                         </div>
 
                         <h2 class="text-center fw-bold mb-4">Perfumes & Body Splash</h2>
@@ -57,12 +57,12 @@
 
                         <div class="small text-danger" id="feedback"></div>
 
-                        <a href="/forgot-password" class="text-primary my-2 text-center d-block">Recuperar Contraseña</a>
+                        <a href="/forgot-password" class="text-primary-client my-2 text-center d-block">Recuperar Contraseña</a>
 
-                        <button type="submit" class="btn btn-primary w-100 mt-1" onclick="sendForm()"><i class="fa-solid fa-lock op"></i> Sign in</button>
+                        <button type="submit" class="btn btn-primary-client w-100 mt-1" onclick="sendForm()"><i class="fa-solid fa-lock op"></i> Sign in</button>
                         <hr>
                         <div class="w-75 mx-auto">
-                            <button type="submit" class="btn btn-outline-primary w-100">Registrarse</button>
+                            <button type="submit" class="btn btn-outline-primary-client w-100">Registrarse</button>
                         </div>
                     </div>
                 </div>
@@ -95,7 +95,7 @@
             .then((e)=>{
                 setTimeout(() => {
                     buttonLoader(2);
-                    window.location.href = "/client/productos";
+                    window.location.href = "/inicio";
                 }, 1000);
             });
         }, (err) =>{
