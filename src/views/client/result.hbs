@@ -1,0 +1,60 @@
+<div class="w-90 mx-auto d-block my-4">
+    <div class="d-flex align-items-center justify-content-between">
+        <div>
+            <h5 class="fw-bold mb-1">Resultados de Búsqueda:</h5>
+            <p id="resultadosDeBusqueda" class="text-muted mb-0"></p>
+        </div>
+        <button type="button" class="btn btn-primary-client d-block d-md-none" data-bs-toggle="modal" data-bs-target="#modalfiltrar"><i class="fa-solid fa-filter"></i> Filtrar</button>
+    </div>
+    <hr>
+    <div class="d-flex align-items-start">
+        <div class="border-end h-100 me-3 d-md-block d-none" style="min-width: 250px;">
+            <h6 class="fw-bold mb-4">Filtrar:</h6>
+            <P class="mb-2">Categoría:</P>
+            <div class="form-check">
+                <input class="form-check-input check-client" type="checkbox" data-filter-cat-change="hombre" value="hombre" id="filtrar-data-leftpanel-Hombre">
+                <label class="form-check-label" for="filtrar-data-leftpanel-Hombre">Hombre</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input check-client" type="checkbox" data-filter-cat-change="mujer" value="mujer" id="filtrar-data-leftpanel-Mujer">
+                <label class="form-check-label" for="filtrar-data-leftpanel-Mujer">Mujer</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input check-client" type="checkbox" data-filter-cat-change="unisex" value="unisex" id="filtrar-data-leftpanel-Unisex">
+                <label class="form-check-label" for="filtrar-data-leftpanel-Unisex">Unisex</label>
+            </div>
+        </div>
+        <div id="products" class="d-flex flex-wrap gap-3 justify-content-center justify-content-md-start"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalfiltrar" tabindex="-1" aria-labelledby="modalfiltrarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h1 class="modal-title fs-5" id="modalfiltrarLabel">Filtrar</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <P class="mb-2">Categoría:</P>
+                <div class="form-check form-check-lg mb-2">
+                    <input class="form-check-input check-client" type="checkbox" data-filter-cat-change="hombre" value="hombre" id="filtrar-data-modal-Hombre">
+                    <label class="form-check-label" for="filtrar-data-modal-Hombre">Hombre</label>
+                </div>
+                <div class="form-check form-check-lg mb-2">
+                    <input class="form-check-input check-client" type="checkbox" data-filter-cat-change="mujer" value="mujer" id="filtrar-data-modal-Mujer">
+                    <label class="form-check-label" for="filtrar-data-modal-Mujer">Mujer</label>
+                </div>
+                <div class="form-check form-check-lg mb-2">
+                    <input class="form-check-input check-client" type="checkbox" data-filter-cat-change="unisex" value="unisex" id="filtrar-data-modal-Unisex">
+                    <label class="form-check-label" for="filtrar-data-modal-Unisex">Unisex</label>
+                </div>
+                <hr>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-primary-client d-block w-100 btn-lg">Filtrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/client/results.js"></script>

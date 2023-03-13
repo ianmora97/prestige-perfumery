@@ -117,6 +117,39 @@ exports.getAllQuery = async (data, resolve) => {
         });
     });
 }
+exports.getAllQuerySearch = async (data, resolve) => {
+    Product.findAll({
+        where: {
+            [Op.or]: [
+                {category: {
+                    [Op.like]: '%' + data.search + '%'
+                }},
+                {brand: {
+                    [Op.like]: '%' + data.search + '%'
+                }},
+                {name: {
+                    [Op.like]: '%' + data.search + '%'
+                }},
+            ],
+            [Op.and]: [
+                { stock: { [Op.gt]: 0 } },
+            ]
+        },
+        offset: data.offset,
+        limit: data.limit,
+    }).then((products) => {
+        resolve({
+            status: 200,
+            data: products
+        });
+    }).catch((error) => {
+        console.log(error);
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+}
 exports.count = async (resolve) => {
     Product.count()
     .then((count) => {

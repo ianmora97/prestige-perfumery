@@ -24,13 +24,25 @@ const Cart = {
         existing = JSON.parse(existing);
         existing.forEach(e => {
             if(e.id == id){
-                e.cantidad = cantidad;
+                e.cantidad += cantidad;
             }
         });
         localStorage.setItem('cart', JSON.stringify(existing));
         addLabelCarrito();
         return existing;
     },
+    setCant: function(id, cantidad){
+        let existing = localStorage.getItem('cart');
+        existing = JSON.parse(existing);
+        existing.forEach(e => {
+            if(e.id == id){
+                e.cantidad = cantidad;
+            }
+        });
+        localStorage.setItem('cart', JSON.stringify(existing));
+        addLabelCarrito();
+        return existing;
+    },     
     empty: function(){
         localStorage.removeItem('cart');
         addLabelCarrito();
@@ -52,6 +64,9 @@ const Cart = {
 function init(){
     addLabelCarrito();
 }
+
+var totalPedido = 0;
+
 
 const verProductoModal = document.getElementById('verProductoModal');
 const verProductoModalBS = new bootstrap.Modal('#verProductoModal');
@@ -162,7 +177,8 @@ function agregarCarrito(id){
     });
     Toast.fire({
         icon: 'success',
-        title: 'Agregado al carrito'
+        title: 'Agregado al carrito',
+        iconColor: '#EA5C5F'
     });
 }
 function addLabelCarrito(){
@@ -194,6 +210,7 @@ verCarritoModal.addEventListener('show.bs.modal', function (event) {
                 console.log(err);
             });
         });
+        
         $("#modalCarritoConfirmarPedido").attr("disabled", false);
     }else{
         $("#verCarritoBodyModal").html(`
@@ -216,10 +233,13 @@ function showProductoCarrito(e, cant, i){
         precio = price1;
     }
     precio = parseInt(precio) * (100 - parseInt(e.promotion)) / 100;
+    totalPedido += precio * cant;
     precio = "₡ "+precio.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    
+    totalPedidoadd();
 
     $("#verCarritoBodyModal").append(`
-        <div class="card carrito mb-2 animate__animated animate__fadeInLeft" id="card-carrito-${e.id}">
+        <div class="card carrito bg-gray mb-2 animate__animated animate__fadeInLeft" id="card-carrito-${e.id}">
             <div class="card-delete" onclick="eliminardelcarrito('${e.id}')">
                 <i class="fa-solid fa-trash"></i>
             </div>
@@ -234,9 +254,9 @@ function showProductoCarrito(e, cant, i){
                         <div class="d-flex justify-content-between align-items-center align-content-center">
                             <h5 class="mb-0 text-primary-client me-5">${precio}</h5>
                             <div class="d-flex justify-content-end align-items-end align-content-center gap-1">
-                                <button type="button" class="btn btn-transparent text-primary-client btn-sm"><i class="fa-solid fa-minus"></i></button>
-                                <input type="number" class="form-control form-control-sm text-center bg-white border-0" value="${cant}" style="width: 50px;">
-                                <button type="button" class="btn btn-transparent text-primary-client btn-sm"><i class="fa-solid fa-plus"></i></button>
+                                <button type="button" class="btn btn-transparent text-primary-client btn-sm" onclick="remove1itemcart('${e.id}')"><i class="fa-solid fa-minus"></i></button>
+                                <input type="number" class="form-control form-control-sm text-center bg-gray border-0" value="${cant}" style="width: 45px;" onchange="updateitemcart('${e.id}',this)">
+                                <button type="button" class="btn btn-transparent text-primary-client btn-sm" onclick="add1itemcart('${e.id}')"><i class="fa-solid fa-plus"></i></button>
                             </div>
                         </div>  
                     </div>
@@ -245,10 +265,79 @@ function showProductoCarrito(e, cant, i){
         </div>
     `);
 }
+function totalPedidoadd(){
+    $("#modalCarritoTotal").html(`₡${totalPedido.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`);
+}
 function eliminardelcarrito(id){
     Cart.delete(id);
     $("#card-carrito-"+id).removeClass("animate__fadeInLeft");
     animateCSS(`#card-carrito-${id}`, 'fadeOutLeft').then((message) => {
         $(`#card-carrito-${id}`).remove();
     });
+    checkTotalPedido();
+}
+function remove1itemcart(id){
+    let cantBefore = Cart.get().find(e => e.id == id).cantidad;
+    if(cantBefore == 1){
+        Swal.fire({
+            text: '¿Desea eliminar el producto?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                eliminardelcarrito(id);
+            }
+        });
+    }else{
+        Cart.update(id, -1);
+        let cant = Cart.get().find(e => e.id == id).cantidad;
+        $(`#card-carrito-${id} input`).val(cant);
+    }
+    checkTotalPedido();
+}
+function add1itemcart(id){
+    Cart.update(id, 1);
+    let cant = Cart.get().find(e => e.id == id).cantidad;
+    $(`#card-carrito-${id} input`).val(cant);
+    checkTotalPedido();
+}
+function updateitemcart(id, e){
+    let val = parseInt($(e).val());
+    if(val > 0){
+        Cart.setCant(id, val);
+    }else{
+        eliminardelcarrito(id);
+    }
+    checkTotalPedido();
+}
+function checkTotalPedido(){
+    let cart = Cart.get();
+    totalPedido = 0;
+    if(cart.length > 0){
+        cart.forEach((e, i) => {
+            getProducto(e.id)
+            .then((result) => {
+                let {price1, price2, price3} = JSON.parse(result.price);
+                let precio;
+                if(client_data.nivel == 1){
+                    precio = price3;
+                }else if(client_data.nivel == 2){
+                    precio = price2;
+                }else if(client_data.nivel == 3){
+                    precio = price1;
+                }
+                precio = parseInt(precio) * (100 - parseInt(result.promotion)) / 100;
+                totalPedido += precio * e.cantidad;
+                totalPedidoadd();
+            }).catch((err) => {
+                console.log(err);
+            });
+        });
+    }else{
+        totalPedidoadd();
+    }
 }

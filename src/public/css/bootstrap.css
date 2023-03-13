@@ -7,6 +7,7 @@
 */
 @import url("https://rsms.me/inter/inter.css");
 @import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100;300;400;500;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;500;700&display=swap");
 body {
   background-color: #f3f4f6 !important;
   color: #111827 !important;
@@ -948,6 +949,18 @@ table.dataTable > tbody > tr.child {
   background-color: #f0f3ff !important;
 }
 
+.crimson-pro {
+  font-family: "Crimson Pro", serif !important;
+  font-weight: 400 !important;
+}
+
+.btn-primary-client {
+  color: #ffffff !important;
+}
+.btn-primary-client:hover, .btn-primary-client:focus, .btn-primary-client:active {
+  color: #ffffff !important;
+}
+
 body.client-styles {
   font-family: "Lexend", sans-serif !important;
   font-weight: 400 !important;
@@ -960,6 +973,17 @@ body.client-styles a {
 body.client-styles a:hover {
   color: #EA5C5F !important;
   text-decoration: none !important;
+}
+body.client-styles a.text-light {
+  color: #ffffff !important;
+}
+body.client-styles a.text-light:hover, body.client-styles a.text-light:focus, body.client-styles a.text-light:active {
+  color: #ffffff !important;
+  font-weight: 500;
+}
+body.client-styles ::selection {
+  background-color: #f6b6b8 !important;
+  color: #ffffff !important;
 }
 body.client-styles .main-client {
   padding-bottom: 70px;
@@ -994,12 +1018,12 @@ body.client-styles nav.menu a.item span, body.client-styles nav.menu a.item i {
   color: #c0c0c0;
 }
 body.client-styles nav.menu a.item i {
-  font-size: 1.2rem;
+  font-size: 1rem;
   margin-bottom: 3px;
 }
 body.client-styles nav.menu a.item span {
   font-weight: 500;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
 }
 body.client-styles nav.menu a.item:active, body.client-styles nav.menu a.item:focus {
   background-color: rgba(0, 0, 0, 0.1);
@@ -1020,6 +1044,9 @@ body.client-styles nav.menu a.item.active span, body.client-styles nav.menu a.it
 }
 
 @media (min-width: 768px) {
+  body.client-styles .main-client {
+    padding-bottom: 0px;
+  }
   body.client-styles .searchTopMobile {
     display: none !important;
   }
@@ -1082,7 +1109,7 @@ body.client-styles nav.menu a.item.active span, body.client-styles nav.menu a.it
 .carritoitem {
   position: relative;
   background-color: #EA5C5F;
-  color: #ffffff;
+  color: #ffffff !important;
   border-radius: 15px;
   display: flex;
   align-items: center;
@@ -1151,16 +1178,6 @@ input::placeholder {
   margin-right: 0;
 }
 
-.btn-primary-client {
-  color: #ffffff !important;
-  background-color: #f0898b !important;
-  border-color: #f0898b !important;
-}
-.btn-primary-client:hover {
-  background-color: #EA5C5F !important;
-  border-color: #EA5C5F !important;
-}
-
 .rounded-top-25 {
   border-top-left-radius: 25px !important;
   border-top-right-radius: 25px !important;
@@ -1223,6 +1240,25 @@ input::placeholder {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.form-check-input.check-client:checked {
+  background-color: #EA5C5F !important;
+  border-color: #EA5C5F !important;
+}
+
+.form-check-lg {
+  display: flex;
+  align-items: center;
+}
+.form-check-lg input {
+  width: 1.5rem;
+  height: 1.5rem;
+  float: none !important;
+}
+.form-check-lg label {
+  margin-left: 5px;
+  margin-top: 4px;
 }
 
 /*!

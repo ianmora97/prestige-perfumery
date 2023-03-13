@@ -947,6 +947,17 @@ table.dataTable>tbody>tr.child{
 }
 
 // ? ======================================== CLIENT CUSTOM CSS ========================================
+.crimson-pro{
+    font-family: 'Crimson Pro', serif !important;
+    font-weight: 400 !important;
+}
+
+.btn-primary-client{
+    color: $light !important;
+    &:hover, &:focus, &:active{
+        color: $light !important;
+    }
+}
 
 body.client-styles{
     font-family: 'Lexend', sans-serif !important;
@@ -961,6 +972,18 @@ body.client-styles{
             color: $primary-client !important;
             text-decoration: none !important;
         }
+        &.text-light{
+            color: $light !important;
+            &:hover, &:focus, &:active{
+                color: $light !important;
+                font-weight: 500;
+            }
+        }
+    }
+
+    ::selection{
+        background-color: lighten($primary-client, 20%) !important;
+        color: $light !important;
     }
 
     .main-client{
@@ -996,12 +1019,12 @@ body.client-styles{
                 color: $gray-100;
             }
             i{
-                font-size: 1.2rem;
+                font-size: 1rem;
                 margin-bottom: 3px;
             }
             span{
                 font-weight: 500;
-                font-size: 0.75rem;
+                font-size: 0.65rem;
             }
             &:active, &:focus{
                 background-color: rgba(0,0,0,0.1);
@@ -1024,6 +1047,9 @@ body.client-styles{
 }
 @media (min-width: 768px) {
     body.client-styles{
+        .main-client{
+            padding-bottom: 0px;
+        }
         .searchTopMobile{
             display: none !important;
         }
@@ -1090,7 +1116,7 @@ body.client-styles{
 .carritoitem{
     position: relative;
     background-color: $primary-client;
-    color: $light;
+    color: $light !important;
     border-radius: 15px;
     display: flex;
     align-items: center;
@@ -1156,15 +1182,7 @@ input::placeholder {
         }
     }
 }
-.btn-primary-client{
-    color: #ffffff !important;
-    background-color: lighten($primary-client, 10%) !important;
-    border-color: lighten($primary-client, 10%) !important;
-    &:hover{
-        background-color: $primary-client !important;
-        border-color: $primary-client !important;
-    }
-}
+
 .rounded-top-25{
     border-top-left-radius: 25px !important;
     border-top-right-radius: 25px !important;
@@ -1220,5 +1238,22 @@ $modal-fade-transform: scale3d(0,0,0);
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+}
+.form-check-input.check-client:checked{
+    background-color: $primary-client !important;
+    border-color: $primary-client !important;
+}
+.form-check-lg{
+    display: flex;
+    align-items: center;
+    input{
+        width: 1.5rem;
+        height: 1.5rem;
+        float: none !important;
+    }
+    label{
+        margin-left: 5px;
+        margin-top: 4px;
     }
 }

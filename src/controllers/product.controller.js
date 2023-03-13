@@ -15,11 +15,19 @@ module.exports = {
                 offset: parseInt(req.query.offset) || 0,
                 limit: parseInt(req.query.limit) || 10,
                 category: req.query.category || "",
-                brand: req.query.brand || "" 
+                brand: req.query.brand || "",
+                search: req.query.search || ""
             };
-            Product.getAllQuery(data,(result) => {
-                res.status(result.status).json(result);
-            });
+            if(req.query.search){
+                Product.getAllQuerySearch(data,(result) => {
+                    res.status(result.status).json(result);
+                });
+            }else{
+                Product.getAllQuery(data,(result) => {
+                    res.status(result.status).json(result);
+                });
+            }
+            
         }else{
             Product.getAll((result) => {
                 res.status(result.status).json(result.data);

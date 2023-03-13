@@ -14,7 +14,6 @@ function getHombres(){
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
-        console.log(result);
         fillHombres(result.data);
     }, (error) => {
         console.log(error);
@@ -59,9 +58,8 @@ function fillHombres(data){
                         <span class="fw-bold">${e.name}</span> 
                         <small class="d-block fw-light">by ${e.brand}</small>
                     </h5>
-                    <small class="text-${e.stock > 0 ? "success" : "danger"} d-block">${e.stock > 0 ? "Disponible": "Out of Stock"}</small>
                     <div class="d-flex justify-content-start align-items-center gap-2">
-                        <p class="text-primary-client lead fw-bold m-0">${precio} </p> 
+                        <p class=" lead fw-bold m-0">${precio} </p> 
                         ${desc}
                     </div>
                 </div>
@@ -86,6 +84,11 @@ function fillMujeres(data){
         }
         precio = parseInt(precio) * (100 - parseInt(e.promotion)) / 100;
         precio = "₡ "+precio.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+        let desc = "";
+        if(e.promotion > 0){
+            desc = `<small class="text-muted small fw-light">${e.promotion}% off</small>`;
+        }
         $("#horizontal-mujeres").append(`
             <div class="card producto bg-gray animate__animated animate__fadeInLeft" style="width: 250px; animation-delay:${(i * 50)+700}ms;" data-event="${e.id}">
                 <img src="${e.image}" class="card-img-top" alt="Perfume">
@@ -94,8 +97,10 @@ function fillMujeres(data){
                         <span class="fw-bold">${e.name}</span> 
                         <small class="d-block fw-light">by ${e.brand}</small>
                     </h5>
-                    <small class="text-${e.stock > 0 ? "success" : "danger"} d-block">${e.stock > 0 ? "Disponible": "Out of Stock"}</small>
-                    <p class="text-primary-client lead fw-bold m-0">${precio}</p>
+                    <div class="d-flex justify-content-start align-items-center gap-2">
+                        <p class=" lead fw-bold m-0">${precio} </p> 
+                        ${desc}
+                    </div>
                 </div>
             </div>
         `);
