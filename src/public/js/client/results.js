@@ -8,9 +8,15 @@ async function bringData(){
     onSearch();
 }
 function onSearch(){
-    $("[data-input='barraBuscar']").on('keypress', (e) => {
+    $("[data-input='barraBuscar']").on('keyup', (e) => {
         if(e.keyCode == 13){
             let search = $("[data-input='barraBuscar']").val();
+            window.location.href = `/productos/result?search=${search}`;
+        }
+    });
+    $("[data-input='barraBuscarmobile']").on('keyup', (e) => {
+        if(e.keyCode == 13){
+            let search = $("[data-input='barraBuscarmobile']").val();
             window.location.href = `/productos/result?search=${search}`;
         }
     });
