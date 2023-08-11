@@ -61,10 +61,6 @@ const Product = mysqlcon.define('t_product',{
         type: DataTypes.STRING,
         allowNull: false
     },
-    bodega:{
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
     rating:{
         type: DataTypes.FLOAT,
         allowNull: false,
@@ -283,9 +279,7 @@ exports.create = async (body, resolve) => {
         notification: body.notification,
         promotion: body.promotion,
         cantidad: body.cantidad,
-        barcode: body.barcode,
-        bodega: body.bodega
-
+        barcode: body.barcode
     }).then((product) => {
         resolve({
             status: 200,
@@ -311,8 +305,7 @@ exports.update = async (body, resolve) => {
         notification: body.notification,
         promotion: body.promotion,
         cantidad: body.cantidad,
-        barcode: body.barcode,
-        bodega: body.bodega
+        barcode: body.barcode
     }, {
         where: {
             id: body.id

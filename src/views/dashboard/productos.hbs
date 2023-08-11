@@ -32,7 +32,7 @@
                 role="tab" aria-controls="nav-agregar" aria-selected="false"><i class="fa-solid fa-plus"></i> Agregar</button>
         </div>
     </nav>
-    <div class="tab-content" id="nav-tabContent">
+    <div class="tab-content mb-5" id="nav-tabContent">
         <div class="tab-pane fade show active" id="nav-list" role="tabpanel" aria-labelledby="nav-list-tab" tabindex="0">
             <div class="bg-white rounded-15 shadow-custom py-3 mx-3 animate__animated animate__fadeIn mb-0 ">
                 <div class="row mx-0 px-3 mb-3">
@@ -97,13 +97,6 @@
                     
                 </div>
             </div>
-            <div class="mx-3 mt-3">
-                <div class="bg-white rounded-15 shadow-custom p-3 animate__animated animate__fadeIn mb-5" style="animation-delay: 500ms;">
-                    <h3 class="fw-bold">Bodegas</h3>
-                    <hr>
-                    <div class="row mx-0 g-3" id="card-bodegas-items"></div>
-                </div>
-            </div>
         </div>
         <div class="tab-pane fade" id="nav-agregar" role="tabpanel" aria-labelledby="nav-agregar-tab" tabindex="0">
             <div class="bg-white rounded-15 shadow-custom py-3 mx-3 px-3 animate__animated animate__fadeIn mb-5">
@@ -121,17 +114,21 @@
                             <input type="text" class="form-control" id="add-type" placeholder="Tipo">
                         </div>
                         <div class="row mx-0 g-0">
+                            <div class="col-sm-12 pe-2 mb-4">
+                                <label for="add-precio1" class="form-label fw-bold">Precio General</label>
+                                <input type="number" class="form-control" min="1" minlength="1" id="add-preciogeneral" placeholder="Precio del General del Producto">
+                            </div>
                             <div class="col-sm-4 pe-2 mb-4">
                                 <label for="add-precio1" class="form-label fw-bold">Precio A <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-1" role="button"></i></label>
-                                <input type="number" class="form-control" min="1" minlength="1" id="add-precio1" placeholder="Precio del producto...">
+                                <input type="number" class="form-control" min="1" minlength="1" id="add-precio1" placeholder="Precio...">
                             </div>
                             <div class="col-sm-4 pe-2">
                                 <label for="add-precio2" class="form-label fw-bold">Precio B <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-2" role="button"></i></label>
-                                <input type="number" class="form-control" min="1" minlength="1" id="add-precio2" placeholder="Precio del producto...">
+                                <input type="number" class="form-control" min="1" minlength="1" id="add-precio2" placeholder="Precio...">
                             </div>
                             <div class="col-sm-4">
                                 <label for="add-precio3" class="form-label fw-bold">Precio C <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-3" role="button"></i></label>
-                                <input type="number" class="form-control" min="1" minlength="1" id="add-precio3" placeholder="Precio del producto...">
+                                <input type="number" class="form-control" min="1" minlength="1" id="add-precio3" placeholder="Precio...">
                             </div>
                         </div>
                         <div class="row mx-0 g-0 mb-3">
@@ -215,48 +212,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalBodegaAdd" tabindex="-1" aria-labelledby="modalBodegaAddLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered ">
-        <div class="modal-content ">
-            <div class="modal-header text-bg-dark pb-2">
-                <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-warehouse text-secondary"></i> Bodega</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-2">
-                    <label for="add-bodega-name" class="form-label fw-bold">Nombre</label>
-                    <input type="text" class="form-control" name="add-bodega-name" id="add-bodega-name" placeholder="Nombre de la bodega">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-white btn-lg" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" onclick="agregarBodega()">Agregar</button>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="modal fade" id="modalBodegaEdit" tabindex="-1" aria-labelledby="modalBodegaEditLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered ">
-        <div class="modal-content ">
-            <div class="modal-header text-bg-dark pb-2">
-                <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-warehouse text-secondary"></i> Bodega <small class="text-muted" id="update-bodega-id"></small></h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-2">
-                    <label for="update-bodega-name" class="form-label fw-bold">Nombre</label>
-                    <input type="text" class="form-control" name="update-bodega-name" id="update-bodega-name" placeholder="Nombre de la bodega">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-white btn-lg" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-danger" onclick="eliminarBodega()">Eliminar</button>
-                <button type="button" class="btn btn-primary" onclick="actulizarBodega()">Actualizar</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="modal fade" id="escanerModal" tabindex="-1" aria-labelledby="escanerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
@@ -407,7 +363,10 @@
                     </div>
                 </div>
                 <hr>
-                <div class="row mx-0 g-1" id="bodegas-list-update"></div>
+                <div class="row mx-0" id="bodegas-list-update">
+
+                </div>
+                <div id="alertInventarioBodega"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white btn-lg" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> Cerrar</button>
@@ -417,4 +376,5 @@
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
 <script src="/js/admin/productos.js"></script>

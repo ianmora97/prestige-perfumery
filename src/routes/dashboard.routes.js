@@ -27,6 +27,12 @@ router.get('/admin/clientes', isAuthenticatedAdmin, (req, res) => {
     });
 });
 
+router.get('/admin/bodegas', isAuthenticatedAdmin, (req, res) => {
+    getRole(req).then((rol) => {
+        res.render('dashboard/bodegas', {layout: 'dashboard', title: 'Bodegas', menuItem: 'bodegas', rol:rol});
+    });
+});
+
 router.get('/admin/proveedores', isAuthenticatedAdmin, (req, res) => {
     getRole(req).then((rol) => {
         res.render('dashboard/proveedores', {layout: 'dashboard', title: 'Proveedores', menuItem: 'proveedores', rol:rol});

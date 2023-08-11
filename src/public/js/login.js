@@ -9,7 +9,7 @@ function init(){
  */
 function onkeyups(){
     onKeyUp("username", "feedback", 5, {name: true, fb: true}, sendForm);
-    onKeyUp("password", "feedback", 10, {name: true, fb: true}, sendForm);
+    onKeyUp("password", "feedback", 1, {name: true, fb: true}, sendForm);
 }
 /**
  * Adds the click event to the button
@@ -26,11 +26,12 @@ function sendForm(){
     buttonLoader(1);
     var username = $("#username").val();
     var password = $("#password").val();
-    if(!validateForm(username, password)){
-        showError(username, password);
-        buttonLoader(0);
-        return;
-    }
+    // if(!validateForm(username, password)){
+    //     showError(username, password);
+    //     buttonLoader(0);
+    //     return;
+    // }
+    console.log("SI")
     $.ajax({
         type: "POST",
         url: "/login",
@@ -48,6 +49,7 @@ function sendForm(){
             }, 1000);
         });
     }, (err) =>{
+        console.log(err);
         buttonLoader(0);
         if(err.status === 401){
             $("#feedback").html("Invalid username or password.");
@@ -69,7 +71,7 @@ function showError(u,p){
         $("#username").addClass("is-invalid");
         $("#feedback").append("Please enter a valid username.<br>");
     }
-    else if(p === "" || p.length < 10){
+    else if(p === "" || p.length < 1){
         $("#password").addClass("is-invalid");
         $("#feedback").append("Please enter a valid password.");
     }

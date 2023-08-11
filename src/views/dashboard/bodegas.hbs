@@ -1,0 +1,86 @@
+<div id="alert" style="position: absolute; top:10px; left:4%; z-index:9999999;" class="w-90 d-block">
+
+</div>
+<div class="bg-white shadow-custom p-3 animate__animated animate__fadeIn animate__slower row mx-0">
+    <div class="col-md">
+        <nav class="animate__animated animate__fadeIn" style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="/admin/main">Panel</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Bodegas</li>
+            </ol>
+        </nav>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="fw-bold mb-0 animate__animated animate__fadeIn">Bodegas</h2>
+            <div class="d-flex justify-content-end align-items-center">
+            </div>
+        </div>
+        <div class="d-flex justify-content-start align-items-center animate__animated animate__fadeIn">
+            <p class="text-muted small mt-1 mb-0 me-3"><i class="fa-solid fa-clock"></i> Actualizado hace: <span id="lastUpdated" class="text-primary">2 seg</span></p>
+            <p class="text-muted small mt-1 mb-0"><i class="fa-solid fa-warehouse"></i> Bodegas: <span id="totalitems" class="text-primary">20</span></p>
+        </div>
+    </div>
+    <div class="col-md-4 px-1 d-md-flex d-none justify-content-md-end align-items-center mt-3 mt-md-0" id="button-group">
+        <button type="button" class="btn btn-primary" onclick="addNewBodega()"><i class="fa-solid fa-plus"></i> Nueva Bodega</button>
+    </div>
+</div>
+
+<div class="mt-4 mb-2">
+    <div class="mx-3">
+        <div class="bg-white rounded-15 shadow-custom p-3 animate__animated animate__fadeIn mb-2" style="animation-delay: 500ms;">
+            <nav>
+                <div class="nav nav-tabs w-100 border-0" id="nav-tab" role="tablist">
+                    <div class="row mx-0 g-4 w-100" id="card-bodegas-items"></div>
+                </div>
+            </nav>
+        </div>
+        <div class="tab-content" id="nav-tabContent-bodegas">
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalBodegaAdd" tabindex="-1" aria-labelledby="modalBodegaAddLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered ">
+        <div class="modal-content ">
+            <div class="modal-header text-bg-dark pb-2">
+                <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-warehouse text-secondary"></i> Bodega</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    <label for="add-bodega-name" class="form-label fw-bold">Nombre</label>
+                    <input type="text" class="form-control" name="add-bodega-name" id="add-bodega-name" placeholder="Nombre de la bodega">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white btn-lg" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="agregarBodega()">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalBodegaEdit" tabindex="-1" aria-labelledby="modalBodegaEditLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered ">
+        <div class="modal-content ">
+            <div class="modal-header text-bg-dark pb-2">
+                <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-warehouse text-secondary"></i> Bodega <small class="text-muted" id="update-bodega-id"></small></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    <label for="update-bodega-name" class="form-label fw-bold">Nombre</label>
+                    <input type="text" class="form-control" name="update-bodega-name" id="update-bodega-name" placeholder="Nombre de la bodega">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white btn-lg" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-danger" onclick="eliminarBodega()">Eliminar</button>
+                <button type="button" class="btn btn-primary" onclick="actulizarBodega()">Actualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/js/admin/bodegas.js"></script>

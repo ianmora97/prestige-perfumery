@@ -1,5 +1,5 @@
 const mysqlcon = require('../database/mysqlcon');
-const { DataTypes} = require('sequelize');
+const { DataTypes, QueryTypes} = require('sequelize');
 
 const Bodega = mysqlcon.define('t_bodega',{
     id:{
@@ -24,6 +24,36 @@ const Bodega = mysqlcon.define('t_bodega',{
     freezeTableName: true,
 });
 
+exports.getBodegaProductobyProducto = async (data,resolve) => {
+    mysqlcon.query(`select * from t_bodegaProducto where bodega = :bodega and producto = :producto;`, 
+        { 
+            replacements: { 
+                bodega: parseInt(data.bodega) ,
+                producto: parseInt(data.producto)
+            },
+            type: QueryTypes.SELECT 
+        }
+    ).then((result) => {
+        if(result.length != 0){
+            resolve({
+                status: 200,
+                data: result[0]
+            });
+        }else{
+            resolve({
+                status: 200,
+                data: {
+                    cantidad: 0
+                }
+            });
+        }
+    }).catch((error) => {
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+};
 exports.getAll = async (resolve) => {
     Bodega.findAll().then((result) => {
         resolve({

@@ -104,15 +104,18 @@ exports.authenticate = async (username, password, resolve) => {
         {
             replacements: {
                 username: username,
-                password: encrypt(password)
+                password: password
             },
             type: QueryTypes.SELECT
         }
     ).then((result) =>{
+        console.log("result", result)
         resolve({
             status: 200,
             data: result[0]['0']
         });
+    }).catch(e => {
+        console.log(e)
     })
 }
 exports.update = async (user, resolve) => {

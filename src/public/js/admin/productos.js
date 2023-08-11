@@ -18,26 +18,40 @@ const editModal = new bootstrap.Modal('#editModal');
 var modalEscaner = document.getElementById('escanerModal');
 const escanerModal = new bootstrap.Modal(modalEscaner);
 
-// modal for bodega
-var modalBodegaE = document.getElementById('modalBodegaEdit');
-const modalBodegaEdit = new bootstrap.Modal('#modalBodegaEdit');
-
-var modalBodegaA = document.getElementById('modalBodegaAdd');
-const modalBodegaAdd = new bootstrap.Modal('#modalBodegaAdd');
-
-
 function init(){
     formatInputs();
     runTooltips();
     checkRatioFilter();
     imagelinkload();
     brignData();
+    brignDataBodegas();
     onTabsImageAdd();
     eventListeners();
 }
+
+function brignDataBodegas(){
+    $.ajax({
+        url: '/api/bodega/all',
+        method: 'GET',
+        contentType: 'application/json'
+    }).then((result) => {
+        g_bodegas = result;
+    }, (error) => {
+        console.log(error);
+    });
+}
+
 function eventListeners(){
     $("#btn-agregar").on('click', function(){
         agregarProducto();
+    });
+    $("#add-preciogeneral").on('keyup', function(){
+        var precioActual = parseInt($(this).val());
+        const [a, b, c] = [100, 98 ,96];
+
+        $("#add-precio1").val(parseInt(((precioActual * a/100)+"").replace(/\./g, '')).toLocaleString('es-ES'));
+        $("#add-precio2").val(parseInt(((precioActual * b/100)+"").replace(/\./g, '')).toLocaleString('es-ES'));
+        $("#add-precio3").val(parseInt(((precioActual * c/100)+"").replace(/\./g, '')).toLocaleString('es-ES'));
     });
 }
 function openScaner(type){
@@ -167,115 +181,13 @@ function brignData(){
         let a = Math.ceil(totalTime / 1000);
         let t = a == 1 ? a + ' seg' : a + ' segs';
         $("#lastUpdated").html(t);
-        getDataBodega();
         fillStats(result);
         fillProductos(result);
     }, (error) => {
         console.log(error);
     });
 }
-function getDataBodega(){
-    $.ajax({
-        url: '/api/bodega/all',
-        method: 'GET',
-        contentType: 'application/json'
-    }).then((result) => {
-        g_bodegas = result;
-        fillBodegas(result).then(() => {
-            urlListener();
-        });
-    }, (error) => {
-        console.log(error);
-    });
-}
 
-function fillBodegas(data){
-    return new Promise((resolve, reject) => {
-        $("#card-bodegas-items").empty();
-        data.forEach((item) => {
-            addBodegaCard(item);
-            g_bodegasMap.set(item.id, item);
-        });
-        $("#card-bodegas-items").append(`
-            <div class="col-md-2">
-                <div class="card-bodega" onclick="addNewBodega()">
-                    <i class="fa-solid fa-plus fa-2x text-white"></i>
-                </div>
-            </div>
-        `);
-        resolve();
-    });
-}
-function addBodegaCard(e){
-    $("#card-bodegas-items").append(`
-        <div class="col-md-2">
-            <div class="card-bodega" onclick="openUpdateBodega('${e.id}')">
-                <h5 class="fw-bold text-white">${e.nombre}</h5>
-            </div>
-        </div>
-    `);
-}
-function openUpdateBodega(id){
-    let bodega = g_bodegasMap.get(parseInt(id));
-    $("#update-bodega-name").val(bodega.nombre);
-    $("#update-bodega-id").html(bodega.id);
-    
-    modalBodegaEdit.show();
-}
-function actulizarBodega(){
-    let id = $("#update-bodega-id").html();
-    let nombre = $("#update-bodega-name").val();
-    $.ajax({
-        url: '/api/bodega/update',
-        method: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            id: id,
-            nombre: nombre
-        })
-    }).then((result) => {
-        getDataBodega();
-        modalBodegaEdit.hide();
-    }, (error) => {
-        console.log(error);
-    });
-}
-function addNewBodega(){
-    $("#add-bodega-name").val("");
-    modalBodegaAdd.show();
-}
-function agregarBodega(){
-    let nombre = $("#add-bodega-name").val();
-    $.ajax({
-        url: '/api/bodega/add',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            nombre: nombre
-        })
-    }).then((result) => {
-        getDataBodega();
-        modalBodegaAdd.hide();
-    }, (error) => {
-        console.log(error);
-    });
-}
-function eliminarBodega(){
-    let id = $("#update-bodega-id").html();
-    $.ajax({
-        url: '/api/bodega/delete',
-        method: 'DELETE',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            id: id
-        })
-    }).then((result) => {
-        getDataBodega();
-        modalBodegaEdit.hide();
-    }, (error) => {
-        console.log(error);
-    });
-}
 
 function fillStats(data){
     $("#totalitems").html(data.length);
@@ -318,7 +230,7 @@ function openEditModal(uuid){
 
     $("#edit-barcode").val(prod.barcode);
 
-    iterateonBodegas(prod.bodega);
+    iterateonBodegas(g_bodegas, prod.id)
 
     $("#editModalLabel").html(`
         <h5 class="mb-0"><i class="fa-solid fa-box-open text-secondary"></i> Editar Producto<br></h5>
@@ -326,26 +238,33 @@ function openEditModal(uuid){
     `);
     editModal.show();
 }
-function iterateonBodegas(bodegas){
-    let arr = JSON.parse(bodegas); // type: array
+function iterateonBodegas(bodegas, productoid){
+    let arr = bodegas;
     $("#bodegas-list-update").html("");
     g_bodegas.forEach((bodega,i) => {
-        let bodegaName = bodega.nombre;
-        let bodegaId = i;
-        let bodegaStock = 0;
-        arr.forEach((elem) => {
-            if(elem.nombre == bodegaName){
-                bodegaStock = elem.cantidad;
-            }
-        });
-        $("#bodegas-list-update").append(`
-            <div class="col-md">
-                <div class="form-group">
-                    <label class="form-label fw-bold" for="bodega-${bodegaId}">${bodegaName}</label>
-                    <input type="number" class="form-control" placeholder="Cantidad de productos en ${bodegaName}" id="bodega-${bodegaId}" value="${bodegaStock}">
+        axios.get(`/api/bodega/producto/get?bodega=${bodega.id}&producto=${productoid}`)
+        .then(result => {
+            result = result.data;
+
+            let bodegaName = bodega.nombre;
+            let bodegaId = i;
+            let bodegaStock = 0;
+            arr.forEach((elem) => {
+                if(elem.nombre == bodegaName){
+                    bodegaStock = elem.cantidad;
+                }
+            });
+            $("#bodegas-list-update").append(`
+                <div class="col-md">
+                    <div class="form-group">
+                        <label class="form-label fw-bold" for="bodega-${bodegaId}">${bodegaName}</label>
+                        <input type="number" class="form-control" placeholder="Cantidad de productos en ${bodegaName}" 
+                        id="bodega-${bodegaId}" value="${result.cantidad}" 
+                        data-bodega="${bodega.id}" data-producto="${productoid}">
+                    </div>
                 </div>
-            </div>
-        `);
+            `);
+        });
     });
 }
 function updateProduct(){
@@ -374,15 +293,6 @@ function updateProduct(){
 
     let cantidad =  c +" "+ q;
 
-    let bodegas = [];
-    g_bodegas.forEach((bodega,i) => {
-        let cantidad = parseInt($("#bodega-"+i).val());
-        bodegas.push({
-            nombre: bodega.nombre,
-            cantidad: cantidad
-        });
-    });
-
     let data = {
         id: prod.id,
         name: nombre,
@@ -394,7 +304,6 @@ function updateProduct(){
         cantidad: cantidad,
         promotion: promotion,
         filename: image,
-        bodega: JSON.stringify(bodegas),
         price: JSON.stringify({
             price1: price1,
             price2: price2,
@@ -487,14 +396,7 @@ function eliminarProducto(uuid){
 
     
 }
-function urlListener(){
-    let url = new URL(window.location.href);
-    let uuid = url.searchParams.get("uuid");
-    if(uuid != null){
-        openEditModal(uuid);
-    }
-    return;
-}
+
 function fillProductos(data){
     $("#tbody").html("");
     g_data = data;
@@ -632,21 +534,21 @@ function openContextMenu(uuid, element){
     });
 }
 function formatInputs(){
-    $("#add-precio1").on('keyup', function(evt){
+    $("#add-precio1").on('keyup change', function(evt){
         let val = $(this).val();
         let n = val.replace(/\./g, '');
         n = parseInt(n);
         n = n.toLocaleString('es-ES');
         $(this).val(n);
     });
-    $("#add-precio2").on('keyup', function(evt){
+    $("#add-precio2").on('keyup change', function(evt){
         let val = $(this).val();
         let n = val.replace(/\./g, '');
         n = parseInt(n);
         n = n.toLocaleString('es-ES');
         $(this).val(n);
     });
-    $("#add-precio3").on('keyup', function(evt){
+    $("#add-precio3").on('keyup change', function(evt){
         let val = $(this).val();
         let n = val.replace(/\./g, '');
         n = parseInt(n);
@@ -667,14 +569,6 @@ function agregarProducto(){
         price2: price2,
         price3: price3
     });
-    let bodegas = []
-    g_bodegas.forEach(e => {
-        bodegas.push({
-            nombre: e.nombre,
-            cantidad: 0
-        })
-    })
-    let bodega = JSON.stringify(bodegas);
 
     let category = $("#add-categoria").val();
     let notification = parseInt($("#add-aviso").val());
@@ -700,8 +594,7 @@ function agregarProducto(){
                 filename: image,
                 brand: brand,
                 cantidad: cantidad,
-                barcode: barcode,
-                bodega: bodega
+                barcode: barcode
             }),
             contentType: 'application/json'
         }).then((result) => {
