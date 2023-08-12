@@ -1,6 +1,12 @@
 const express = require('express');
 const path = require('path');
-const exphbs = require('express-handlebars');
+const hbs = require('./backend/handlebars/config').instance();
+const bodyParser = require('body-parser');
+const http = require('http');
+const https = require('https');
+var cookieParser = require('cookie-parser')
+const morgan = require('morgan');
+// const {toHttps,cert} = require('./backend/middlewares/security/https');
 
 // Initializations
 const app = express();
@@ -9,59 +15,36 @@ require("dotenv").config();
 // Settings
 app.set('port', process.env.PORT);
 app.set('host', process.env.HOST || '');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'backend/views'));
 
-let hbs = exphbs.create({
-    helpers: {
-        ifCond: function (v1, operator, v2, options) {
-            switch (operator) {
-                case '==':
-                    return (v1 == v2) ? options.fn(this) : options.inverse(this);
-                case '===':
-                    return (v1 === v2) ? options.fn(this) : options.inverse(this);
-                case '<':
-                    return (v1 < v2) ? options.fn(this) : options.inverse(this);
-                case '<=':
-                    return (v1 <= v2) ? options.fn(this) : options.inverse(this);
-                case '>':
-                    return (v1 > v2) ? options.fn(this) : options.inverse(this);
-                case '>=':
-                    return (v1 >= v2) ? options.fn(this) : options.inverse(this);
-                case '&&':
-                    return (v1 && v2) ? options.fn(this) : options.inverse(this);
-                case '||':
-                    return (v1 || v2) ? options.fn(this) : options.inverse(this);
-                default:
-                    return options.inverse(this);
-            }
-        }
-    },
-    defaultLayout: 'main',
-    layoutsDir: path.join(app.get('views'), 'layouts'),
-    partialsDir: path.join(app.get('views'), 'partials'),
-    extname: '.hbs',
-});
-app.engine('.hbs', hbs.engine);
-app.set('view engine', '.hbs');
-
-// Middlewares
-app.use(express.json());
-app.use(express.urlencoded({extended: false}));
-
-//Global variables
-
-// Routes
-app.use(require('./routes/index.routes'));
-app.use(require('./routes/api.routes'));
-app.use(require('./routes/auth.routes'));
-app.use(require('./routes/client.routes'));
-app.use(require('./routes/dashboard.routes'));
-
-
-// Static Files
+// ? Serve Static Files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Server list ener
-app.listen(app.get('port'), () => {
-    console.log(`[OK] Server on port ${app.get('port')}`);
+// ? handlebars
+app.set('view engine', '.hbs');
+app.engine('.hbs', hbs.engine);
+
+// ? Middlewares
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(cookieParser());
+
+// Routes
+app.use(require('./backend/routes/index.routes'));
+app.use(require('./backend/routes/api.routes'));
+app.use(require('./backend/routes/auth.routes'));
+app.use(require('./backend/routes/client.routes'));
+app.use(require('./backend/routes/dashboard.routes'));
+
+// ? Start the server
+http.createServer(app).listen(app.get('port'), () => {
+    console.log(`[OK] SERVER STARTED ON PORT ${app.get('port')}`)
 });
+if(process.env.NODE_ENV === 'prod'){
+    // ? Security and HTTPS
+    app.enable('trust proxy');
+    // app.use(toHttps);
+    https.createServer(cert(), app).listen(443, () => {
+        console.log(`[OK] PRODUCTION SERVER STARTED`);
+    });
+}

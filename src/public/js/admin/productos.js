@@ -85,6 +85,7 @@ function scanBarcode(){
         Quagga.start();
     });
     Quagga.onDetected(function(data){
+        console.log(data.codeResult)
         if(data.codeResult.code){
             if(isSearch){
                 console.log(data.codeResult.code);
@@ -103,29 +104,29 @@ function scanBarcode(){
             escanerModal.hide();
         }
     });
-    Quagga.onProcessed(function(result) {
-        var drawingCtx = Quagga.canvas.ctx.overlay,
-            drawingCanvas = Quagga.canvas.dom.overlay;
+    // Quagga.onProcessed(function(result) {
+    //     var drawingCtx = Quagga.canvas.ctx.overlay,
+    //         drawingCanvas = Quagga.canvas.dom.overlay;
 
-        if (result) {
-            if (result.boxes) {
-                drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute("width")), parseInt(drawingCanvas.getAttribute("height")));
-                result.boxes.filter(function (box) {
-                    return box !== result.box;
-                }).forEach(function (box) {
-                    Quagga.ImageDebug.drawPath(box, {x: 0, y: 1}, drawingCtx, {color: "green", lineWidth: 2});
-                });
-            }
+    //     if (result) {
+    //         if (result.boxes) {
+    //             drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute("width")), parseInt(drawingCanvas.getAttribute("height")));
+    //             result.boxes.filter(function (box) {
+    //                 return box !== result.box;
+    //             }).forEach(function (box) {
+    //                 Quagga.ImageDebug.drawPath(box, {x: 0, y: 1}, drawingCtx, {color: "green", lineWidth: 2});
+    //             });
+    //         }
 
-            if (result.box) {
-                Quagga.ImageDebug.drawPath(result.box, {x: 0, y: 1}, drawingCtx, {color: "#00F", lineWidth: 2});
-            }
+    //         if (result.box) {
+    //             Quagga.ImageDebug.drawPath(result.box, {x: 0, y: 1}, drawingCtx, {color: "#00F", lineWidth: 2});
+    //         }
 
-            if (result.codeResult && result.codeResult.code) {
-                Quagga.ImageDebug.drawPath(result.line, {x: 'x', y: 'y'}, drawingCtx, {color: 'red', lineWidth: 3});
-            }
-        }
-    });
+    //         if (result.codeResult && result.codeResult.code) {
+    //             Quagga.ImageDebug.drawPath(result.line, {x: 'x', y: 'y'}, drawingCtx, {color: 'red', lineWidth: 3});
+    //         }
+    //     }
+    // });
 }
 function onTabsImageAdd(){
     Array.from(document.querySelectorAll('button[data-toggle-add="tab"]'))
@@ -258,8 +259,8 @@ function iterateonBodegas(bodegas, productoid){
                 <div class="col-md">
                     <div class="form-group">
                         <label class="form-label fw-bold" for="bodega-${bodegaId}">${bodegaName}</label>
-                        <input type="number" class="form-control" placeholder="Cantidad de productos en ${bodegaName}" 
-                        id="bodega-${bodegaId}" value="${result.cantidad}" 
+                        <input type="number" class="form-control updateProductoBodega" placeholder="Cantidad de productos en ${bodegaName}" 
+                        id="bodega-${bodegaId}" value="${result.cantidad}"
                         data-bodega="${bodega.id}" data-producto="${productoid}">
                     </div>
                 </div>
@@ -267,8 +268,27 @@ function iterateonBodegas(bodegas, productoid){
         });
     });
 }
+function updateProductoBodega(){
+    let arr = [];
+    $(".updateProductoBodega").each((item,elem)=>{
+        const cant = $(elem).val();
+        const producto = $(elem).data('producto');
+        const bodega = $(elem).data('bodega');
+        arr.push({
+            producto: parseInt(producto),
+            bodega: parseInt(bodega),
+            cantidad: parseInt(cant)
+        });
+    });
+    axios.put(`/api/bodega/producto/update`,{
+        arr
+    }).then(result => {
+    });
+}
 function updateProduct(){
     // #update-modal-uuid
+
+    updateProductoBodega();
     let uuid = $("#update-modal-uuid").html();
     let prod = g_dataMap.get(uuid);
 
@@ -320,13 +340,13 @@ function updateProduct(){
         }).then((result) => {
             reloadData();
             editModal.hide();
-            Swal.fire({
-                title: 'Producto actualizado',
-                text: 'El producto ha sido actualizado correctamente',
-                icon: 'success',
-                showConfirmButton: false,
-                timer: 1500
-            });
+            Toastify({
+                text: "Producto Actualizado",
+                duration: 3000,
+                className: "gray-light text-dark",
+                gravity: "top", // `top` or `bottom`
+                position: "right", // `left`, `center` or `right`
+            }).showToast();
         });
     });
 
@@ -452,8 +472,8 @@ function addRow(e){
                 
                 <td class="">
                     <div class="d-flex justify-content-center align-items-center">
-                        <button type="button" class="btn btn-outline-primary me-2" style="width: max-content; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="openEditModal('${e.uuid}')"><i class="fa-solid fa-pen"></i> Editar</button>
-                        <button type="button" class="btn btn-danger" style="width: max-content; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="eliminarProducto('${e.uuid}')"><i class="fa-solid fa-trash-can"></i></button>
+                        <button type="button" class="btn btn-dark-100 me-2" style="width: max-content; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="openEditModal('${e.uuid}')"><i class="fa-solid fa-pen"></i></button>
+                        <button type="button" class="btn btn-dark" style="width: max-content; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" onclick="eliminarProducto('${e.uuid}')"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                 </td>
             </tr>
@@ -599,6 +619,7 @@ function agregarProducto(){
             contentType: 'application/json'
         }).then((result) => {
             if(result.status === 200){
+                createBodegaProducto(result.data);
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -624,6 +645,17 @@ function agregarProducto(){
     }).catch(e=>{
         createAlert('danger', 'Error', 'Todos los campos son obligatorios.');
     });
+}
+function createBodegaProducto(data){
+    let arr = [];
+    g_bodegas.forEach(e=>{
+        arr.push({
+            producto: data.id,
+            bodega: e.id,
+            cantidad: 0
+        })
+    });
+    axios.post('/api/bodega/producto/add',{arr});
 }
 function verifyInputs(){
     return new Promise((resolve, reject) => {
@@ -673,14 +705,18 @@ function moveToList(){
 function clearInputs(){
     $("#add-name").val('');
     $("#add-marca").val('');
+    $("#add-type").val('');
     $("#add-stock").val('');
     $("#add-precio1").val('');
     $("#add-precio2").val('');
     $("#add-precio3").val('');
-    $("#add-categoria").val('');
+    $("#add-categoria").val('unisex');
     $("#add-stock").val('');
     $("#add-aviso").val('');
     $("#add-cantidad").val('');
+    $("#add-imagelink").val('');
+    $("#imagepreviewlink").empty();
+    $("#barcodeResult").empty();
 }
 function runTooltips(){
     tippy('.aviso-tooltip', {

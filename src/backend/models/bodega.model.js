@@ -1,5 +1,5 @@
 const mysqlcon = require('../database/mysqlcon');
-const { DataTypes, QueryTypes} = require('sequelize');
+const { DataTypes, QueryTypes, Op} = require('sequelize');
 
 const Bodega = mysqlcon.define('t_bodega',{
     id:{
@@ -23,30 +23,75 @@ const Bodega = mysqlcon.define('t_bodega',{
     timestamps: false,
     freezeTableName: true,
 });
+const BodegaProducto = mysqlcon.define('t_bodegaProducto',{
+    id:{
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    producto:{
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    bodega:{
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    cantidad:{
+        type: DataTypes.INTEGER,
+        allowNull: false
+    }
+},{
+    timestamps: false,
+    freezeTableName: true,
+});
 
 exports.getBodegaProductobyProducto = async (data,resolve) => {
-    mysqlcon.query(`select * from t_bodegaProducto where bodega = :bodega and producto = :producto;`, 
-        { 
-            replacements: { 
-                bodega: parseInt(data.bodega) ,
-                producto: parseInt(data.producto)
-            },
-            type: QueryTypes.SELECT 
+    BodegaProducto.findOne({
+        where:{
+            [Op.and]:[
+                {producto: parseInt(data.producto)},
+                {bodega: parseInt(data.bodega)},
+            ]
         }
-    ).then((result) => {
-        if(result.length != 0){
-            resolve({
-                status: 200,
-                data: result[0]
-            });
-        }else{
-            resolve({
-                status: 200,
-                data: {
-                    cantidad: 0
-                }
-            });
+    }).then((result) => {
+        resolve({
+            status: 200,
+            data: result
+        });
+    }).catch((error) => {
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+};
+exports.updateBodegaProducto = async (data,resolve) => {
+    BodegaProducto.update({ cantidad: parseInt(data.cantidad) }, {
+        where: {
+            [Op.and]:[
+                {producto: parseInt(data.producto)},
+                {bodega: parseInt(data.bodega)},
+            ]
         }
+    }).then((result) => {
+        resolve({
+            status: 200,
+            data: result
+        });
+    }).catch((error) => {
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+};
+exports.createBodegaProducto = async (data,resolve) => {
+    BodegaProducto.bulkCreate(data.arr).then((result) => {
+        resolve({
+            status: 200,
+            data: result
+        });
     }).catch((error) => {
         resolve({
             status: 500,

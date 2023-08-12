@@ -1,0 +1,100 @@
+<div id="sidebar">
+    <div class="d-flex justify-content-center align-items-start py-1 bg-dark-900 overflow-hidden w-100" id="logo">
+        <img src="/img/logo.png" alt="Logo">
+    </div>
+    <div class="d-flex flex-column justify-content-start px-3 py-2" style="height: calc(100vh - 60px); overflow-y:auto;">
+        <spano class="small text-gray-900 px-2 my-2">Main</spano>
+        <a type="button" class="btn btn-sidebar mb-3" id="btn-panel"
+        data-type="menu-btn"
+        style="animation-delay: .1s;"
+        href="/admin/main">
+            <i class="fa-solid fa-house text-white"></i>
+            <spano>Panel</spano>
+        </a>
+        <a type="button" class="btn btn-sidebar mb-3" id="btn-reportes" 
+        data-type="menu-btn" 
+        style="animation-delay: .2s;" 
+        href="/admin/reportes">
+            <i class="fa-solid fa-chart-simple text-white"></i>
+            <spano>Reportes</spano>
+        </a>
+
+        <spano class="small text-gray-900 px-2 mb-2 mt-4">Invetario</spano>
+        <a type="button" class="btn btn-sidebar mb-3" id="btn-productos" 
+        data-type="menu-btn"
+        style="animation-delay: .3s;"
+        href="/admin/productos">
+            <i class="fa-solid fa-spray-can-sparkles text-white"></i>
+            <spano>Productos</spano>
+        </a>
+        <a type="button" class="btn btn-sidebar mb-3" id="btn-bodegas" 
+        data-type="menu-btn"
+        style="animation-delay: .4s;"
+        href="/admin/bodegas">
+            <i class="fa-solid fa-warehouse text-white"></i>
+            <spano>Bodegas</spano>
+        </a>
+        <a type="button" class="btn btn-sidebar mb-3" id="btn-pedidos" 
+        data-type="menu-btn"
+        style="animation-delay: .5s;"
+        href="/admin/pedidos">
+            <i class="fa-solid fa-basket-shopping text-white"></i>
+            <spano>Pedidos</spano>
+        </a>
+        <a type="button" class="btn btn-sidebar mb-3" id="btn-proveedores" 
+        data-type="menu-btn" 
+        style="animation-delay: .6s;" 
+        href="/admin/proveedores">
+            <i class="fa-solid fa-truck text-white"></i>
+            <spano>Proveedor</spano>
+        </a>
+
+        <spano class="small text-gray-900 px-2 mb-2 mt-4">Usuarios</spano>
+        <a type="button" class="btn btn-sidebar mb-3" id="btn-clientes" 
+        data-type="menu-btn" 
+        style="animation-delay: .7s;" 
+        href="/admin/clientes">
+            <i class="fa-solid fa-user text-white"></i>
+            <spano>Clientes</spano>
+        </a>
+        
+        {{#ifCond rol '>=' 4}}
+            <a type="button" class="btn btn-sidebar mb-3" id="btn-administrador" 
+            data-type="menu-btn" 
+            style="animation-delay: .8s;" 
+            href="/admin/administrador">
+                <i class="fa-solid fa-user-shield text-white"></i>
+                <spano>Admin</spano>
+            </a>
+        {{/ifCond}}
+       
+        <div class="mt-auto mb-3">
+            <button type="button" class="btn btn-transparent w-100 text-center" id="logoutbutton">
+                <i class="fa-solid fa-arrow-right-from-bracket text-light"></i> <spano class="text-light">Salir</spano>
+            </button>
+        </div>
+    </div>
+</div>
+<script>
+    var windowButton = "{{ menuItem }}";
+    $(`#btn-${windowButton}`).addClass("active");
+
+    $(document).ready(function(){
+        $('[data-type="menu-btn"]').each(function(){
+            let btnid = $(this).attr('id');
+            animateCSS(`#${btnid}`, 'fadeInLeft');
+        });
+        $("#logoutbutton").on('click', function(){
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            function delete_cookie(name) {
+                document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            }
+            delete_cookie('token');
+            delete_cookie('user');
+            window.location.href = "/admin/logout";
+        });
+    });
+
+    
+</script>

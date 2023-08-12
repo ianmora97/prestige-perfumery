@@ -1,0 +1,104 @@
+
+$primary: #ff6c4b;
+// $primary: #4a91f4;
+// $primary: #857EEF;
+// $primary: #D4F265;
+$primary-light: lighten($primary, 10%);
+
+
+$secondary: #4a91f4;
+$success: #38c172;
+$danger: #f26262;
+$warning: #f6993f;
+
+$background: #191827;
+$background-dark: #070011;
+$background-light: #454367;
+
+$dark: $background;
+$dark-900: $background-dark;
+$dark-100: $background-light;
+$gray-900: #777777;
+$gray-100: #c0c0c0;
+$gray-light: #e4e4e4;
+$gray: #f3f4f6;
+$light: #ffffff;
+
+$pink: #ffb8d6;
+$green: #77cdb0;
+$orange: #f6ad55;
+$blue: #879ce1;
+$red: #f57979;
+
+$theme-colors: (
+    "primary": $primary,
+    "secondary": $secondary,
+    "success": $success,
+    "danger": $danger,
+    "warning": $warning,
+    "dark": $dark,
+    "dark-900": $dark-900,
+    "dark-100": $dark-100,
+    "gray": $gray,
+    "gray-900": $gray-900,
+    "gray-100": $gray-100,
+    "gray-light": $gray-light,
+    "light": $light,
+    "pink": $pink,
+    "green": $green,
+    "orange": $orange,
+    "blue": $blue,
+    "red": $red
+);
+
+/**
+ * Grid Breakpoinst
+*/
+$grid-breakpoints: (
+    xs: 0,
+    sm: 650px,
+    md: 1000px,
+    lg: 1280px,
+    xl: 1400px,
+    xxl: 2000px
+);
+
+/**
+ * Fonts
+*/
+$font-family-base: 'Inter', sans-serif;
+$font-size-base: .85rem;
+$font-weight-base: 400;
+
+
+/**
+ * body
+*/
+$body-bg: $gray;
+$body-color: $dark;
+$modal-content-bg: $light;
+
+img{
+    user-select: none !important;
+}
+::selection {
+    background-color: lighten($primary, 20%) !important;
+    color: $light !important;
+}
+/**
+* widths
+*/
+
+@for $i from 1 through 10 {
+    .w-#{$i}0 {
+      width: (10 * $i) * 1%;
+    }
+}
+
+
+/**
+ * Gradients
+*/
+.bg-dark-gradient{
+    background: linear-gradient(160deg, rgba(0,0,0,1) 0%, $dark 100%);
+}

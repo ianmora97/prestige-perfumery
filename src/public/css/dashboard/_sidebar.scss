@@ -1,0 +1,142 @@
+
+/**
+ * Sidebar
+*/
+$sidebar-width: 175px;
+$header-height: 60px;
+#sidebar{
+    width: $sidebar-width;
+    min-width: $sidebar-width;
+    position: sticky;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 999;
+    background-color: $dark;
+    transition: all 0.3s ease;
+    &.toggle{
+        #logo{
+            width: 90%;
+        }
+        spano{
+            display: none;
+        }
+        width: 80px;
+    }
+}
+#btnSidebarToggle{
+    width: 30px;
+    height: 30px;
+    background-color: $dark-900;
+    color: $light;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    &:hover{
+        background-color: $primary;
+        color: $light;
+    }
+    &.toggle{
+        transform: rotate(180deg);
+    }
+}
+#logo{
+    height: $header-height;
+    img{
+        width: 60%;
+    }
+}
+#header{
+    height: $header-height !important;
+    min-height: $header-height !important;
+    position: sticky;
+    top: 0;
+    right: 0;
+    width: 100%;
+    z-index: 999;
+}
+#wrapper{
+    overflow-x: hidden;
+    max-height: 100dvh;
+}
+#page-content-wrapper{
+    display: flex;
+    flex-direction: column;
+    min-width: calc(100vw - $sidebar-width);
+    position: relative;
+    transition: all 0.2s ease;
+    &.toggle{
+        width: calc(100vw - 80px);
+    }
+}
+.backdropSidebarMobile{
+    display: none;
+}
+// hide sidebar on mobile
+@media (max-width: 780px) {
+    #sidebar{
+        margin-left: -$sidebar-width;
+        &.toggle{
+            margin-left: 0;
+        }
+    }
+    .backdropSidebarMobile:not(.toggle){
+        display: block;
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(20px);
+        top: 0;
+        left: 0;
+    }
+    #page-content-wrapper{
+        min-width: 100vw;
+        height: 100vh;
+    }
+    #slides-container{
+        width: 200vw;
+    }
+}
+
+
+// ? LINK BUTTONS
+.btn-sidebar{
+    width: 100%;
+    display: flex !important;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    border: none !important;
+    padding: 0.5rem 1rem !important;
+    text-align: left !important;
+    transition: all .2s ease-in !important;
+    background-color: transparent !important;
+    overflow: hidden;
+    &.active{
+        background-color: $primary !important;
+        
+        spano{
+            color: #e5e5e5 !important;
+        }
+    }
+    img{
+        width: 30px;
+    }
+    spano{
+        transition: all .2s ease-in !important;
+        color: #b9b9b9;
+    }
+    &:hover:not(.active){
+        background-color: $dark-100 !important;
+        spano{
+            transition: all .2s ease-in !important;
+            color: #e0e0e0;
+        }
+    }
+}

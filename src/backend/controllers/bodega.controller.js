@@ -14,6 +14,24 @@ module.exports = {
             res.status(result.status).json(result.data)
         });
     },
+    updateBodegaProducto: (req,res) => {
+        const {arr} = req.body;
+        let n1 = arr[0];
+        Bodega.updateBodegaProducto(n1,result => {
+        });
+        let n2 = arr[1];
+        Bodega.updateBodegaProducto(n2,result => {
+        });
+        let n3 = arr[2];
+        Bodega.updateBodegaProducto(n3,result => {
+        });
+        res.send('200');
+    },
+    createBodegaProducto: (req, res) => {
+        Bodega.createBodegaProducto(req.body, (result) => {
+            res.status(result.status).json(result);
+        });
+    },
     create: (req, res) => {
         Bodega.create(req.body, (result) => {
             who(req).then((user) => {

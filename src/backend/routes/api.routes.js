@@ -34,6 +34,8 @@ const BODEGA = require('../controllers/bodega.controller');
 router.get('/api/bodega/all', isAuthenticatedAdmin, BODEGA.getAll); // ! Authentication required for admin
 router.get('/api/bodega/producto/get', isAuthenticatedAdmin, BODEGA.getBodegaProductobyProducto); // ! Authentication required for admin
 router.post('/api/bodega/add', isAuthenticatedAdmin, BODEGA.create); // ! Authentication required for admin
+router.post('/api/bodega/producto/add', isAuthenticatedAdmin, BODEGA.createBodegaProducto); // ! Authentication required for admin
+router.put('/api/bodega/producto/update', isAuthenticatedAdmin, BODEGA.updateBodegaProducto); // ! Authentication required for admin
 router.put('/api/bodega/update', isAuthenticatedAdmin, BODEGA.update); // ! Authentication required for admin
 router.delete('/api/bodega/delete', isAuthenticatedAdmin, BODEGA.delete); // ! Authentication required for admin
 /**

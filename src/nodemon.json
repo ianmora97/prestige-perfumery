@@ -1,8 +1,0 @@
-{
-    "verbose": false,
-    "ignore": [
-        "public/js/*",
-        "*.json"
-    ],
-    "ext": "js"
-}
