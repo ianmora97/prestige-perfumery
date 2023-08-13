@@ -46,6 +46,20 @@ const BodegaProducto = mysqlcon.define('t_bodegaProducto',{
     freezeTableName: true,
 });
 
+exports.getBodegaProducto = async (resolve) => {
+    BodegaProducto.findAll()
+    .then((result) => {
+        resolve({
+            status: 200,
+            data: result
+        });
+    }).catch((error) => {
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+};
 exports.getBodegaProductobyProducto = async (data,resolve) => {
     BodegaProducto.findOne({
         where:{

@@ -95,6 +95,7 @@ img {
 }
 #sidebar.toggle {
   width: 80px;
+  min-width: 80px;
 }
 #sidebar.toggle #logo {
   width: 90%;
@@ -165,6 +166,7 @@ img {
   }
   #sidebar.toggle {
     margin-left: 0;
+    min-width: 0;
   }
   .backdropSidebarMobile:not(.toggle) {
     display: block;
@@ -999,7 +1001,15 @@ table.dataTable > tbody > tr.selected > * {
 }
 
 table.dataTable > tbody > tr.child {
-  background-color: #f0f3ff !important;
+  background-color: #ffffff !important;
+}
+
+.page-item:not(.active) .page-link {
+  background-color: #ffffff !important;
+  box-shadow: none !important;
+}
+.page-item:not(.active) .page-link:focus, .page-item:not(.active) .page-link:hover {
+  box-shadow: none !important;
 }
 
 /*!
@@ -2875,7 +2885,7 @@ progress {
   --bs-table-color-state: initial;
   --bs-table-bg-state: initial;
   --bs-table-color: var(--bs-body-color);
-  --bs-table-bg: var(--bs-body-bg);
+  --bs-table-bg: #ffffff;
   --bs-table-border-color: var(--bs-border-color);
   --bs-table-accent-bg: transparent;
   --bs-table-striped-color: var(--bs-body-color);

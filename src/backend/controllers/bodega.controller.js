@@ -9,6 +9,11 @@ module.exports = {
             res.status(result.status).json(result.data);
         });
     },
+    getBodegaProducto: (req, res) => {
+        Bodega.getBodegaProducto((result) => {
+            res.status(result.status).json(result.data);
+        });
+    },
     getBodegaProductobyProducto: (req,res) => {
         Bodega.getBodegaProductobyProducto(req.query,result => {
             res.status(result.status).json(result.data)

@@ -234,8 +234,8 @@ function openEditModal(uuid){
     iterateonBodegas(g_bodegas, prod.id)
 
     $("#editModalLabel").html(`
-        <h5 class="mb-0"><i class="fa-solid fa-box-open text-secondary"></i> Editar Producto<br></h5>
-        <small class="text-muted" id="update-modal-uuid">${prod.uuid}</small>
+        <h5 class="mb-0"><i class="fa-solid fa-box-open text-primary"></i> Editar Producto<br></h5>
+        <small class="text-dark-100" id="update-modal-uuid">${prod.uuid}</small>
     `);
     editModal.show();
 }
@@ -599,6 +599,10 @@ function agregarProducto(){
     let cantidad =  c +" "+ q;
     let image = $("#add-imagelink").val();
     let barcode = $("#barcodeResultText").text();
+
+    if(barcode == ""){
+        barcode = $("#add-codigobarrasManual").val();
+    }
     
     verifyInputs().then(e =>{
         $.ajax({
@@ -715,6 +719,7 @@ function clearInputs(){
     $("#add-aviso").val('');
     $("#add-cantidad").val('');
     $("#add-imagelink").val('');
+    $("#add-codigobarrasManual").val('');
     $("#imagepreviewlink").empty();
     $("#barcodeResult").empty();
 }
@@ -772,18 +777,18 @@ function checkRatioFilter(){
 function datatables(){
     $("#table").DataTable({
         responsive: true,
-        select: true,
+        select: false,
         keys: false,
         dom: 'Bfrtip',
         buttons: [
             {
                 extend: 'pdf',
-                text: '<i class="fa-solid fa-print text-secondary"></i> Exportar PDF',
+                text: '<i class="fa-solid fa-print text-dark"></i> Exportar PDF',
                 titleAttr: 'Exportar a PDF',
                 className: 'btn btn-white me-3',
             },{
                 extend: 'excel',
-                text: '<i class="fa-solid fa-file-excel text-secondary"></i> Exportar Excel',
+                text: '<i class="fa-solid fa-file-excel text-dark"></i> Exportar Excel',
                 titleAttr: 'Exportar a Excel',
                 className: 'btn btn-white',
             },
