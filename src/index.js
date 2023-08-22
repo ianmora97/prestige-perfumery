@@ -7,7 +7,7 @@ const https = require('https');
 var cookieParser = require('cookie-parser')
 const morgan = require('morgan');
 const {stream,customLog,logErrors,logErrorsMiddleware} = require('./backend/helpers/logger');
-// const {toHttps,cert} = require('./backend/middlewares/security/https');
+const {toHttps,cert} = require('./backend/middlewares/https');
 
 // Initializations
 const app = express();
@@ -49,7 +49,7 @@ http.createServer(app).listen(app.get('port'), () => {
 if(process.env.NODE_ENV === 'prod'){
     // ? Security and HTTPS
     app.enable('trust proxy');
-    // app.use(toHttps);
+    app.use(toHttps);
     https.createServer(cert(), app).listen(443, () => {
         console.log(`[OK] PRODUCTION SERVER STARTED`);
     });
