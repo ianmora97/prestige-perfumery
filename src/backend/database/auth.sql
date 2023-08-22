@@ -1,19 +1,6 @@
 CREATE DATABASE  IF NOT EXISTS `perfume` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `perfume`;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `addAdmin`(
-in p_code varchar(40), 
-in p_uuid varchar(45), 
-in p_name varchar(255),
-in p_rol INT, 
-in p_rol_name varchar(100),
-in p_username varchar(85),
-in p_pass varchar(255)
-)
-BEGIN
-	insert into t_user (code,uuid,name,rol,rol_name,username,password) values(p_code,p_uuid,p_name,p_rol,p_rol_name,p_username, sha1(p_pass));
-END ;;
-DELIMITER ;
+
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `authAdmin`(in p_user varchar(85), in p_pass varchar(255))
 BEGIN
