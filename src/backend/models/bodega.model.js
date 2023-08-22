@@ -69,10 +69,33 @@ exports.getBodegaProductobyProducto = async (data,resolve) => {
             ]
         }
     }).then((result) => {
-        resolve({
-            status: 200,
-            data: result
-        });
+        if(result){
+            resolve({
+                status: 200,
+                data: result
+            });
+        }else{
+            Bodega.findOne({
+                where:{
+                    id: parseInt(data.bodega),
+                },
+                attributes: ['id','nombre']
+            }).then((result1) => {
+                resolve({
+                    status: 200,
+                    data:{
+                        id: result1.id,
+                        nombre: result1.nombre,
+                        cantidad: 0
+                    }
+                });
+            }).catch((error) => {
+                resolve({
+                    status: 500,
+                    data: error
+                });
+            });
+        }
     }).catch((error) => {
         resolve({
             status: 500,
@@ -81,24 +104,57 @@ exports.getBodegaProductobyProducto = async (data,resolve) => {
     });
 };
 exports.updateBodegaProducto = async (data,resolve) => {
-    BodegaProducto.update({ cantidad: parseInt(data.cantidad) }, {
-        where: {
+    BodegaProducto.findOne({
+        where:{
             [Op.and]:[
                 {producto: parseInt(data.producto)},
                 {bodega: parseInt(data.bodega)},
             ]
         }
     }).then((result) => {
-        resolve({
-            status: 200,
-            data: result
-        });
-    }).catch((error) => {
-        resolve({
-            status: 500,
-            data: error
-        });
+        if(result){
+            BodegaProducto.update({ cantidad: parseInt(data.cantidad) }, {
+                where: {
+                    [Op.and]:[
+                        {producto: parseInt(data.producto)},
+                        {bodega: parseInt(data.bodega)},
+                    ]
+                }
+            }).then((result) => {
+                resolve({
+                    status: 200,
+                    data: result
+                });
+            }).catch((error) => {
+                resolve({
+                    status: 500,
+                    data: error
+                });
+            });
+        }else{
+            const newItemData = {
+                cantidad: parseInt(data.cantidad),
+                producto: parseInt(data.producto),
+                bodega: parseInt(data.bodega)
+            };
+            BodegaProducto.create(newItemData)
+            .then(result => {
+                // Item creation successful
+                resolve({
+                    status: 201, // 201 Created status code
+                    data: result
+                });
+            })
+            .catch(error => {
+                // Item creation failed
+                resolve({
+                    status: 500, // 500 Internal Server Error status code
+                    data: error
+                });
+            });
+        }
     });
+    
 };
 exports.createBodegaProducto = async (data,resolve) => {
     BodegaProducto.bulkCreate(data.arr).then((result) => {

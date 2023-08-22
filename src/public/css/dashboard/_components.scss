@@ -7,6 +7,11 @@
 }
 
 
+.bg-gradient-card{
+    background: linear-gradient(90deg, #191827 0%, #070011 50%, #19173e 100%);
+}
+
+
 /**
  * Forms
 */
@@ -284,6 +289,12 @@ button{
     }
 }
 
+.btn-xs{
+    padding: 0.2rem 0.3rem !important;
+    font-size: 0.65rem !important;
+}
+
+
 .list-group-noborder > .list-group-item{
     border: none;
 }
@@ -491,6 +502,18 @@ ul.pagination{
     width: 40px !important;
     height: 40px !important;
     background-color: white !important;
+}
+.modal-header.text-bg-dark{
+    background: linear-gradient(90deg, #191827 0%, #070011 50%, #19173e 100%) !important;
+}
+@media (max-width: 1024px) {
+    .modal-dialog{
+        &:is(.modal-xxl, .modal-xl, .modal-lg, .modal-sm){
+            margin: 0 !important;
+            width: 100vw !important;
+            min-width: 100vw !important;
+        }
+    }
 }
 /**
 * offcanvas
