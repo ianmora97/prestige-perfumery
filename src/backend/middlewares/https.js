@@ -22,10 +22,10 @@ function toHttps(req, res, next) {
  * @returns true if the http request is secure (comes form https)
  */
 function isSecure(req) {
-    console.log(req.secure)
     if (req.headers['x-forwarded-proto']) {
-      return req.headers['x-forwarded-proto'] === 'https';
+        return req.headers['x-forwarded-proto'] === 'https';
     }
+    console.log(req.secure)
     return req.secure;
 };
 
