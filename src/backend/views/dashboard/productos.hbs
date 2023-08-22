@@ -29,7 +29,8 @@
 <script type="text/javascript" src="https://cdn.datatables.net/select/1.5.0/js/dataTables.select.min.js"></script>
 <script type="text/javascript" src="https://editor.datatables.net/extensions/Editor/js/dataTables.editor.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.js" integrity="sha512-tkMtg2br+OytX7fpdDoK34wzSUc6JcJa7aOEYUKwlSAAtqTSYVLocV4BpLBIx3RS+h+Ch6W+2lVSzNxQx4yefw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<script src="https://serratus.github.io/quaggaJS/examples/js/quagga.min.js"></script>
     
 
 <div id="alert" style="position: absolute; top:10px; left:4%; z-index:9999999;" class="w-90 d-block">
@@ -57,13 +58,24 @@
 
 <div class="">
     <nav class="mx-3 my-3">
-        <div class="nav nav-pills" id="nav-tab" role="tablist">
-            <button class="nav-link me-4 active" id="nav-list-tab" data-bs-toggle="tab" data-bs-target="#nav-list" type="button"
+        <div class="nav nav-pills nav-line" id="nav-tab" role="tablist">
+            <button class="nav-link active" id="nav-list-tab" data-bs-toggle="tab" data-bs-target="#nav-list" type="button"
                 role="tab" aria-controls="nav-list" aria-selected="true"><i class="fa-solid fa-boxes-stacked"></i> Lista</button>
             <button class="nav-link" id="nav-agregar-tab" data-bs-toggle="tab" data-bs-target="#nav-agregar" type="button"
                 role="tab" aria-controls="nav-agregar" aria-selected="false"><i class="fa-solid fa-plus"></i> Nuevo</button>
+            <span class="line-animation"></span>
         </div>
     </nav>
+    <script>
+        $('.nav-line .nav-link').on('click',function() {
+            $('.nav-link').removeClass('active');
+            $(this).addClass('active');
+            var left = $(this).position().left;
+            $('.line-animation').css({
+                'left': left
+            });
+        });
+    </script>
     <div class="tab-content mb-5" id="nav-tabContent">
         <div class="tab-pane fade show active" id="nav-list" role="tabpanel" aria-labelledby="nav-list-tab" tabindex="0">
             <div class="bg-white rounded-15 shadow-custom py-3 mx-3 animate__animated animate__fadeIn mb-0 ">
@@ -84,7 +96,7 @@
                 <div class="row mx-0 px-3">
                     <div class="col px-1 d-flex justify-content-start align-items-center">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-gray dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-venus-mars text-secondary"></i> Categoria</button>
+                            <button type="button" class="btn btn-gray dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-venus-mars text-primary"></i> Categoria</button>
                             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
                                 <li>
                                     <a type="button" data-type="ratio-filter" id="typeFilter-all" class="dropdown-item">Todos</a>
@@ -384,7 +396,7 @@
                 <div class="row mx-0 g-0">
                     <div class="col-6">
                         <div class="mb-2">
-                            <label for="edit-stock" class="form-label fw-bold">Inventario</label>
+                            <label for="edit-stock" class="form-label fw-bold">Inventario (Total de Productos)</label>
                             <input type="number" class="form-control" min="1" minlength="1" id="edit-stock" placeholder="Cantidad...">
                             <small class="text-muted">Cantidad de productos en inventario.</small>
                         </div>
@@ -401,6 +413,7 @@
                 <div class="row mx-0" id="bodegas-list-update">
 
                 </div>
+                <hr>
                 <div id="alertInventarioBodega"></div>
             </div>
             <div class="modal-footer">

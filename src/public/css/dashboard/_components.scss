@@ -81,6 +81,25 @@ $input-btn-focus-box-shadow: 0 0 0 0 none;
         }
     }
 }
+.nav-line{
+    position: relative;
+    .nav-link{
+        background-color: transparent !important;
+        border: none !important;
+        width: 100px;
+        z-index: 1;
+    }
+    .line-animation{
+        transition: all 0.2s ease-out;
+        background-color: $primary;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        border-radius: 8px;
+        width: 100px;
+    }
+}
 
 /**
  * Links and Buttons

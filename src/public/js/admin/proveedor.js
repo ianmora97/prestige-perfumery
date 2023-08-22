@@ -53,23 +53,33 @@ function addRow(e,i){
                 <div class="d-flex justify-content-start align-items-center">
                     <span class="fa-stack">
                         <i class="fa-solid fa-circle fa-stack-2x text-gray-light"></i>
-                        <i class="fa-solid fa-truck-fast fa-stack-1x text-primary"></i>
+                        <i class="fa-solid fa-truck-fast fa-stack-1x text-dark"></i>
                     </span>
                     <h4 class="mb-0 fw-bold px-2">#${e.id}</h4>
                 </div>
-                <small class="text-end text-muted">${moment(e.createdAt).format('D [de] MMMM')}</small>
+                <div class="dropdown">
+                <button class="btn btn-dark" type="button" data-bs-toggle="dropdown" 
+                aria-expanded="false">
+                    <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <button class="dropdown-item" type="button" onclick="actualizarEstado('${e.id}', '0')">
+                                <i class="fa-solid fa-check-circle text-success"></i> Completado
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" type="button" onclick="eliminarProveedor('${e.id}')">
+                                <i class="fa-solid fa-trash-alt text-danger"></i> Delete
+                            </button>
+                        </li>
+                    </ul>
+                </div>
             </div>
+            <small class="text-end text-muted">${moment(e.createdAt).format('D [de] MMMM')}</small>
             <p class="my-3 text-muted">${e.nombre}</p>
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <span class="badge badge-blue b-pill"><i class="fa-solid fa-box"></i> ${e.cantidad} productos</span>
-                <div class="" role="group" aria-label="Basic example">
-                    <button class="btn btn-sm bg-green-light" type="button" onclick="actualizarEstado('${e.id}', '0')">
-                        <i class="fa-solid fa-check-circle text-success"></i> Completado
-                    </button>
-                    <button class="btn btn-sm btn-transparent" type="button" onclick="eliminarProveedor('${e.id}')">
-                        <i class="fa-solid fa-trash-alt text-danger"></i> 
-                    </button>
-                </div>
             </div>
             <img src="/img/camion.png" class="img-fluid d-block mx-auto animate__animated animate__fadeInRight animate__slow" style="width:70%; object-fit: cover; object-position: center; animation-delay:${(i * 50) + 500}ms;"">
         </div>

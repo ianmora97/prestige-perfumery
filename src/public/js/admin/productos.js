@@ -73,9 +73,9 @@ function scanBarcode(){
           singleChannel: false
         },
         decoder : {
-          readers : ["upc_reader","upc_e_reader","ean_reader"],
+            readers: ['upc_reader', 'ean_reader'],
         },
-        locate: true,
+        locate: false,
     }, function(err) {
         if (err) {
             console.log("ERROR",err);
@@ -104,29 +104,29 @@ function scanBarcode(){
             escanerModal.hide();
         }
     });
-    // Quagga.onProcessed(function(result) {
-    //     var drawingCtx = Quagga.canvas.ctx.overlay,
-    //         drawingCanvas = Quagga.canvas.dom.overlay;
+    Quagga.onProcessed(function(result) {
+        var drawingCtx = Quagga.canvas.ctx.overlay,
+            drawingCanvas = Quagga.canvas.dom.overlay;
 
-    //     if (result) {
-    //         if (result.boxes) {
-    //             drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute("width")), parseInt(drawingCanvas.getAttribute("height")));
-    //             result.boxes.filter(function (box) {
-    //                 return box !== result.box;
-    //             }).forEach(function (box) {
-    //                 Quagga.ImageDebug.drawPath(box, {x: 0, y: 1}, drawingCtx, {color: "green", lineWidth: 2});
-    //             });
-    //         }
+        if (result) {
+            if (result.boxes) {
+                drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute("width")), parseInt(drawingCanvas.getAttribute("height")));
+                result.boxes.filter(function (box) {
+                    return box !== result.box;
+                }).forEach(function (box) {
+                    Quagga.ImageDebug.drawPath(box, {x: 0, y: 1}, drawingCtx, {color: "green", lineWidth: 2});
+                });
+            }
 
-    //         if (result.box) {
-    //             Quagga.ImageDebug.drawPath(result.box, {x: 0, y: 1}, drawingCtx, {color: "#00F", lineWidth: 2});
-    //         }
+            if (result.box) {
+                Quagga.ImageDebug.drawPath(result.box, {x: 0, y: 1}, drawingCtx, {color: "#00F", lineWidth: 2});
+            }
 
-    //         if (result.codeResult && result.codeResult.code) {
-    //             Quagga.ImageDebug.drawPath(result.line, {x: 'x', y: 'y'}, drawingCtx, {color: 'red', lineWidth: 3});
-    //         }
-    //     }
-    // });
+            if (result.codeResult && result.codeResult.code) {
+                Quagga.ImageDebug.drawPath(result.line, {x: 'x', y: 'y'}, drawingCtx, {color: 'red', lineWidth: 3});
+            }
+        }
+    });
 }
 function onTabsImageAdd(){
     Array.from(document.querySelectorAll('button[data-toggle-add="tab"]'))
@@ -221,6 +221,7 @@ function openEditModal(uuid){
 
     $("#edit-categoria").val(prod.category);
     $("#edit-stock").val(prod.stock);
+
     $("#edit-aviso").val(prod.notification);
     let cantidad = prod.cantidad.split(" ");
     $("#edit-cantidad").val(cantidad[0]);
@@ -261,12 +262,45 @@ function iterateonBodegas(bodegas, productoid){
                         <label class="form-label fw-bold" for="bodega-${bodegaId}">${bodegaName}</label>
                         <input type="number" class="form-control updateProductoBodega" placeholder="Cantidad de productos en ${bodegaName}" 
                         id="bodega-${bodegaId}" value="${result.cantidad}"
-                        data-bodega="${bodega.id}" data-producto="${productoid}">
+                        data-bodega="${bodega.id}" data-producto="${productoid}" onkeyup="verifyStockByBodega(this)">
                     </div>
                 </div>
             `);
         });
     });
+}
+function verifyStockByBodega(input){
+    let suma = 0;
+    let stock = parseInt($("#edit-stock").val());
+    $(".updateProductoBodega").each((item,elem)=>{
+        let cant = parseInt($(elem).val());
+        suma += cant;
+    });
+    let diferencia = stock - suma;
+    if(diferencia == 0){
+        $("#alertInventarioBodega").html(`
+            <div class="alert alert-success fade show" role="alert">
+                Tiene pendiente 0 productos
+            </div>
+        `);
+        setTimeout(() => {
+            $("#alertInventarioBodega").html(``);
+        }, 2000);
+    }else if(diferencia > 0){
+        $("#alertInventarioBodega").html(`
+            <div class="alert alert-warning fade show" role="alert">
+                Tiene pendiente ${diferencia} producto${diferencia == 1 ? "" : "s"}
+            </div>
+        `);
+    }else{
+        $("#edit-product").prop("disabled", true);
+        $("#alertInventarioBodega").html(`
+            <div class="alert alert-danger fade show" role="alert">
+                Tiene ${diferencia} producto${diferencia == 1 ? "" : "s"} mas
+            </div>
+        `);
+
+    }
 }
 function updateProductoBodega(){
     let arr = [];

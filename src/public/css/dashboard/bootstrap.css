@@ -305,6 +305,26 @@ img {
   color: #070011 !important;
 }
 
+.nav-line {
+  position: relative;
+}
+.nav-line .nav-link {
+  background-color: transparent !important;
+  border: none !important;
+  width: 100px;
+  z-index: 1;
+}
+.nav-line .line-animation {
+  transition: all 0.2s ease-out;
+  background-color: #ff6c4b;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 8px;
+  width: 100px;
+}
+
 /**
  * Links and Buttons
 */

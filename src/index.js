@@ -6,6 +6,7 @@ const http = require('http');
 const https = require('https');
 var cookieParser = require('cookie-parser')
 const morgan = require('morgan');
+const {stream,customLog,logErrors,logErrorsMiddleware} = require('./backend/helpers/logger');
 // const {toHttps,cert} = require('./backend/middlewares/security/https');
 
 // Initializations
@@ -28,6 +29,11 @@ app.engine('.hbs', hbs.engine);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(logErrorsMiddleware);
+
+// ? Logger with Morgan
+morgan.token('custom', customLog);
+app.use(morgan(':custom', { stream: stream })); // todo: logger for morgan
 
 // Routes
 app.use(require('./backend/routes/index.routes'));
