@@ -9,8 +9,25 @@ require("dotenv").config();
  * @returns {Object} response object
  */
 function toHttps(req, res, next) {
-    res.redirect(`https://${req.headers.host}${req.url}`);
+    if (!isSecure(req)) {
+        res.redirect(301, `https://${req.headers.host}${req.url}`);
+    }else {
+        next();
+    }
 }
+
+
+/**
+ * @param req express http request
+ * @returns true if the http request is secure (comes form https)
+ */
+function isSecure(req) {
+    if (req.headers['x-forwarded-proto']) {
+      return req.headers['x-forwarded-proto'] === 'https';
+    }
+    return req.secure;
+};
+
 
 /**
  * ? Returns the certificate and key for the server
