@@ -118,6 +118,19 @@ module.exports = {
             });
             res.status(result.status).json(result);
         });
+    },
+    updateTipoCambio: (req,res) =>{
+        Product.updateTipoCambio(req.body, (result)=>{
+            who(req).then((user) => {
+                logger.activity(`Tipo de Cambio actualizado "${req.body.tipo}" actualizado`, user);
+                res.status(result.status).json(result);
+            });
+        });
+    },
+    getTipoCambio: (req,res) =>{
+        Product.getTipoCambio((result)=>{
+            res.status(result.status).json(result.data.value);
+        });
     }
 }
 

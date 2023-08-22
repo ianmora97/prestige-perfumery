@@ -40,19 +40,34 @@ function brignDataBodegas(){
         console.log(error);
     });
 }
-
 function eventListeners(){
     $("#btn-agregar").on('click', function(){
         agregarProducto();
     });
-    $("#add-preciogeneral").on('keyup', function(){
+    $("#add-preciogeneral").on('keyup', function(e){
         var precioActual = parseInt($(this).val());
-        const [a, b, c] = [100, 98 ,96];
+        let precios = prices(precioActual);
+          
+        $("#add-precio1").val(precios.p1);
+        $("#add-precio2").val(precios.p2);
+        $("#add-precio3").val(precios.p3);
 
-        $("#add-precio1").val(parseInt(((precioActual * a/100)+"").replace(/\./g, '')).toLocaleString('es-ES'));
-        $("#add-precio2").val(parseInt(((precioActual * b/100)+"").replace(/\./g, '')).toLocaleString('es-ES'));
-        $("#add-precio3").val(parseInt(((precioActual * c/100)+"").replace(/\./g, '')).toLocaleString('es-ES'));
     });
+}
+function prices(precioActual){
+    precioActual = ((precioActual) + (precioActual * 0.3)) * TIPODECAMBIO;
+    const [a, b, c] = [100, 98 ,96];
+    function roundToNearestHundred(number) {
+        return Math.round(number / 100) * 100;
+    }
+    function formatNumberWithCommas(number) {
+        return number.toLocaleString('es-ES');
+    }
+    return {
+        p1: formatNumberWithCommas(roundToNearestHundred(precioActual * a / 100)),
+        p2: formatNumberWithCommas(roundToNearestHundred(precioActual * b / 100)),
+        p3: formatNumberWithCommas(roundToNearestHundred(precioActual * c / 100))
+    }
 }
 function openScaner(type){
     isSearch = type == "search" ? true : false;
@@ -210,14 +225,15 @@ function fillStats(data){
 function openEditModal(uuid){
     let prod = g_dataMap.get(uuid);
 
-    let {price1, price2, price3} = JSON.parse(prod.price);
-
     $("#edit-name").val(prod.name);
     $("#edit-marca").val(prod.brand);
     $("#edit-type").val(prod.type);
-    $("#edit-precio1").val(price1);
-    $("#edit-precio2").val(price2);
-    $("#edit-precio3").val(price3);
+
+    let precios = prices(prod.price);
+
+    $("#edit-precio1").val(precios.p1);
+    $("#edit-precio2").val(precios.p2);
+    $("#edit-precio3").val(precios.p3);
 
     $("#edit-categoria").val(prod.category);
     $("#edit-stock").val(prod.stock);
@@ -278,6 +294,7 @@ function verifyStockByBodega(input){
     });
     let diferencia = stock - suma;
     if(diferencia == 0){
+        $("#edit-product").prop("disabled", false);
         $("#alertInventarioBodega").html(`
             <div class="alert alert-success fade show" role="alert">
                 Tiene pendiente 0 productos
@@ -287,6 +304,7 @@ function verifyStockByBodega(input){
             $("#alertInventarioBodega").html(``);
         }, 2000);
     }else if(diferencia > 0){
+        $("#edit-product").prop("disabled", false);
         $("#alertInventarioBodega").html(`
             <div class="alert alert-warning fade show" role="alert">
                 Tiene pendiente ${diferencia} producto${diferencia == 1 ? "" : "s"}
@@ -326,9 +344,7 @@ function updateProduct(){
     let uuid = $("#update-modal-uuid").html();
     let prod = g_dataMap.get(uuid);
 
-    let price1 = $("#edit-precio1").val().replace(/\./g,'');
-    let price2 = $("#edit-precio2").val().replace(/\./g,'');
-    let price3 = $("#edit-precio3").val().replace(/\./g,'');
+    let price = $("#edit-preciogeneral").val();
 
     // get nombre, marca, categoria, stock, aviso, cantidad, q, promotion, imag
     
@@ -358,11 +374,7 @@ function updateProduct(){
         cantidad: cantidad,
         promotion: promotion,
         filename: image,
-        price: JSON.stringify({
-            price1: price1,
-            price2: price2,
-            price3: price3
-        }),
+        price: price,
         barcode: barcode
     };
     verifyEditInputs().then(() => {
@@ -463,7 +475,8 @@ function fillProductos(data){
 }
 function addRow(e){
     try {
-        let {price1, price2, price3} = JSON.parse(e.price);
+        let {p1, p2, p3} = prices(e.price);
+
         let color = "success";
         if(e.stock <= e.notification + 5){
             color = "warning";
@@ -495,11 +508,11 @@ function addRow(e){
                         <i class="fa-solid fa-circle fa-2xs text-${color} ps-2" id="color-stock-${e.uuid}"></i>
                     </div>
                 </td>
-                <td class="" data-search="${price1} - ${price2} - ${price3}">
+                <td class="" data-search="${p1} - ${p2} - ${p3}">
                     <div class="d-flex align-items-center justify-content-start gap-2">
-                        <span class="badge b-pill badge-green">₡ ${price3}</span>
-                        <span class="badge b-pill badge-orange">₡ ${price2}</span>
-                        <span class="badge b-pill badge-blue">₡ ${price1}</span>
+                        <span class="badge b-pill badge-green">₡ ${p1}</span>
+                        <span class="badge b-pill badge-orange">₡ ${p2}</span>
+                        <span class="badge b-pill badge-blue">₡ ${p3}</span>
                     </div>
                     <small class="text-muted">${e.promotion == 0 ? "Sin Descuento":`<span class="text-dark">${e.promotion}% de descuento</span>`}</small>
                 </td>

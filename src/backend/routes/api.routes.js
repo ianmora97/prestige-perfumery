@@ -91,4 +91,8 @@ router.get('/api/analytics/all', ANALYTICS.getAll);
 router.get('/api/analytics/getAnalytics', ANALYTICS.getAnalytics);
 
 
+router.get('/api/update/cambio', PRODUCT.getTipoCambio);
+router.post('/api/update/cambio', PRODUCT.updateTipoCambio);
+
+
 module.exports = router;

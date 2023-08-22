@@ -1,11 +1,35 @@
 <div class="bg-dark-900 d-flex justify-content-between align-items-center py-2 px-2" id="header">
     <button class="btn" id="btnSidebarToggle"><i class="fa-solid fa-chevron-left"></i></button>
-    <div class="mx-3">
-        <p class="text-light text-center mb-0"><i class="fa-solid fa-circle-user"></i> <span id="global_userName">User</span></p>
+    <div class="mx-3 d-flex justify-content-end align-items-center">
+        <div class="input-group me-2">
+            <span class="input-group-text">$</span>
+            <input type="number" class="form-control" placeholder="Tipo de Cambio" aria-label="Tipo de Cambio" 
+            min="1" minlength="1" id="tipocambio" style="width: 130px;">
+        </div>
+        <p class="text-light text-center mb-0" style="width: 130px;"><i class="fa-solid fa-circle-user"></i> <span id="global_userName">User</span></p>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+{{#ifCond rol '>=' 4}}
 <script>
-    //get cookie
+    $("#tipocambio").on('keyup',function(e){
+        if (e.keyCode == 13) {
+            const tipo = parseInt($("#tipocambio").val());
+            axios.post('/api/update/cambio', {tipo})
+            TIPODECAMBIO = tipo;
+        }
+    });
+</script>
+{{/ifCond}}
+<script>
+    
+    var TIPODECAMBIO;
+    axios.get('/api/update/cambio')
+    .then(e=>{
+        TIPODECAMBIO = e.data;
+        $("#tipocambio").val(e.data);
+    });
+    
     var thumbnail = document.cookie.split('; ').find(row => row.startsWith('photo')).split('=')[1];
     $('#thumbnail-pic').attr('src', `${thumbnail}`);
 

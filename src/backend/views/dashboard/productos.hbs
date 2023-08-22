@@ -160,7 +160,10 @@
                         <div class="row mx-0 g-0">
                             <div class="col-sm-12 pe-2 mb-4">
                                 <label for="add-precio1" class="form-label fw-bold">Precio General</label>
-                                <input type="number" class="form-control" min="1" minlength="1" id="add-preciogeneral" placeholder="Precio del General del Producto">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" min="1" minlength="1" id="add-preciogeneral" placeholder="Precio del General del Producto">
+                                </div>
                             </div>
                             <div class="col-sm-4 pe-2 mb-4">
                                 <label for="add-precio1" class="form-label fw-bold">Precio A <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-1" role="button"></i></label>
@@ -425,5 +428,4 @@
 </div>
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
 <script src="/js/admin/productos.js"></script>

@@ -34,7 +34,7 @@ const Product = mysqlcon.define('t_product',{
         allowNull: false
     },
     price:{
-        type: DataTypes.STRING,
+        type: DataTypes.FLOAT,
         allowNull: false
     },
     image:{
@@ -70,6 +70,7 @@ const Product = mysqlcon.define('t_product',{
     freezeTableName: true,
     timestamps: false
 });
+
 
 exports.getAll = async (resolve) => {
     Product.findAll()
@@ -429,6 +430,37 @@ exports.delete = async (body, resolve) => {
         resolve({
             status: 200,
             data: product
+        });
+    }).catch((error) => {
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+}
+
+exports.updateTipoCambio = async (body, resolve) => {
+    mysqlcon.query(`UPDATE t_tipocambio SET value = ${body.tipo} WHERE id = 1`, { 
+        type: QueryTypes.UPDATE 
+    }).then((product) => {
+        resolve({
+            status: 200,
+            data: product
+        });
+    }).catch((error) => {
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+}
+exports.getTipoCambio = async (resolve) => {
+    mysqlcon.query("SELECT * from t_tipocambio", { 
+        type: QueryTypes.SELECT 
+    }).then((product) => {
+        resolve({
+            status: 200,
+            data: product[0]
         });
     }).catch((error) => {
         resolve({
