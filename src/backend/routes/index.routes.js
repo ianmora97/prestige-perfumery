@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 require("dotenv").config();
 
 router.get('/', (req, res) => {
-    res.render('loginClient');
+    res.render('login');
 });
 
 router.get('/admin/login', (req, res) => {

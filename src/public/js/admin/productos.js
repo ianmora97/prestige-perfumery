@@ -231,6 +231,8 @@ function openEditModal(uuid){
 
     let precios = prices(prod.price);
 
+    $("#edit-costo").val(prod.price);
+
     $("#edit-precio1").val(precios.p1);
     $("#edit-precio2").val(precios.p2);
     $("#edit-precio3").val(precios.p3);
@@ -338,16 +340,11 @@ function updateProductoBodega(){
     });
 }
 function updateProduct(){
-    // #update-modal-uuid
 
-    updateProductoBodega();
+    
     let uuid = $("#update-modal-uuid").html();
     let prod = g_dataMap.get(uuid);
 
-    let price = $("#edit-preciogeneral").val();
-
-    // get nombre, marca, categoria, stock, aviso, cantidad, q, promotion, imag
-    
     let nombre = $("#edit-name").val();
     let marca = $("#edit-marca").val();
     let type = $("#edit-type").val();
@@ -360,6 +357,8 @@ function updateProduct(){
     let image = $("#edit-image-path").val();
 
     let barcode = $("#edit-barcode").val();
+
+    let price = $("#edit-costo").val();
 
     let cantidad =  c +" "+ q;
 
@@ -384,6 +383,9 @@ function updateProduct(){
             contentType: 'application/json',
             data: JSON.stringify(data)
         }).then((result) => {
+            console.log(result)
+            updateProductoBodega();
+
             reloadData();
             editModal.hide();
             Toastify({
@@ -396,27 +398,19 @@ function updateProduct(){
         });
     });
 
-
 }
 function verifyEditInputs(){
     return new Promise((resolve, reject) => {
         let name = $("#edit-name").val();
         let stock = parseInt($("#edit-stock").val());
-        let price1 = $("#edit-precio1").val();
-        let price2 = $("#edit-precio2").val();
-        let price3 = $("#edit-precio3").val();
-        let price = JSON.stringify({
-            price1: price1,
-            price2: price2,
-            price3: price3
-        });
+        let price = $("#edit-costo").val();
         let category = $("#edit-categoria").val();
         let notification = parseInt($("#edit-aviso").val());
         let brand = $("#edit-marca").val();
         let c = $("#edit-cantidad").val();
         let image = $("#edit-image-path").val();
         let barcode = $("#edit-barcode").val();
-        if(barcode == '' || image == '' || name == '' || stock == '' || price1 == '' || price2 == '' || price3 == '' || category == '' || notification == '' || brand == '' || c == ''){
+        if(barcode == '' || image == '' || name == '' || stock == '' || price == '' || category == '' || notification == '' || brand == '' || c == ''){
             reject();
         }else{
             resolve();
