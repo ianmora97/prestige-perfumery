@@ -92,7 +92,7 @@ router.get('/api/analytics/getAnalytics', ANALYTICS.getAnalytics);
 
 
 router.get('/api/update/cambio', PRODUCT.getTipoCambio);
-router.post('/api/update/cambio', PRODUCT.updateTipoCambio);
+router.post('/api/update/cambio',isAuthenticatedAdmin, PRODUCT.updateTipoCambio);
 
 
 module.exports = router;

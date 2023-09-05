@@ -14,9 +14,14 @@ $header-height: 60px;
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 999;
+    // background: linear-gradient(170deg, #070011 0%, #191827 50%, #19173e 100%) !important;
     background-color: $dark;
     transition: all 0.3s ease;
     &.toggle{
+        &::after{
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
         #logo{
             width: 90%;
         }
@@ -37,11 +42,10 @@ $header-height: 60px;
     justify-content: center;
     align-items: center;
     transition: all 0.3s ease;
-    &:hover{
+
+    &.toggle{
         background-color: $primary;
         color: $light;
-    }
-    &.toggle{
         transform: rotate(180deg);
     }
 }
@@ -85,16 +89,19 @@ $header-height: 60px;
             margin-left: 0;
             min-width: 0;
         }
-    }
-    .backdropSidebarMobile:not(.toggle){
-        display: block;
-        width: 100vw;
-        height: 100vh;
-        position: absolute;
-        background-color: rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(20px);
-        top: 0;
-        left: 0;
+        &:not(.toggle){
+            &::after{
+                opacity: 1;
+                content: "";
+                width: calc(100vw - $sidebar-width);
+                height: 100vh;
+                position: fixed;
+                background-color: rgba(0, 0, 0, 0.4);
+                backdrop-filter: blur(20px);
+                top: 0;
+                right: 0;
+            }
+        }
     }
     #page-content-wrapper{
         min-width: 100vw;
@@ -102,6 +109,12 @@ $header-height: 60px;
     }
     #slides-container{
         width: 200vw;
+    }
+    #btnSidebarToggle{
+        background-color: $primary;
+        &.toggle{
+            background-color: $dark-900;
+        }
     }
 }
 

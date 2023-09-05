@@ -78,7 +78,7 @@
     </script>
     <div class="tab-content mb-5" id="nav-tabContent">
         <div class="tab-pane fade show active" id="nav-list" role="tabpanel" aria-labelledby="nav-list-tab" tabindex="0">
-            <div class="bg-white rounded-15 shadow-custom py-3 mx-3 animate__animated animate__fadeIn mb-0 ">
+            <div class="bg-white rounded-15 shadow-custom py-3 mx-0 mx-md-3 animate__animated animate__fadeIn mb-0 ">
                 <div class="row mx-0 px-3 mb-3">
                     <div class="col px-1">
                         <div class="d-flex justify-content-start align-items-center">
@@ -143,33 +143,39 @@
             </div>
         </div>
         <div class="tab-pane fade" id="nav-agregar" role="tabpanel" aria-labelledby="nav-agregar-tab" tabindex="0">
-            <div class="bg-white rounded-15 shadow-custom py-3 mx-3 px-3 animate__animated animate__fadeIn mb-5">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0 fw-bold">Agregar Producto</h4>
-                    <button type="button" class="btn btn-primary btn-lg" id="btn-agregar"><i class="fa-solid fa-plus"></i> Agregar Producto</button>
-                </div>
-                <hr>
-                <div class="row mx-0">
-                    <div class="col-sm-6">
-                        <label for="add-name" class="form-label fw-bold">Nombre y Marca</label>
-                        <div class="input-group mb-4">
-                            <input type="text" class="form-control" id="add-name" placeholder="Nombre">
-                            <input type="text" class="form-control" id="add-marca" placeholder="Marca">
-                            <input type="text" class="form-control" id="add-type" placeholder="Tipo">
+            <div class="bg-white rounded-15 shadow-custom py-3 mx-0 mx-md-3 animate__animated animate__fadeIn mb-5">
+                
+                <div class="row mx-0 gy-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0 fw-bold">Agregar Producto</h4>
+                            <button type="button" class="btn btn-dark btn-lg" id="btn-agregar"><i class="fa-solid fa-plus"></i> Agregar Producto</button>
                         </div>
-                        <div class="row mx-0 g-0">
-                            <div class="col-sm-12 pe-2 mb-4">
+                        <hr>
+                    </div>
+                    <div class="col-sm-6">
+                        
+                        <div class="row mx-0 gy-3">
+                            <div class="col-sm-12">
+                                <label for="add-name" class="form-label fw-bold">Nombre y Marca</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="add-name" placeholder="Nombre">
+                                    <input type="text" class="form-control" id="add-marca" placeholder="Marca">
+                                    <input type="text" class="form-control" id="add-type" placeholder="Tipo">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
                                 <label for="add-precio1" class="form-label fw-bold">Precio General</label>
-                                <div class="input-group mb-3">
+                                <div class="input-group">
                                     <span class="input-group-text">$</span>
                                     <input type="number" class="form-control" min="1" minlength="1" id="add-preciogeneral" placeholder="Precio del General del Producto">
                                 </div>
                             </div>
-                            <div class="col-sm-4 pe-2 mb-4">
+                            <div class="col-sm-4">
                                 <label for="add-precio1" class="form-label fw-bold">Precio A <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-1" role="button"></i></label>
                                 <input type="number" class="form-control" min="1" minlength="1" id="add-precio1" placeholder="Precio...">
                             </div>
-                            <div class="col-sm-4 pe-2">
+                            <div class="col-sm-4">
                                 <label for="add-precio2" class="form-label fw-bold">Precio B <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-2" role="button"></i></label>
                                 <input type="number" class="form-control" min="1" minlength="1" id="add-precio2" placeholder="Precio...">
                             </div>
@@ -177,8 +183,6 @@
                                 <label for="add-precio3" class="form-label fw-bold">Precio C <i class="fa-solid fa-circle-info text-gray-light ps-1 cat-3" role="button"></i></label>
                                 <input type="number" class="form-control" min="1" minlength="1" id="add-precio3" placeholder="Precio...">
                             </div>
-                        </div>
-                        <div class="row mx-0 g-0 mb-3">
                             <div class="col-sm-7">
                                 <div class="">
                                     <label for="add-stock" class="form-label fw-bold">Inventario</label>
@@ -187,16 +191,14 @@
                                 </div>
                             </div> 
                             <div class="col-sm-5">
-                                <div class="ps-2">
+                                <div class="">
                                     <label for="add-aviso" class="form-label fw-bold">Aviso <i class="fa-solid fa-circle-info text-gray-light ps-1 aviso-tooltip" role="button"></i></label>
                                     <input type="number" class="form-control" min="1" minlength="1" id="add-aviso" placeholder="1">
                                     <small class="text-muted">Notificación de producto.</small>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row mx-0 g-0 mb-3">
-                            <div class="col-sm-6 pe-2">
-                                <div class="mb-3">
+                            <div class="col-sm-6">
+                                <div class="">
                                     <label for="add-cantidad" class="form-label fw-bold">Tamaño</label>
                                     <div class="input-group mb-0">
                                         <input type="number" class="form-control" min="1" minlength="1" id="add-cantidad" placeholder="Cantidad...">
@@ -209,7 +211,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                 <div class="mb-3">
+                                 <div class="">
                                     <label for="add-categoria" class="form-label fw-bold">Categoria</label>
                                     <select class="form-select" id="add-categoria" aria-label="Tipo de producto" aria-placeholder="Seleccione un tipo">
                                         <option value="unisex">Unisex</option>
@@ -231,7 +233,7 @@
                         <hr>
                         <div class="mt-3">
                             <div class="d-flex justify-content-start align-items-center gap-3">
-                                <button type="button" class="btn btn-primary" onclick="openScaner('add');"><i class="fa-solid fa-barcode"></i> Escanear código de Barras</button>
+                                <button type="button" class="btn btn-dark" onclick="openScaner('add');"><i class="fa-solid fa-barcode"></i> Escanear Código</button>
                                 <input type="text" class="form-control" id="add-codigobarrasManual" placeholder="Ingresar Codigo manual" style="width: 300px;">
                             </div>
                             <div id="barcodeResult"></div>
@@ -269,7 +271,7 @@
         <div class="modal-content ">
             <div class="modal-header text-bg-dark pb-2">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Buscar Producto</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div id="barcodePreview" class="d-flex justify-content-center"></div>
@@ -281,7 +283,7 @@
 <div class="modal fade" id="imagepreview" tabindex="-1" aria-labelledby="imagepreviewLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content modal-transparent">
-            <button type="button" class="btn-close btn-close-modal-bottom" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white btn-close-modal-bottom" data-bs-dismiss="modal" aria-label="Close"></button>
             <div class="modal-body bg-white p-4 mb-2 rounded-15">
                 <img src="" id="image-preview-src" width="100%" class="img-round">
             </div>
@@ -292,13 +294,13 @@
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xxl">
         <div class="modal-content">
-            <div class="modal-header text-bg-dark pb-2">
+            <div class="modal-header text-bg-dark">
                 <p class="modal-title" id="editModalLabel">Editar</p>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row mx-0">
-                    <div class="col-3 ps-0">
+                    <div class="col-md-3 ps-0">
                         <div class="w-100 mb-2 position-relative">
                             <div class="w-100 mx-auto">
                                 <img src="" id="edit-image" class="img-circle w-90">
@@ -309,7 +311,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-9">
+                    <div class="col-md-9">
                         <div class="mb-2">
                             <label for="edit-image-path" class="form-label fw-bold">Código de Barras</label>
                             <input type="text" class="form-control" id="edit-barcode" placeholder="Código de Barras...">

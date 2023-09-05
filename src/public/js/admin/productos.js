@@ -254,7 +254,7 @@ function openEditModal(uuid){
 
     $("#editModalLabel").html(`
         <h5 class="mb-0"><i class="fa-solid fa-box-open text-primary"></i> Editar Producto<br></h5>
-        <small class="text-dark-100" id="update-modal-uuid">${prod.uuid}</small>
+        <small class="text-gray-100" id="update-modal-uuid">${prod.uuid}</small>
     `);
     editModal.show();
 }
@@ -265,6 +265,7 @@ function iterateonBodegas(bodegas, productoid){
         axios.get(`/api/bodega/producto/get?bodega=${bodega.id}&producto=${productoid}`)
         .then(result => {
             result = result.data;
+            console.log(result.cantidad)
 
             let bodegaName = bodega.nombre;
             let bodegaId = i;
@@ -484,19 +485,19 @@ function addRow(e){
                         <img src="${e.image}" width="50px" height="50px" alt="" class="hover-img img-round">
                     </div>
                 </td>
-                <td><span class="text-primary">${e.barcode}</span></td>
+                <td><span class="text-dark fw-bold" onclick="openEditModal('${e.uuid}')" role="button">${e.barcode}</span></td>
                 <td class="">
                     <div class="d-flex flex-column align-items-start justify-content-start">
-                        <span class="fw-bold lead">${e.name}</span>
+                        <span class="fw-bold mb-0">${e.name}</span>
                         <span class="text-muted">${e.brand}</span>
                     </div>
                 </td>
                 <td class="">${e.type}</td>
                 <td class="">${e.cantidad}</td>
-                <td class=""><span class="badge b-pill badge-blue">${e.category}</span></td>
+                <td class="">${e.category}</td>
                 <td class="">
                     <div class="d-flex justify-content-start align-items-center ps-3">
-                        <div contentEditable="true" class="p-1 h4 mb-0" role="button" id="contentEditable-stock_${e.uuid}" onkeydown="avoidEditablecontents(this)" onkeyup="changeStockValueTable(this)">
+                        <div contentEditable="true" class="p-1 h5 mb-0" role="button" id="contentEditable-stock_${e.uuid}" onkeydown="avoidEditablecontents(this)" onkeyup="changeStockValueTable(this)">
                             ${e.stock} 
                         </div>
                         <i class="fa-solid fa-circle fa-2xs text-${color} ps-2" id="color-stock-${e.uuid}"></i>
@@ -508,7 +509,7 @@ function addRow(e){
                         <span class="badge b-pill badge-orange">₡ ${p2}</span>
                         <span class="badge b-pill badge-blue">₡ ${p3}</span>
                     </div>
-                    <small class="text-muted">${e.promotion == 0 ? "Sin Descuento":`<span class="text-dark">${e.promotion}% de descuento</span>`}</small>
+                    ${e.promotion == 0 ? "":`<small class="text-muted"><span class="text-dark">${e.promotion}% de descuento</span></small>`}
                 </td>
                 
                 <td class="">
@@ -621,15 +622,7 @@ function formatInputs(){
 function agregarProducto(){
     let name = $("#add-name").val();
     let stock = parseInt($("#add-stock").val());
-    let price1 = $("#add-precio1").val().replace(/\./g,'');
-    let price2 = $("#add-precio2").val().replace(/\./g,'');
-    let price3 = $("#add-precio3").val().replace(/\./g,'');
-
-    let price = JSON.stringify({
-        price1: price1,
-        price2: price2,
-        price3: price3
-    });
+    let price = $("#add-preciogeneral").val();
 
     let category = $("#add-categoria").val();
     let notification = parseInt($("#add-aviso").val());
@@ -720,8 +713,9 @@ function verifyInputs(){
         let type = $("#add-type").val();
         let c = $("#add-cantidad").val();
         let image = $("#add-imagelink").val();
-        let barcode = $("#barcodeResult").find("#barcodeResultText").text();
-        if(barcode === '' || image === '' || name === '' || type === '' || stock === '' || price1 === '' || price2 === '' || price3 === '' || category === '' || notification === '' || brand === '' || c === ''){
+        let barcode = $("#barcodeResult").find("#barcodeResultText").text() || $("#add-codigobarrasManual").val();
+        if(barcode === '' || image === '' || name === '' || type === '' || stock === '' || price1 === '' 
+        || price2 === '' || price3 === '' || category === '' || notification === '' || brand === '' || c === ''){
             reject();
         }else{
             resolve();

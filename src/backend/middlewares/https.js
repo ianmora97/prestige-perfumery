@@ -9,10 +9,12 @@ require("dotenv").config();
  * @returns {Object} response object
  */
 function toHttps(req, res, next) {
-    if (req.secure) {
-        return next();
+    console.log(req.secure);
+    if (!req.secure) {
+        res.redirect(301, `https://${req.headers.host}${req.url}`);
+    }else {
+        next();
     }
-    return res.redirect(`https://${req.headers.host}${req.url}`);
 }
 
 /**

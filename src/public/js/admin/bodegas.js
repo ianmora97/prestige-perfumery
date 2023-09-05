@@ -40,7 +40,7 @@ function fillBodegaProducto(data){
             result = result.data;
             $(`#bodegaProductos-${e.bodega}`).append(`
             <div class="col-md-2">
-                <div class="card animate__animated animate__fadeIn border-0">
+                <div class="card animate__animated animate__fadeIn border-0 ">
                     <img src="${result.image}" class="card-img-top object-fit-cover" alt="Foto Perfume de ${result.name}" style="height: 150px;">
                     <div class="card-body">
                         <h6 class="card-title mb-0 fw-bold">${result.name} ${result.brand}</h6>
@@ -70,12 +70,12 @@ function addBodegaCard(e,i){
     $("#card-bodegas-items").append(`
         
         <div class="col-md-2">
-            <div class="card bg-gray border-0 border-top border-primary border-5">
+            <div class="card bg-gradient-card text-white border-0">
                 <div class="p-3">
                     <h5 class="fw-bold"><i class="fa-solid fa-warehouse"></i> ${e.nombre}</h5>
-                    <p class="text-muted"><i class="fa-solid fa-spray-can-sparkles"></i> 125 productos</p>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-link btn-sm" type="button" role="tab" aria-controls="nav-bodega-${i}" 
+                    <p class=""><i class="fa-solid fa-spray-can-sparkles"></i> 125 productos</p>
+                    <div class="">
+                        <button class="btn btn-dark-100 btn-xs" type="button" role="tab" aria-controls="nav-bodega-${i}" 
                         id="nav-bodega-${i}-tab" data-bs-toggle="tab" data-bs-target="#nav-bodega-${i}" aria-selected="false">Ver Bodega</button>
                     </div>
                 </div>

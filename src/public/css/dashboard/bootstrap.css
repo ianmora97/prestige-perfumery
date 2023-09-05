@@ -97,6 +97,10 @@ img {
   width: 80px;
   min-width: 80px;
 }
+#sidebar.toggle::after {
+  transition: all 0.3s ease;
+  opacity: 0;
+}
 #sidebar.toggle #logo {
   width: 90%;
 }
@@ -115,11 +119,9 @@ img {
   align-items: center;
   transition: all 0.3s ease;
 }
-#btnSidebarToggle:hover {
+#btnSidebarToggle.toggle {
   background-color: #ff6c4b;
   color: #ffffff;
-}
-#btnSidebarToggle.toggle {
   transform: rotate(180deg);
 }
 
@@ -168,16 +170,17 @@ img {
     margin-left: 0;
     min-width: 0;
   }
-  .backdropSidebarMobile:not(.toggle) {
-    display: block;
-    width: 100vw;
+  #sidebar:not(.toggle)::after {
+    opacity: 1;
+    content: "";
+    width: calc(100vw - 175px);
     height: 100vh;
-    position: absolute;
+    position: fixed;
     background-color: rgba(0, 0, 0, 0.4);
     -webkit-backdrop-filter: blur(20px);
             backdrop-filter: blur(20px);
     top: 0;
-    left: 0;
+    right: 0;
   }
   #page-content-wrapper {
     min-width: 100vw;
@@ -185,6 +188,12 @@ img {
   }
   #slides-container {
     width: 200vw;
+  }
+  #btnSidebarToggle {
+    background-color: #ff6c4b;
+  }
+  #btnSidebarToggle.toggle {
+    background-color: #070011;
   }
 }
 .btn-sidebar {
@@ -227,6 +236,10 @@ img {
 */
 .header-continue-back {
   height: 150px;
+}
+
+.bg-gradient-card {
+  background: linear-gradient(90deg, #191827 0%, #070011 50%, #19173e 100%);
 }
 
 /**
@@ -519,6 +532,11 @@ button {
   opacity: 1;
 }
 
+.btn-xs {
+  padding: 0.2rem 0.3rem !important;
+  font-size: 0.65rem !important;
+}
+
 .list-group-noborder > .list-group-item {
   border: none;
 }
@@ -732,6 +750,17 @@ ul.pagination {
   background-color: white !important;
 }
 
+.modal-header.text-bg-dark {
+  background: linear-gradient(90deg, #191827 0%, #070011 50%, #19173e 100%) !important;
+}
+
+@media (max-width: 1024px) {
+  .modal-dialog:is(.modal-xxl, .modal-xl, .modal-lg, .modal-sm) {
+    margin: 0 !important;
+    width: 100vw !important;
+    min-width: 100vw !important;
+  }
+}
 /**
 * offcanvas
 */
@@ -3740,10 +3769,10 @@ textarea.form-control-lg {
   font-size: 0.85rem;
   font-weight: 400;
   line-height: 1.5;
-  color: var(--bs-body-color);
+  color: #ffffff;
   text-align: center;
   white-space: nowrap;
-  background-color: var(--bs-tertiary-bg);
+  background-color: #191827;
   border: var(--bs-border-width) solid var(--bs-border-color);
   border-radius: var(--bs-border-radius);
 }

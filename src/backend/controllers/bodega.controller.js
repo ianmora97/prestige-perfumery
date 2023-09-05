@@ -21,14 +21,10 @@ module.exports = {
     },
     updateBodegaProducto: (req,res) => {
         const {arr} = req.body;
-        let n1 = arr[0];
-        Bodega.updateBodegaProducto(n1,result => {
-        });
-        let n2 = arr[1];
-        Bodega.updateBodegaProducto(n2,result => {
-        });
-        let n3 = arr[2];
-        Bodega.updateBodegaProducto(n3,result => {
+        arr.forEach(item => {
+            Bodega.updateBodegaProducto(item, result => {
+                // Callback logic, if needed
+            });
         });
         res.send('200');
     },
