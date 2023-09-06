@@ -41,7 +41,7 @@ function readParameters(){
 }
 function getProductsByCategory(category, offset, limit){
     $.ajax({
-        url: `/api/product/all?offset=${offset}&limit=${limit}&category=${category}`,
+        url: `/api/v1/product/all?offset=${offset}&limit=${limit}&category=${category}`,
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -52,7 +52,7 @@ function getProductsByCategory(category, offset, limit){
 }
 function getProductsBySearch(search, offset, limit){
     $.ajax({
-        url: `/api/product/all?offset=${offset}&limit=${limit}&search=${search}`,
+        url: `/api/v1/product/all?offset=${offset}&limit=${limit}&search=${search}`,
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {

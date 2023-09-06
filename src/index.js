@@ -7,6 +7,8 @@ const https = require('https');
 var cookieParser = require('cookie-parser')
 const morgan = require('morgan');
 const {stream,customLog,logErrors,logErrorsMiddleware} = require('./backend/helpers/logger');
+const { report } = require('./backend/middlewares/reports');
+const { who } = require('./backend/middlewares/who');
 const {toHttps,cert} = require('./backend/middlewares/https');
 
 // Initializations
@@ -37,15 +39,15 @@ app.use(morgan(':custom', { stream: stream })); // todo: logger for morgan
 
 // Routes
 app.use(require('./backend/routes/index.routes'));
-app.use(require('./backend/routes/api.routes'));
 app.use(require('./backend/routes/auth.routes'));
 app.use(require('./backend/routes/client.routes'));
 app.use(require('./backend/routes/dashboard.routes'));
+app.use('/api/v1', who, report, require('./backend/routes/api.routes'));
 
 // ? Start the server
 http.createServer(app).listen(app.get('port'), () => {
     console.log(`[OK] SERVER STARTED ON PORT ${app.get('port')}`);
-    // require('./backend/database/mongocon');
+    require('./backend/database/mongocon');
 });
 if(process.env.NODE_ENV === 'prod'){
     app.use(toHttps);

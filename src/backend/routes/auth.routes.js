@@ -9,7 +9,6 @@ router.post('/login', (req, res) => {
     const { username, password } = req.body;
     User.authenticate(username, password, (result) => {
         if(result.status === 200 && result.data !== null && result.data.verified == 'true'){
-            console.log("save")
             jwt.sign({user: username, rol: result.data.rol}, process.env.SECRET_KEY, 
             {expiresIn: '30d'}, (err, token) => {
                 if(err){

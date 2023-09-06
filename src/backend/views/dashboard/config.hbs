@@ -113,7 +113,7 @@
     });
     async function salvarGeneral(){
         const tipo = parseInt($("#tipocambio").val());
-        const cm = await axios.post('/api/update/cambio', {tipo})
+        const cm = await axios.post('/api/v1/cambiodolar', {tipo})
         if(cm.data.status == 200){
             const Toast = Swal.mixin({
                 toast: true,

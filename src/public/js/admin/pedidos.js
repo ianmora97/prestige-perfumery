@@ -63,7 +63,7 @@ function searchonTable(){
 function brignData(){
     let ajaxTime = new Date().getTime();
     $.ajax({
-        url: '/api/purchase/all',
+        url: '/api/v1/purchase/all',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -274,7 +274,7 @@ function cambiarStatus(id,status, selector){
         .addClass("btn-red");
     }
     $.ajax({
-        url: '/api/purchase/status/update',
+        url: '/api/v1/purchase/status/update',
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
@@ -293,7 +293,7 @@ function cambiarStatus(id,status, selector){
 }
 function brignClients(){
     $.ajax({
-        url: '/api/cliente/all?type=selectize',
+        url: '/api/v1/cliente/all?type=selectize',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -307,7 +307,7 @@ function brignClients(){
 }
 function brignProducts(){
     $.ajax({
-        url: '/api/product/all/selectize',
+        url: '/api/v1/product/all/selectize',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -459,7 +459,7 @@ function agregarPedido(){
         cantidad: cantidadP
     }
     $.ajax({
-        url: '/api/purchase/add',
+        url: '/api/v1/purchase/add',
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(data)
@@ -505,7 +505,7 @@ function urlParamEventListener(){
 function brignOneProduct(id){
     return new Promise((resolve, reject)=>{
         $.ajax({
-            url: '/api/product/one/'+id,
+            url: '/api/v1/product/one/'+id,
             method: 'GET',
             contentType: 'application/json'
         }).then((result) => {
@@ -656,7 +656,7 @@ function eliminarPedido(id){
             let p = g_dataMap.get(parseInt(id));
             let productos = JSON.parse(p.items).productos;
             $.ajax({
-                url: '/api/purchase/delete',
+                url: '/api/v1/purchase/delete',
                 method: 'DELETE',
                 contentType: 'application/json',
                 data: JSON.stringify({
