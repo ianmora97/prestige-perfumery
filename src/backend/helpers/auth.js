@@ -76,8 +76,32 @@ function getRole(req){
     });
 }
 
+function roleCheck(req, res, next){
+    let headers = req.headers['cookie'] || req.headers['authorization'];
+        if(headers === undefined){
+            res.render('/');
+        }else{
+            let tokenName = headers.split(";").filter((item) => item.includes("token="))[0];
+            if(tokenName === undefined) res.render('/');
+            else tokenName = tokenName.split("=")[1];
+            if(tokenName === undefined){
+                res.render('/');
+            }else{
+                jwt.verify(tokenName, process.env.SECRET_KEY, (err, decoded) => {
+                    if (err) {
+                        res.render('/');
+                    } else {
+                        req.rol = decoded.rol;
+                        next();
+                    }
+                });
+            }
+        }
+}
+
 module.exports = {
     isAuthenticatedAdmin,
     isAuthenticatedClient,
-    getRole
+    getRole,
+    roleCheck
 }

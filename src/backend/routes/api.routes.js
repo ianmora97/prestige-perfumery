@@ -89,10 +89,18 @@ router.delete('/api/proveedor/delete', isAuthenticatedAdmin, PROVEEDOR.delete); 
 const ANALYTICS = require('../controllers/analytics.controller');
 router.get('/api/analytics/all', ANALYTICS.getAll);
 router.get('/api/analytics/getAnalytics', ANALYTICS.getAnalytics);
-
-
+/**
+ * CRUD for Tipo de Cambio 
+*/
 router.get('/api/update/cambio', PRODUCT.getTipoCambio);
 router.post('/api/update/cambio',isAuthenticatedAdmin, PRODUCT.updateTipoCambio);
-
+/**
+ * CRUD for Dashboard 
+*/
+// const DASHBOARD = require('../controllers/dashboard.controller');
+// router.get('/api/dashboard/all', DASHBOARD.get); // ! Authentication required for admin
+// router.get('/api/dashboard/one/:name', DASHBOARD.getOne); // ! Authentication required for admin
+// router.post('/api/dashboard/add', DASHBOARD.create); // ! Authentication required for admin
+// router.put('/api/dashboard/update/:id', DASHBOARD.update); // ! Authentication required for admin
 
 module.exports = router;

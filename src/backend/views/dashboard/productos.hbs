@@ -78,45 +78,39 @@
     </script>
     <div class="tab-content mb-5" id="nav-tabContent">
         <div class="tab-pane fade show active" id="nav-list" role="tabpanel" aria-labelledby="nav-list-tab" tabindex="0">
-            <div class="bg-white rounded-15 shadow-custom py-3 mx-0 mx-md-3 animate__animated animate__fadeIn mb-0 ">
-                <div class="row mx-0 px-3 mb-3">
-                    <div class="col px-1">
-                        <div class="d-flex justify-content-start align-items-center">
+            <div class="bg-white rounded-15 shadow-custom py-2 mx-0 mx-md-3 animate__animated animate__fadeIn mb-0 ">
+                <div class="row mx-0 mb-2">
+                    <div class="col">
+                        <div class="d-flex justify-content-start align-items-center gap-2">
+                            <button type="button" onclick="openScaner('search');" class="btn btn-dark btn-sm"><i class="fa-solid fa-barcode"></i></button>
                             <div class="form-icon me-2" style="width: 300px;">
                                 <i class="fa-solid fa-search"></i>
                                 <input class="form-control" type="text" placeholder="Buscar..." 
                                 id="barraBuscar" aria-label="Buscar un producto">
                             </div>
-                            <button type="button" onclick="openScaner('search');" class="btn btn-dark btn-sm"><i class="fa-solid fa-barcode"></i> Escanear</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-gray dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-venus-mars text-primary"></i> Categoria</button>
+                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
+                                    <li>
+                                        <a type="button" data-type="ratio-filter" id="typeFilter-all" class="dropdown-item">Todos</a>
+                                    </li>
+                                    <li>
+                                        <a type="button" data-type="ratio-filter" id="typeFilter-hombre" class="dropdown-item">Hombre</a>
+                                    </li>
+                                    <li>
+                                        <a type="button" data-type="ratio-filter" id="typeFilter-mujer" class="dropdown-item">Mujer</a>
+                                    </li>
+                                    <li>
+                                        <a type="button" data-type="ratio-filter" id="typeFilter-unisex" class="dropdown-item">Unisex</a>
+                                    </li>
+         
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4 px-1 d-md-flex d-none justify-content-md-end align-items-center mt-3 mt-md-0" id="button-group">
-                    </div>
-                </div>
-                <div class="row mx-0 px-3">
-                    <div class="col px-1 d-flex justify-content-start align-items-center">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-gray dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-venus-mars text-primary"></i> Categoria</button>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
-                                <li>
-                                    <a type="button" data-type="ratio-filter" id="typeFilter-all" class="dropdown-item">Todos</a>
-                                </li>
-                                <li>
-                                    <a type="button" data-type="ratio-filter" id="typeFilter-hombre" class="dropdown-item">Hombre</a>
-                                </li>
-                                <li>
-                                    <a type="button" data-type="ratio-filter" id="typeFilter-mujer" class="dropdown-item">Mujer</a>
-                                </li>
-                                <li>
-                                    <a type="button" data-type="ratio-filter" id="typeFilter-unisex" class="dropdown-item">Unisex</a>
-                                </li>
-     
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-md-6 px-1 d-md-flex justify-content-end align-items-center d-none">
-                        <small class="text-muted" id="info"></small>
-                        <div class="ms-4" id="length"></div>
+                    <div class="col-md-4 d-md-flex d-none justify-content-md-end align-items-center mt-3 mt-md-0 gap-2">
+                        <div class="" id="length"></div>
+                        <div class="d-md-flex d-none justify-content-md-end align-items-center mt-3 mt-md-0 gap-2" id="button-group"></div>
                     </div>
                 </div>
                 <div class="table-container mt-2" id="table-container" style="min-height: 660px;">
@@ -137,8 +131,11 @@
                         <tbody id="tbody"></tbody>
                     </table>
                 </div>
-                <div class="d-flex justify-content-end px-3 pagination-tables" id="pagination">
-                    
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted px-3" id="info"></small>
+                    <div class="d-flex justify-content-end px-3 pagination-tables" id="pagination">
+                        
+                    </div>
                 </div>
             </div>
         </div>

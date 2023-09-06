@@ -69,9 +69,14 @@
         {{/ifCond}}
        
         <div class="mt-auto mb-3">
-            <button type="button" class="btn btn-transparent w-100 text-center" id="logoutbutton">
-                <i class="fa-solid fa-arrow-right-from-bracket text-light"></i> <spano class="text-light">Salir</spano>
-            </button>
+            <div class="d-grid gap-2 d-md-block">
+                {{#ifCond rol '>=' 4}}
+                <a type="button" class="btn btn-dark-900" href="/admin/config"><i class="fa-solid fa-gear"></i></a>
+                {{/ifCond}}
+                <button type="button" class="btn btn-transparent  text-center" id="logoutbutton">
+                    <i class="fa-solid fa-arrow-right-from-bracket text-light"></i> <spano class="text-light">Salir</spano>
+                </button>
+            </div>
         </div>
     </div>
 </div>

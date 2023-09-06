@@ -164,6 +164,14 @@ function datatables(){
     });
     
 }
+function searchonTable(){
+    var table = $("#table").DataTable();
+    let search = "";
+    g_filter.forEach((value, key) => {
+        search += value + " ";
+    });
+    table.search(search).draw();
+}
 function openEditModal(id){
     let data = g_dataMap.get(parseInt(id));
     $("#edit-nombre").val(data.nombre);

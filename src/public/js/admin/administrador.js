@@ -158,8 +158,9 @@ function datatables(){
     $('#length').html('');
     $('#pagination').html('');
 
-    $('#table_info').css('display', 'none');
-    $('#table_length').css('display', 'none');
+    $('#table_info').appendTo('#info');
+    $('#table_length').appendTo('#length');
+    // $('#table_length').css('display', 'none');
     $('#table_filter').css('display', 'none');
     $('#table_paginate').appendTo('#pagination');
     $('#barraBuscar').on('keyup', function(){
@@ -168,6 +169,14 @@ function datatables(){
         searchonTable();
     });
     
+}
+function searchonTable(){
+    var table = $("#table").DataTable();
+    let search = "";
+    g_filter.forEach((value, key) => {
+        search += value + " ";
+    });
+    table.search(search).draw();
 }
 function agregarUsuario(){
     let name = $("#add-name").val();

@@ -1,0 +1,138 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+<section class="bg-white shadow-custom p-3 animate__animated animate__fadeIn animate__slower row mx-0 g-0">
+    <div class="col-12">
+        <nav class="animate__animated animate__fadeIn" style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="/admin/main">Panel</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Configuracion</li>
+            </ol>
+        </nav>
+        <div class="">
+            <h2 class="fw-bold mb-0 animate__animated animate__fadeIn">Configuracion</h2>
+            <small class="text-muted">Configuraciones generales, especificas del dashboard y del usuario</small>
+        </div>
+
+    </div>
+
+</section>
+
+<section class="bg-white mt-4 rounded shadow-sm mt-4 mx-2 p-3" style="min-height: 600px;">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <div class="nav flex-column nav-pills me-3 gap-2 " id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <button class="nav-link active text-start" id="v-pills-financial-tab" data-bs-toggle="pill" data-bs-target="#v-pills-financial" 
+                type="button" role="tab" aria-controls="v-pills-financial" aria-selected="true">General</button>
+                <!-- <button class="nav-link text-start" id="v-pills-dashboard-tab" data-bs-toggle="pill" data-bs-target="#v-pills-dashboard" 
+                type="button" role="tab" aria-controls="v-pills-dashboard" aria-selected="false">Dashboard</button> -->
+            </div>
+        </div>
+        <div class="col">
+            <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="v-pills-financial" role="tabpanel" aria-labelledby="v-pills-financial-tab" tabindex="0">
+                    <h3 class="fw-bold">General</h3>
+                    <hr>
+                    <div class="mb-3">
+                        <lable for="tipocambio" class="form-label d-block mb-1 fw-bold">Tipo de Cambio</lable>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" placeholder="Tipo de Cambio" aria-label="Tipo de Cambio" 
+                            min="1" minlength="1" id="tipocambio" style="width: 130px;">
+                        </div>
+
+                    </div>
+                    <div class="mt-auto">
+                        <hr>
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-primary" onclick="salvarGeneral()">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="v-pills-dashboard" role="tabpanel" aria-labelledby="v-pills-dashboard-tab" tabindex="0">
+                    <h3 class="fw-bold">Dashboard</h3>
+                    <hr>
+                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#flush-productos" aria-expanded="false" aria-controls="flush-productos">
+                                Productos
+                                </button>
+                            </h2>
+                            <div id="flush-productos" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+                                    <p>Seleccione los botones que desea mostrar en la tabla de productos.</p>
+                                    <div class="d-flex justify-content-start align-items-center gap-2 flex-wrap">
+                                        <button id="productos-pdf" class="btn btn-outline-primary" data-bs-toggle="button"><i class="fa-solid fa-print"></i> PDF</button>
+                                        <button id="productos-excel" class="btn btn-outline-primary" data-bs-toggle="button"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                Accordion Item #2
+                                </button>
+                            </h2>
+                            <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion body. Let's imagine this being filled with some actual content.</div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                                Accordion Item #3
+                                </button>
+                            </h2>
+                            <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-auto">
+                        <hr>
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-primary" onclick="salvarDashboardConfig()">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{{#ifCond rol '>=' 4}}
+<script>
+    $("#tipocambio").on('keyup',function(e){
+        if (e.keyCode == 13) {
+            salvarGeneral();
+        }
+    });
+    async function salvarGeneral(){
+        const tipo = parseInt($("#tipocambio").val());
+        const cm = await axios.post('/api/update/cambio', {tipo})
+        if(cm.data.status == 200){
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+            Toast.fire({
+                icon: 'success',
+                title: 'Cambio Actualizado'
+            });
+        }
+    }
+</script>
+{{/ifCond}}
+
+<script src="/js/admin/config.js"></script>

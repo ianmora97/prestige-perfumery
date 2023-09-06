@@ -809,24 +809,29 @@ function checkRatioFilter(){
         searchonTable();
     });
 }
-function datatables(){
+// async function getDataTableConfiguration(){
+//     const config = await axios.get("/api/dashboard/one/Productos");
+//     return config.data;
+// }
+async function datatables(){
+    // const config = await getDataTableConfiguration();
     $("#table").DataTable({
         responsive: true,
         select: false,
         keys: false,
-        dom: 'Bfrtip',
+        dom: 'Blfrtip',
         buttons: [
             {
-                extend: 'pdf',
+                extend: "pdf",
                 text: '<i class="fa-solid fa-print text-dark"></i> Exportar PDF',
-                titleAttr: 'Exportar a PDF',
-                className: 'btn btn-white me-3',
+                className: "btn btn-white",
+                titleAttr: "Exportar PDF",
             },{
-                extend: 'excel',
+                extend: "excel",
                 text: '<i class="fa-solid fa-file-excel text-dark"></i> Exportar Excel',
-                titleAttr: 'Exportar a Excel',
-                className: 'btn btn-white',
-            },
+                className: "btn btn-white",
+                titleAttr: "Exportar Excel",
+            }
         ],
         order: [[ 2, "asc" ]],
         "scrollY": "700px",
@@ -846,7 +851,7 @@ function datatables(){
             "infoFiltered":   "(Filtrado de _MAX_ productos totales)",
             "infoPostFix":    "",
             "thousands":      ",",
-            "lengthMenu":     "Mostrando _MENU_",
+            "lengthMenu":     "Mostrar _MENU_",
             "loadingRecords": "Cargando...",
             "processing":     "Procesando...",
             "search":         "Buscar:",
@@ -867,8 +872,8 @@ function datatables(){
             }
         },
         lengthMenu: [
-            [ 10, 50, 100, -1 ],
-            [ '10', '50', '100', 'Todos' ]
+            [ 10, 50, 100, 500, -1 ],
+            [ '10', '50', '100', '500', 'Todos' ]
         ],
         responsive: {
             details: {

@@ -44,7 +44,8 @@ app.use(require('./backend/routes/dashboard.routes'));
 
 // ? Start the server
 http.createServer(app).listen(app.get('port'), () => {
-    console.log(`[OK] SERVER STARTED ON PORT ${app.get('port')}`)
+    console.log(`[OK] SERVER STARTED ON PORT ${app.get('port')}`);
+    // require('./backend/database/mongocon');
 });
 if(process.env.NODE_ENV === 'prod'){
     app.use(toHttps);

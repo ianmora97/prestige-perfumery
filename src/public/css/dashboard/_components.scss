@@ -44,14 +44,35 @@ $input-btn-focus-box-shadow: 0 0 0 0 none;
 }
 .form-icon{
     position: relative;
+    input{
+        padding-left: 2rem !important;
+    }
     i{
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        right: 20px;
+        left: 0.8rem;
         color: $gray-100;
     }
 }
+.form-control-toprimary{
+    transition: all 0.4s ease-in-out !important;
+    border: 1.3px solid transparent !important;
+    &:focus, &:active{
+        border: 1.3px solid $primary !important;
+        background-color: rgba(153,64,46, 0.25) !important;
+        color: $primary !important;
+    }
+    &:not(:placeholder-shown){
+        border: 1.3px solid $primary !important;
+        background-color: rgba(153,64,46, 0.25) !important;
+        color: $primary !important;
+    }
+    &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+        font-size: 0.8rem;
+    }
+}
+
 
 /**
  * NAV
@@ -105,6 +126,11 @@ $input-btn-focus-box-shadow: 0 0 0 0 none;
         width: 100px;
     }
 }
+.flex-column.nav-pills{
+    .nav-link:not(.active){
+        background-color: $gray !important;
+    }
+}
 
 /**
  * Links and Buttons
@@ -136,9 +162,18 @@ button{
         transform: translateY(-50%);
     }
     &:hover{
+        color: $light !important;
         i.op{
             color: lighten($primary, 10%);
         }
+    }
+}
+.btn-outline-primary{
+    &:hover, &:active, &:focus{
+        color: $light !important;
+    }
+    &.active{
+        color: $light !important;
     }
 }
 .btn-white{

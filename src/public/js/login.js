@@ -10,6 +10,14 @@ function init(){
 function onkeyups(){
     onKeyUp("username", "feedback", 5, {name: true, fb: true}, sendForm);
     onKeyUp("password", "feedback", 1, {name: true, fb: true}, sendForm);
+
+    $("#username, #password").on('keyup',function(e){
+        if($("#username").val() !== "" && $("#password").val() !== ""){
+            $("#login-btn").prop('disabled', false);
+        }else{
+            $("#login-btn").prop('disabled', true);
+        }
+    })
 }
 /**
  * Adds the click event to the button
@@ -26,12 +34,11 @@ function sendForm(){
     buttonLoader(1);
     var username = $("#username").val();
     var password = $("#password").val();
-    // if(!validateForm(username, password)){
-    //     showError(username, password);
-    //     buttonLoader(0);
-    //     return;
-    // }
-    console.log("SI")
+    if(!validateForm(username, password)){
+        showError(username, password);
+        buttonLoader(0);
+        return;
+    }
     $.ajax({
         type: "POST",
         url: "/login",
@@ -41,7 +48,6 @@ function sendForm(){
         }),
         contentType: "application/json",
     }).then((res) =>{
-        console.log(res);
         authenticate(res.token, res.username, res.photo).then((e)=>{
             setTimeout(() => {
                 buttonLoader(2);
@@ -84,8 +90,6 @@ function showError(u,p){
  */
 function validateForm(u, p){
     if(u === "" || p === ""){
-        return false;
-    }else if(u.length < 5 || p.length < 10){
         return false;
     }
     return true;
