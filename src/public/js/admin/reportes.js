@@ -17,7 +17,7 @@ function reloadData(){
 function brignData(time){
     let ajaxTime = new Date().getTime();
     $.ajax({
-        url: '/api/report/allclient?time=' + time,
+        url: '/api/v1/report/allclient?time=' + time,
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -29,7 +29,7 @@ function brignData(time){
         $("#totalitems").html(result.length);
     });
     $.ajax({
-        url: '/api/report/getallsixmonths',
+        url: '/api/v1/report/getallsixmonths',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -37,7 +37,7 @@ function brignData(time){
         createCharts(result);
     });
     $.ajax({
-        url: '/api/purchase/all/lastmonth',
+        url: '/api/v1/purchase/all/lastmonth',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -49,7 +49,7 @@ function brignData(time){
     });
     // TODO: get all data from analytics
     $.ajax({
-        url: '/api/analytics/all',
+        url: '/api/v1/analytics/all',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {

@@ -3,7 +3,7 @@ function init(){
 }
 
 async function getDashboardConfiguration(){
-    const config = await axios.get("/api/dashboard/one/Productos");
+    const config = await axios.get("/api/v1/dashboard/one/Productos");
     showDashboardConfiguration(config.data);
 }
 

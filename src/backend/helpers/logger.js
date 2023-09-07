@@ -81,5 +81,5 @@ module.exports = {
     errorStream,
     customLog,
     logErrors,
-    logErrorsMiddleware
+    logErrorsMiddleware,
 };

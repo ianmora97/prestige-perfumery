@@ -5,7 +5,7 @@ function init(){
 }
 function getData(){
     $.ajax({
-        url: '/api/purchase/all/lastmonth',
+        url: '/api/v1/purchase/all/lastmonth',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -16,7 +16,7 @@ function getData(){
         console.log(error);
     });
     $.ajax({
-        url: '/api/product/all/productslow',
+        url: '/api/v1/product/all/productslow',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -25,7 +25,7 @@ function getData(){
         console.log(error);
     });
     $.ajax({
-        url: '/api/proveedor/all?type=onlyActive',
+        url: '/api/v1/proveedor/all?type=onlyActive',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -34,7 +34,7 @@ function getData(){
         console.log(error);
     });
     $.ajax({
-        url: '/api/report/getallsixmonths',
+        url: '/api/v1/report/getallsixmonths',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {

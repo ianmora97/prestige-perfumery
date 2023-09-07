@@ -9,7 +9,7 @@
 <script>
     
     var TIPODECAMBIO;
-    axios.get('/api/update/cambio')
+    axios.get('/api/v1/cambiodolar')
     .then(e=>{
         TIPODECAMBIO = e.data;
         $("#tipocambio").val(e.data);

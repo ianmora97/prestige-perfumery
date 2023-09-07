@@ -31,7 +31,7 @@ function init(){
 
 function brignDataBodegas(){
     $.ajax({
-        url: '/api/bodega/all',
+        url: '/api/v1/bodega/all',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -189,7 +189,7 @@ function reloadData(){
 function brignData(){
     let ajaxTime = new Date().getTime();
     $.ajax({
-        url: '/api/product/all',
+        url: '/api/v1/product/all',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -262,7 +262,7 @@ function iterateonBodegas(bodegas, productoid){
     let arr = bodegas;
     $("#bodegas-list-update").html("");
     g_bodegas.forEach((bodega,i) => {
-        axios.get(`/api/bodega/producto/get?bodega=${bodega.id}&producto=${productoid}`)
+        axios.get(`/api/v1/bodegaproducto/get?bodega=${bodega.id}&producto=${productoid}`)
         .then(result => {
             result = result.data;
             console.log(result.cantidad)
@@ -335,14 +335,12 @@ function updateProductoBodega(){
             cantidad: parseInt(cant)
         });
     });
-    axios.put(`/api/bodega/producto/update`,{
+    axios.put(`/api/v1/bodegaproducto/update`,{
         arr
     }).then(result => {
     });
 }
 function updateProduct(){
-
-    
     let uuid = $("#update-modal-uuid").html();
     let prod = g_dataMap.get(uuid);
 
@@ -379,7 +377,7 @@ function updateProduct(){
     };
     verifyEditInputs().then(() => {
         $.ajax({
-            url: '/api/product/update',
+            url: '/api/v1/product/update',
             method: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify(data)
@@ -433,7 +431,7 @@ function eliminarProducto(uuid){
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '/api/product/delete',
+                url: '/api/v1/product/delete',
                 method: 'DELETE',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -537,7 +535,7 @@ function avoidEditablecontents(element){
             return;
         }
         $.ajax({
-            url: "/api/product/stock",
+            url: "/api/v1/product/stock",
             type: "PUT",
             data: {
                 uuid,
@@ -640,7 +638,7 @@ function agregarProducto(){
     
     verifyInputs().then(e =>{
         $.ajax({
-            url: '/api/product/add',
+            url: '/api/v1/product/add',
             method: 'POST',
             data: JSON.stringify({
                 name: name,
@@ -693,7 +691,7 @@ function createBodegaProducto(data){
             cantidad: 0
         })
     });
-    axios.post('/api/bodega/producto/add',{arr});
+    axios.post('/api/v1/bodegaproducto/add',{arr});
 }
 function verifyInputs(){
     return new Promise((resolve, reject) => {
@@ -810,7 +808,7 @@ function checkRatioFilter(){
     });
 }
 // async function getDataTableConfiguration(){
-//     const config = await axios.get("/api/dashboard/one/Productos");
+//     const config = await axios.get("/api/v1/dashboard/one/Productos");
 //     return config.data;
 // }
 async function datatables(){

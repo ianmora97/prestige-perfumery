@@ -63,7 +63,7 @@ function searchonTable(){
 function brignData(){
     let ajaxTime = new Date().getTime();
     $.ajax({
-        url: '/api/purchase/all',
+        url: '/api/v1/purchase/all',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -96,6 +96,22 @@ function fillPedidos(data){
     });
     datatables();
     urlParamEventListener();
+}
+
+function prices(precioActual){
+    precioActual = ((precioActual) + (precioActual * 0.3)) * TIPODECAMBIO;
+    const [a, b, c] = [100, 98 ,96];
+    function roundToNearestHundred(number) {
+        return Math.round(number / 100) * 100;
+    }
+    function formatNumberWithCommas(number) {
+        return number.toLocaleString('es-ES');
+    }
+    return {
+        p1: formatNumberWithCommas(roundToNearestHundred(precioActual * a / 100)),
+        p2: formatNumberWithCommas(roundToNearestHundred(precioActual * b / 100)),
+        p3: formatNumberWithCommas(roundToNearestHundred(precioActual * c / 100))
+    }
 }
 function addRow(e){
     try {
@@ -274,7 +290,7 @@ function cambiarStatus(id,status, selector){
         .addClass("btn-red");
     }
     $.ajax({
-        url: '/api/purchase/status/update',
+        url: '/api/v1/purchase/status/update',
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
@@ -293,7 +309,7 @@ function cambiarStatus(id,status, selector){
 }
 function brignClients(){
     $.ajax({
-        url: '/api/cliente/all?type=selectize',
+        url: '/api/v1/cliente/all?type=selectize',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -307,7 +323,7 @@ function brignClients(){
 }
 function brignProducts(){
     $.ajax({
-        url: '/api/product/all/selectize',
+        url: '/api/v1/product/all/selectize',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -381,7 +397,7 @@ function addProdctItem(e){
     let clienteSelected = g_clientData.get(parseInt($("#add-client").val()));
     let level = clienteSelected.level;
 
-    let precios = JSON.parse(e.price);
+    let precios = prices(e.price);
     $("#products-list").append(`
         <li class="list-group-item bg-gray border-blue" id="product-item-${e.id}">
             <div class="row mx-0 g-0">
@@ -390,14 +406,14 @@ function addProdctItem(e){
                     <span class="text-muted">${e.brand}</span>
                 </div>
                 <div style="width:360px;">
-                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-1" data-precio="${precios.price1}" ${level == 1 ? "checked":""}>
-                    <label class="btn btn-outline-green me-2" style="width:100px;" for="precio-item-${e.id}-1">A ${precios.price1}</label>
+                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-1" data-precio="${precios.p1}" ${level == 1 ? "checked":""}>
+                    <label class="btn btn-outline-green me-2" style="width:100px;" for="precio-item-${e.id}-1">A ${precios.p1}</label>
 
-                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-2" data-precio="${precios.price2}" ${level == 2 ? "checked":""}>
-                    <label class="btn btn-outline-orange me-2" style="width:100px;" for="precio-item-${e.id}-2">B ${precios.price2}</label>
+                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-2" data-precio="${precios.p2}" ${level == 2 ? "checked":""}>
+                    <label class="btn btn-outline-orange me-2" style="width:100px;" for="precio-item-${e.id}-2">B ${precios.p2}</label>
 
-                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-3" data-precio="${precios.price3}" ${level == 3 ? "checked":""}>
-                    <label class="btn btn-outline-blue" style="width:100px;" for="precio-item-${e.id}-3">C ${precios.price3}</label>
+                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-3" data-precio="${precios.p3}" ${level == 3 ? "checked":""}>
+                    <label class="btn btn-outline-blue" style="width:100px;" for="precio-item-${e.id}-3">C ${precios.p3}</label>
                 </div>
                 <div class="col-md d-flex justify-content-start align-items-start flex-column">
                     <div class="input-group">
@@ -430,7 +446,7 @@ function agregarPedido(){
     let cantidadP = 0;
     p.forEach(e=>{
         let cantidad = parseInt($(`#cantidad-producto-${e}`).val());
-        let precio = parseInt($(`input[name="precio-item-${e}"]:checked`).data("precio"));
+        let precio = parseInt($(`input[name="precio-item-${e}"]:checked`).data("precio").replace(".",""));
         preciosSum += (precio * cantidad);
         cantidadP += cantidad;
         priceType.push({
@@ -445,7 +461,9 @@ function agregarPedido(){
             cantidad: parseInt($(`#cantidad-producto-${e}`).val())
         }
     });
+    const email = g_clientData.get(parseInt(cliente)).email;
     let data = {
+        email: email,
         client: cliente,
         items: JSON.stringify({
             total: p.length,
@@ -459,7 +477,7 @@ function agregarPedido(){
         cantidad: cantidadP
     }
     $.ajax({
-        url: '/api/purchase/add',
+        url: '/api/v1/purchase/add',
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(data)
@@ -505,7 +523,7 @@ function urlParamEventListener(){
 function brignOneProduct(id){
     return new Promise((resolve, reject)=>{
         $.ajax({
-            url: '/api/product/one/'+id,
+            url: '/api/v1/product/one/'+id,
             method: 'GET',
             contentType: 'application/json'
         }).then((result) => {
@@ -656,7 +674,7 @@ function eliminarPedido(id){
             let p = g_dataMap.get(parseInt(id));
             let productos = JSON.parse(p.items).productos;
             $.ajax({
-                url: '/api/purchase/delete',
+                url: '/api/v1/purchase/delete',
                 method: 'DELETE',
                 contentType: 'application/json',
                 data: JSON.stringify({

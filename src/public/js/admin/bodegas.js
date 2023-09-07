@@ -16,14 +16,14 @@ function init(){
 }
 
 function brignData(){
-    axios.get('/api/bodega/all')
+    axios.get('/api/v1/bodega/all')
     .then((result) => {
         result = result.data;
         g_bodegas = result;
         $("#totalitems").html(g_bodegas.length);
         fillBodegas(result)
         .then(() => {
-            axios.get('/api/bodega/producto/all')
+            axios.get('/api/v1/bodegaproducto/all')
             .then((bodegaproducto)=>{
                 bodegaproducto = bodegaproducto.data;
                 g_bodegasProducto = bodegaproducto;
@@ -52,7 +52,7 @@ function sumCantidadByBodega(bodegaproducto){
 }
 function fillBodegaProducto(data){
     data.forEach(e =>{
-        axios.get('/api/product/one/'+e.producto).then(result => {
+        axios.get('/api/v1/product/one/'+e.producto).then(result => {
             result = result.data;
             $(`#bodegaProductos-${e.bodega}`).append(`
             <div class="col-md-2">
@@ -120,7 +120,7 @@ function actulizarBodega(){
     let id = $("#update-bodega-id").html();
     let nombre = $("#update-bodega-name").val();
     $.ajax({
-        url: '/api/bodega/update',
+        url: '/api/v1/bodega/update',
         method: 'PUT',
         contentType: 'application/json',
         data: JSON.stringify({
@@ -141,7 +141,7 @@ function addNewBodega(){
 function agregarBodega(){
     let nombre = $("#add-bodega-name").val();
     $.ajax({
-        url: '/api/bodega/add',
+        url: '/api/v1/bodega/add',
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
@@ -149,6 +149,7 @@ function agregarBodega(){
         })
     }).then((result) => {
         modalBodegaAdd.hide();
+        location.reload();
     }, (error) => {
         console.log(error);
     });
@@ -156,7 +157,7 @@ function agregarBodega(){
 function eliminarBodega(){
     let id = $("#update-bodega-id").html();
     $.ajax({
-        url: '/api/bodega/delete',
+        url: '/api/v1/bodega/delete',
         method: 'DELETE',
         contentType: 'application/json',
         data: JSON.stringify({
@@ -164,6 +165,7 @@ function eliminarBodega(){
         })
     }).then((result) => {
         modalBodegaEdit.hide();
+        location.reload();
     }, (error) => {
         console.log(error);
     });

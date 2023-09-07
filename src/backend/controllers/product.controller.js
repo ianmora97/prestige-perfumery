@@ -1,6 +1,5 @@
 const Product = require('../models/product.model');
-const logger = require('../utils/logger');
-const jwt = require('jsonwebtoken');
+const BodegaProducto = require('../models/bodega.model');
 const { checkProducto, checkProductoUUID } = require('../helpers/checkStock');
 require("dotenv").config();
 
@@ -77,18 +76,12 @@ module.exports = {
         let code = uuidv4();
         req.body.code = code.split('-')[0];
         req.body.uuid = code;
-        who(req).then((user) => {
-            logger.activity(`Producto "${req.body.name}" creado`, user);
-        })
         Product.create(req.body, (result) => {
             res.status(result.status).json(result);
         });
     },
     update: (req, res) => {
         Product.update(req.body, (result) => {
-            who(req).then((user) => {
-                logger.activity(`Producto "${req.body.name}" actualizado`, user);
-            });
             checkProductoUUID(req.body.uuid);
             res.status(result.status).json(result);
         });
@@ -104,27 +97,20 @@ module.exports = {
     },
     updateStock: (req, res) => {
         Product.updateStock(req.body, (result) => {
-            who(req).then((user) => {
-                logger.activity(`Cantidad de Producto "${req.body.name}" actualizado`, user);
-            });
             checkProductoUUID(req.body.uuid);
             res.status(result.status).json(result);
         });
     },
     delete: (req, res) => {
-        Product.delete(req.body, (result) => {
-            who(req).then((user) => {
-                logger.activity(`Producto "${req.body.name}" eliminado`, user);
+        BodegaProducto.deleteBodegaProducto(req.body, (result1) => {
+            Product.delete(req.body, (result) => {
+                res.status(result.status).json(result);
             });
-            res.status(result.status).json(result);
         });
     },
     updateTipoCambio: (req,res) =>{
         Product.updateTipoCambio(req.body, (result)=>{
-            who(req).then((user) => {
-                logger.activity(`Tipo de Cambio actualizado "${req.body.tipo}" actualizado`, user);
-                res.status(result.status).json(result);
-            });
+            res.status(result.status).json(result);
         });
     },
     getTipoCambio: (req,res) =>{
@@ -132,25 +118,4 @@ module.exports = {
             res.status(result.status).json(result.data.value);
         });
     }
-}
-
-function who(req) {
-    return new Promise((resolve, reject) => {
-        let headers = req.headers['cookie'] || req.headers['authorization'];
-        if(headers === undefined){
-            resolve("Unknown");
-        }else{
-            let tokenName = headers.split(";").filter((item) => item.includes("token="))[0];
-            if(tokenName === undefined) resolve("Unknown");
-            else tokenName = tokenName.split("=")[1];
-            jwt.verify(tokenName, process.env.SECRET_KEY, (err, decoded) => {
-                if (err) {
-                    console.log(err);
-                    resolve("Unknown");
-                } else {
-                    resolve(decoded.user);
-                }
-            });
-        }
-    });
 }

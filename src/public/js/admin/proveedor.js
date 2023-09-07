@@ -14,7 +14,7 @@ function reloadData(){
 function brignData(){
     let ajaxTime = new Date().getTime();
     $.ajax({
-        url: '/api/proveedor/all?type=onlyActive',
+        url: '/api/v1/proveedor/all?type=onlyActive',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -98,7 +98,7 @@ function actualizarEstado(id, estado){
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '/api/proveedor/updateestado',
+                url: '/api/v1/proveedor/updateestado',
                 method: 'PUT',
                 data: JSON.stringify({
                     id: parseInt(id),
@@ -148,7 +148,7 @@ function agregarPedido(){
         return;
     }else{
         $.ajax({
-            url: '/api/proveedor/add',
+            url: '/api/v1/proveedor/add',
             method: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json'
@@ -199,7 +199,7 @@ function eliminarProveedor(id){
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '/api/proveedor/delete',
+                url: '/api/v1/proveedor/delete',
                 method: 'DELETE',
                 contentType: 'application/json',
                 data: JSON.stringify({

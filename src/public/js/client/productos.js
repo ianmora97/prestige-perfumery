@@ -10,7 +10,7 @@ function bringData(){
 
 function getHombres(){
     $.ajax({
-        url: '/api/product/all?offset=0&limit=8&category=hombre',
+        url: '/api/v1/product/all?offset=0&limit=8&category=hombre',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -22,7 +22,7 @@ function getHombres(){
 
 function getMujeres(){
     $.ajax({
-        url: '/api/product/all?offset=0&limit=8&category=mujer',
+        url: '/api/v1/product/all?offset=0&limit=8&category=mujer',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {

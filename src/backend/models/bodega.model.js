@@ -169,6 +169,24 @@ exports.createBodegaProducto = async (data,resolve) => {
         });
     });
 };
+
+exports.deleteBodegaProducto = async (data,resolve) => {
+    BodegaProducto.destroy({
+        where: {
+            producto: parseInt(data.id)
+        }
+    }).then((result) => {
+        resolve({
+            status: 200,
+            data: result
+        });
+    }).catch((error) => {
+        resolve({
+            status: 500,
+            data: error
+        });
+    });
+}
 exports.getAll = async (resolve) => {
     Bodega.findAll().then((result) => {
         resolve({

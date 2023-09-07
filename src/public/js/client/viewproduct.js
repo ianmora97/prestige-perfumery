@@ -96,7 +96,7 @@ function openModalViewProductos(id, e){
 var getProducto = (id) => {
     return new Promise((resolve, reject)=>{
         $.ajax({
-            url: `/api/product/one/${id}`,
+            url: `/api/v1/product/one/${id}`,
             method: 'GET',
             contentType: 'application/json'
         }).then((result) => {

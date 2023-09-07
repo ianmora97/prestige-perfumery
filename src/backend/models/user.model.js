@@ -109,7 +109,6 @@ exports.authenticate = async (username, password, resolve) => {
             type: QueryTypes.SELECT
         }
     ).then((result) =>{
-        console.log("result", result)
         resolve({
             status: 200,
             data: result[0]['0']

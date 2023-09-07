@@ -20,7 +20,7 @@ function reloadData(){
 function brignData(){
     let ajaxTime = new Date().getTime();
     $.ajax({
-        url: '/api/cliente/all',
+        url: '/api/v1/cliente/all',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -210,7 +210,7 @@ function actualizarCliente(){
         return;
     }else{
         $.ajax({
-            url: '/api/cliente/update',
+            url: '/api/v1/cliente/update',
             method: 'PUT',
             data: JSON.stringify(data),
             contentType: "application/json",
@@ -265,7 +265,7 @@ function agregarCliente(){
         return;
     }else{
         $.ajax({
-            url: '/api/cliente/add',
+            url: '/api/v1/cliente/add',
             method: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json'
@@ -316,7 +316,7 @@ function eliminarCliente(id){
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '/api/cliente/delete',
+                url: '/api/v1/cliente/delete',
                 method: 'DELETE',
                 contentType: 'application/json',
                 data: JSON.stringify({

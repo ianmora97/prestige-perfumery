@@ -23,7 +23,7 @@ function reloadData(){
 function brignData(){
     let ajaxTime = new Date().getTime();
     $.ajax({
-        url: '/api/user/all',
+        url: '/api/v1/user/all',
         method: 'GET',
         contentType: 'application/json'
     }).then((result) => {
@@ -199,7 +199,7 @@ function agregarUsuario(){
             rol: parseInt(rol)
         }
         $.ajax({
-            url: '/api/user/add',
+            url: '/api/v1/user/add',
             method: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json'
@@ -250,7 +250,7 @@ function deleteAdmin(id){
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '/api/user/delete',
+                url: '/api/v1/user/delete',
                 method: 'DELETE',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -309,7 +309,7 @@ function actualizarUsuario(){
             rol: parseInt(rol)
         }
         $.ajax({
-            url: '/api/user/update',
+            url: '/api/v1/user/update',
             method: 'PUT',
             data: JSON.stringify(data),
             contentType: 'application/json'
