@@ -23,7 +23,7 @@ function brignData(){
         $("#totalitems").html(g_bodegas.length);
         fillBodegas(result)
         .then(() => {
-            axios.get('/api/v1/bodega/producto/all')
+            axios.get('/api/v1/bodegaproducto/all')
             .then((bodegaproducto)=>{
                 bodegaproducto = bodegaproducto.data;
                 g_bodegasProducto = bodegaproducto;
@@ -149,6 +149,7 @@ function agregarBodega(){
         })
     }).then((result) => {
         modalBodegaAdd.hide();
+        location.reload();
     }, (error) => {
         console.log(error);
     });
@@ -164,6 +165,7 @@ function eliminarBodega(){
         })
     }).then((result) => {
         modalBodegaEdit.hide();
+        location.reload();
     }, (error) => {
         console.log(error);
     });

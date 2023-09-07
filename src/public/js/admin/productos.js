@@ -262,7 +262,7 @@ function iterateonBodegas(bodegas, productoid){
     let arr = bodegas;
     $("#bodegas-list-update").html("");
     g_bodegas.forEach((bodega,i) => {
-        axios.get(`/api/v1/bodega/producto/get?bodega=${bodega.id}&producto=${productoid}`)
+        axios.get(`/api/v1/bodegaproducto/get?bodega=${bodega.id}&producto=${productoid}`)
         .then(result => {
             result = result.data;
             console.log(result.cantidad)
@@ -335,14 +335,12 @@ function updateProductoBodega(){
             cantidad: parseInt(cant)
         });
     });
-    axios.put(`/api/v1/bodega/producto/update`,{
+    axios.put(`/api/v1/bodegaproducto/update`,{
         arr
     }).then(result => {
     });
 }
 function updateProduct(){
-
-    
     let uuid = $("#update-modal-uuid").html();
     let prod = g_dataMap.get(uuid);
 
@@ -693,7 +691,7 @@ function createBodegaProducto(data){
             cantidad: 0
         })
     });
-    axios.post('/api/v1/bodega/producto/add',{arr});
+    axios.post('/api/v1/bodegaproducto/add',{arr});
 }
 function verifyInputs(){
     return new Promise((resolve, reject) => {

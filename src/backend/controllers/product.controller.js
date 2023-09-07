@@ -1,4 +1,5 @@
 const Product = require('../models/product.model');
+const BodegaProducto = require('../models/bodega.model');
 const { checkProducto, checkProductoUUID } = require('../helpers/checkStock');
 require("dotenv").config();
 
@@ -101,8 +102,10 @@ module.exports = {
         });
     },
     delete: (req, res) => {
-        Product.delete(req.body, (result) => {
-            res.status(result.status).json(result);
+        BodegaProducto.deleteBodegaProducto(req.body, (result1) => {
+            Product.delete(req.body, (result) => {
+                res.status(result.status).json(result);
+            });
         });
     },
     updateTipoCambio: (req,res) =>{

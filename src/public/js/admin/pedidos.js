@@ -97,6 +97,22 @@ function fillPedidos(data){
     datatables();
     urlParamEventListener();
 }
+
+function prices(precioActual){
+    precioActual = ((precioActual) + (precioActual * 0.3)) * TIPODECAMBIO;
+    const [a, b, c] = [100, 98 ,96];
+    function roundToNearestHundred(number) {
+        return Math.round(number / 100) * 100;
+    }
+    function formatNumberWithCommas(number) {
+        return number.toLocaleString('es-ES');
+    }
+    return {
+        p1: formatNumberWithCommas(roundToNearestHundred(precioActual * a / 100)),
+        p2: formatNumberWithCommas(roundToNearestHundred(precioActual * b / 100)),
+        p3: formatNumberWithCommas(roundToNearestHundred(precioActual * c / 100))
+    }
+}
 function addRow(e){
     try {
         let items = JSON.parse(e.items);
@@ -381,7 +397,7 @@ function addProdctItem(e){
     let clienteSelected = g_clientData.get(parseInt($("#add-client").val()));
     let level = clienteSelected.level;
 
-    let precios = JSON.parse(e.price);
+    let precios = prices(e.price);
     $("#products-list").append(`
         <li class="list-group-item bg-gray border-blue" id="product-item-${e.id}">
             <div class="row mx-0 g-0">
@@ -390,14 +406,14 @@ function addProdctItem(e){
                     <span class="text-muted">${e.brand}</span>
                 </div>
                 <div style="width:360px;">
-                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-1" data-precio="${precios.price1}" ${level == 1 ? "checked":""}>
-                    <label class="btn btn-outline-green me-2" style="width:100px;" for="precio-item-${e.id}-1">A ${precios.price1}</label>
+                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-1" data-precio="${precios.p1}" ${level == 1 ? "checked":""}>
+                    <label class="btn btn-outline-green me-2" style="width:100px;" for="precio-item-${e.id}-1">A ${precios.p1}</label>
 
-                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-2" data-precio="${precios.price2}" ${level == 2 ? "checked":""}>
-                    <label class="btn btn-outline-orange me-2" style="width:100px;" for="precio-item-${e.id}-2">B ${precios.price2}</label>
+                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-2" data-precio="${precios.p2}" ${level == 2 ? "checked":""}>
+                    <label class="btn btn-outline-orange me-2" style="width:100px;" for="precio-item-${e.id}-2">B ${precios.p2}</label>
 
-                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-3" data-precio="${precios.price3}" ${level == 3 ? "checked":""}>
-                    <label class="btn btn-outline-blue" style="width:100px;" for="precio-item-${e.id}-3">C ${precios.price3}</label>
+                    <input class="btn-check" type="radio" name="precio-item-${e.id}" id="precio-item-${e.id}-3" data-precio="${precios.p3}" ${level == 3 ? "checked":""}>
+                    <label class="btn btn-outline-blue" style="width:100px;" for="precio-item-${e.id}-3">C ${precios.p3}</label>
                 </div>
                 <div class="col-md d-flex justify-content-start align-items-start flex-column">
                     <div class="input-group">
@@ -430,7 +446,7 @@ function agregarPedido(){
     let cantidadP = 0;
     p.forEach(e=>{
         let cantidad = parseInt($(`#cantidad-producto-${e}`).val());
-        let precio = parseInt($(`input[name="precio-item-${e}"]:checked`).data("precio"));
+        let precio = parseInt($(`input[name="precio-item-${e}"]:checked`).data("precio").replace(".",""));
         preciosSum += (precio * cantidad);
         cantidadP += cantidad;
         priceType.push({
@@ -445,7 +461,9 @@ function agregarPedido(){
             cantidad: parseInt($(`#cantidad-producto-${e}`).val())
         }
     });
+    const email = g_clientData.get(parseInt(cliente)).email;
     let data = {
+        email: email,
         client: cliente,
         items: JSON.stringify({
             total: p.length,

@@ -32,13 +32,17 @@ router.delete('/product/delete', isAuthenticatedAdmin, PRODUCT.delete); // ! Aut
  */
 const BODEGA = require('../controllers/bodega.controller');
 router.get('/bodega/all', isAuthenticatedAdmin, BODEGA.getAll); // ! Authentication required for admin
-router.get('/bodega/producto/all', isAuthenticatedAdmin, BODEGA.getBodegaProducto); // ! Authentication required for admin
-router.get('/bodega/producto/get', isAuthenticatedAdmin, BODEGA.getBodegaProductobyProducto); // ! Authentication required for admin
 router.post('/bodega/add', isAuthenticatedAdmin, BODEGA.create); // ! Authentication required for admin
-router.post('/bodega/producto/add', isAuthenticatedAdmin, BODEGA.createBodegaProducto); // ! Authentication required for admin
-router.put('/bodega/producto/update', isAuthenticatedAdmin, BODEGA.updateBodegaProducto); // ! Authentication required for admin
 router.put('/bodega/update', isAuthenticatedAdmin, BODEGA.update); // ! Authentication required for admin
 router.delete('/bodega/delete', isAuthenticatedAdmin, BODEGA.delete); // ! Authentication required for admin
+/**
+ * CRUD for Bodega Producto
+ */
+router.get('/bodegaproducto/all', isAuthenticatedAdmin, BODEGA.getBodegaProducto); // ! Authentication required for admin
+router.get('/bodegaproducto/get', isAuthenticatedAdmin, BODEGA.getBodegaProductobyProducto); // ! Authentication required for admin
+router.post('/bodegaproducto/add', isAuthenticatedAdmin, BODEGA.createBodegaProducto); // ! Authentication required for admin
+router.put('/bodegaproducto/update', isAuthenticatedAdmin, BODEGA.updateBodegaProducto); // ! Authentication required for admin
+
 /**
  * CRUD for Purchase
 */

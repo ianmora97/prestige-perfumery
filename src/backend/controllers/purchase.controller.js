@@ -2,6 +2,7 @@ const Purchase = require('../models/purchase.model');
 const Product = require('../models/product.model');
 const Report = require('../models/report.model');
 const { checkProducto, checkProductoUUID } = require('../helpers/checkStock');
+const mailer = require('../mail/mailer');
 require("dotenv").config();
 
 module.exports = {
@@ -40,6 +41,7 @@ module.exports = {
         });
         Report.create(req.body, (result) => {});
         Purchase.create(req.body, (result) => {
+            // mailer.sendEmail(req.body.email, req.body.productos, (result) => {});
             res.status(result.status).json(result);
         });
     },
